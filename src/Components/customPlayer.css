@@ -1,0 +1,39 @@
+/* Make container rounded */
+.rhap_container {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Top part (progress + title) */
+.rhap_progress-section {
+  background: #ffffff;
+  padding: 20px;
+}
+
+/* Progress bar */
+.rhap_progress-bar {
+  background: #e5e5e5;
+  height: 6px;
+  border-radius: 3px;
+}
+
+.rhap_progress-filled {
+  background: #007bff; /* Blue progress */
+}
+
+/* Bottom controls */
+.rhap_controls-section {
+  background: #4571a1;
+  padding:0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Make icons white */
+.rhap_main-controls button,
+.rhap_additional-controls button,
+.rhap_volume-controls button {
+  color: white;
+  font-size: 24px;
+}
