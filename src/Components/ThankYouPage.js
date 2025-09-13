@@ -1,29 +1,46 @@
 import React from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+
 const ThankYouPage = () => {
-    return (
-        <div className="h-screen flex flex-col">
-            {/* Navbar */}
-            <div className="shrink-0">
-                <Navbar />
-            </div>
-            <div className="flex flex-1 items-center text-white px-6 bg-cover bg-center" style={{ fontFamily: "Arial, sans-serif", backgroundImage: "url('/Mask group.png')" }}>
-                <div className="w-[80%] md:ml-28">
-                    <h1 className="text-4xl font-light md:text-9xl w-2/3 mb-4 ">
-                        Thank you for registering!
-                    </h1>
-                    <p className="text-2xl md:text-6xl font-light w-full text-gray-200 leading-loose">
-                        Please check your registered email for login credentials once you are approved
-                    </p>
-                </div>
-            </div>
-            <div className="shrink-0">
+  return (
+    <div className="min-h-[100svh] flex flex-col">
+      {/* Navbar */}
+      <div className="shrink-0">
+        <Navbar />
+      </div>
+
+      {/* Main / background layers */}
+      <div className="relative flex-1 min-h-0">
+        <div className="absolute inset-0 hero-bg bg-cover bg-center" />
+        <div className="absolute inset-0 bg-black/20" />
+
+        {/* Content centered */}
+        <div
+          className="
+            relative z-10 text-white h-full overflow-y-auto
+            px-6 md:px-10 py-8 md:py-12
+            flex items-center justify-center
+          "
+          style={{ fontFamily: "Arial, sans-serif" }}
+        >
+          <div className="w-full max-w-5xl text-center">
+            <h1 className="font-light leading-tight mb-4 text-3xl sm:text-5xl md:text-7xl">
+              Thank you for registering!
+            </h1>
+            <p className="text-base sm:text-xl md:text-2xl font-light text-gray-200 leading-relaxed">
+              Please check your registered email for login credentials once you are approved.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="shrink-0">
         <Footer />
       </div>
-        </div>
-
-    );
+    </div>
+  );
 };
 
 export default ThankYouPage;

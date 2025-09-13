@@ -18,3 +18,10 @@
   font-weight: 300;
   font-style: normal;
 }
+.hero-bg { background-image: url('./assets/mask-group.png');
+  background-size: cover;
+  background-position: center;}
+
+  .reader-html img { max-width: 100%; height: auto; }
+.reader-html a { text-decoration: underline; }
+.reader-html p { margin: 0 0 1em; }

@@ -1,65 +1,153 @@
 import React, { useState } from 'react';
-import { FiUser, FiMail } from 'react-icons/fi';
+import { FiMail } from 'react-icons/fi';
 import Footer from "./Footer";
-import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-const ForgotPassword = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-  });
-  const location = useLocation();
-  const { page } = location.state || "";
+import { useLocation, Link } from 'react-router-dom';
 
-  const [focused, setFocused] = useState({
-    name: false,
-    email: false,
-  });
+const ForgotPassword = () => {
+  const [formData, setFormData] = useState({ email: '' });
+  const [focused, setFocused] = useState({ email: false });
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [error, setError] = useState('');
+
+  // Safe fallback for back link
+  const location = useLocation();
+  const page = (location.state && location.state.page) ? location.state.page : '';
+  const backPath = page ? `/${page}` : '/';
+  const backLabel = page || 'home';
 
   const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Add submit logic
+    setMsg('');
+    setError('');
+    setLoading(true);
+    try {
+      // TODO: call your API endpoint to start reset flow
+      // await API.post('/forgot', { email: formData.email });
+
+      setMsg('If this email exists, a reset link has been sent.');
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
-      {/* Main Section */}
-      <section
-        className="min-h-screen flex flex-col justify-between bg-center bg-cover"
-        style={{ backgroundImage: "url('/Mask group.png')" }}
-      >
-        {/* Content */}
-        <div className="flex flex-col md:flex-row items-center justify-around w-full flex-grow px-6 py-16">
-          {/* Left Side Text (hidden on mobile) */}
+      {/* MOBILE: no-scroll grid (logo / form / tiny footer link) */}
+      <section className="md:hidden grid grid-rows-[auto_1fr_auto] h-[100svh] overflow-hidden hero-bg">
+        {/* Top brand */}
+        <header className="flex items-center justify-center pt-3">
+          <div className="flex flex-col items-center">
+            <img src="/logo.svg" alt="Logo" className="h-8 w-auto" />
+            <span className="mt-1 text-[10px] uppercase tracking-widest text-gray-500">
+              THE FIRE WITHIN
+            </span>
+          </div>
+        </header>
+
+        {/* Form card */}
+        <main className="flex items-center justify-center px-4">
+          <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg px-5 py-6">
+            <form onSubmit={handleSubmit} className="space-y-3">
+              {msg && (
+                <div className="rounded-md bg-green-50 border border-green-200 text-green-700 px-3 py-2 text-sm">
+                  {msg}
+                </div>
+              )}
+              {error && (
+                <div className="rounded-md bg-red-50 border border-red-200 text-red-700 px-3 py-2 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-medium text-slate-600 mb-1">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  <FiMail className={`text-xl ${focused.email ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter Email"
+                    className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onFocus={() => setFocused(p => ({ ...p, email: true }))}
+                    onBlur={() => setFocused(p => ({ ...p, email: false }))}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-3 pt-1">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full bg-black text-white px-6 py-3 rounded-full transition
+                    ${loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-800'}`}
+                >
+                  {loading ? 'Verifying…' : 'VERIFY'}
+                </button>
+
+                <Link to={backPath} className="text-xs text-gray-500 hover:underline">
+                  Back to {backLabel}
+                </Link>
+              </div>
+            </form>
+          </div>
+        </main>
+
+        {/* Tiny sticky footer link */}
+        <footer className="flex items-center justify-center pb-3">
+          <Link to="/" className="text-[11px] text-gray-500 hover:text-gray-700 underline">
+            © {new Date().getFullYear()} Fire Within · Back to website
+          </Link>
+        </footer>
+      </section>
+
+      {/* DESKTOP: two-column hero with background */}
+      <section className="hidden md:flex md:flex-col md:justify-between md:min-h-screen md:bg-center md:bg-cover hero-bg">
+        <div className="flex flex-1 items-center justify-around w-full px-6 py-16">
+          {/* Left hero copy */}
           <div className="hidden md:flex items-center text-white">
-            <h2 className="font-inter font-light text-[48px] md:text-[60px] lg:text-8xl md:leading-[125%] tracking-wide">
-              Forgot<br /> password.
+            <h2 className="font-inter font-light leading-[1.08] tracking-wide text-[clamp(2.25rem,5vw,4rem)]">
+              <span className="md:block">Forgot</span>
+              <span className="md:block">password.</span>
             </h2>
           </div>
 
-          {/* Right Side Form (always visible, full width on mobile) */}
-          <div className="bg-white rounded-2xl shadow-lg w-full md:w-[40%]">
-            <div className="py-24 px-6 md:px-16">
-              <h2 className="text-center mb-8 font-inter font-bold text-[28px] tracking-wide uppercase">
+          {/* Form card */}
+          <div className="bg-white rounded-2xl shadow-lg w-[40%]">
+            <div className="py-16 px-12">
+              <h2 className="text-center mb-2 font-inter font-bold text-[26px] tracking-wide uppercase">
                 THE FIRE WITHIN
               </h2>
 
-              <form onSubmit={handleSubmit} className="space-y-2 w-full px-0 md:px-10">
+              <form onSubmit={handleSubmit} className="space-y-3 mt-2">
+                {msg && (
+                  <div className="rounded-md bg-green-50 border border-green-200 text-green-700 px-3 py-2 text-sm">
+                    {msg}
+                  </div>
+                )}
+                {error && (
+                  <div className="rounded-md bg-red-50 border border-red-200 text-red-700 px-3 py-2 text-sm">
+                    {error}
+                  </div>
+                )}
 
                 {/* Email */}
                 <div>
-                  <label className="block ml-12 text-sm font-normal font-inter text-gray-500 mb-2">
-                    Email <span className="text-red-500 text-base">*</span>
+                  <label className="block md:ml-10 text-sm font-normal font-inter text-slate-600 mb-2">
+                    Email <span className="text-red-500">*</span>
                   </label>
                   <div className="flex items-center space-x-3">
-                    <FiMail
-                      className={`text-2xl ${focused.email ? "text-blue-600" : "text-gray-400"
-                        }`}
-                    />
+                    <FiMail className={`text-2xl ${focused.email ? 'text-blue-600' : 'text-gray-400'}`} />
                     <input
                       type="email"
                       name="email"
@@ -67,34 +155,34 @@ const ForgotPassword = () => {
                       className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3.5 rounded-full outline-none text-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                       value={formData.email}
                       onChange={handleChange}
+                      onFocus={() => setFocused(p => ({ ...p, email: true }))}
+                      onBlur={() => setFocused(p => ({ ...p, email: false }))}
                       required
-                      onFocus={() => setFocused({ ...focused, email: true })}
-                      onBlur={() => setFocused({ ...focused, email: false })}
                     />
                   </div>
                 </div>
 
-                {/* Button */}
-                <div className="flex pt-4 ml-8 justify-between">
+                {/* Actions */}
+                <div className="flex items-center gap-3 pt-4 md:ml-8">
                   <button
                     type="submit"
-                    className="bg-black text-white font-inter px-8 py-3 rounded-full hover:bg-gray-800 transition"
+                    disabled={loading}
+                    className={`bg-black text-white font-inter px-7 py-3 rounded-full transition
+                      ${loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-800'}`}
                   >
-                    VERIFY
+                    {loading ? 'Verifying…' : 'VERIFY'}
                   </button>
 
-                  {/* Home button (mobile only) */}
-                  <p className="text-black font-inter px-8 py-3 rounded-full transition ">
-                    <Link to={`/${page}`}>Back to {page}</Link>
-                  </p>
-
+                  <Link to={backPath} className="text-sm text-gray-500 hover:underline">
+                    Back to {backLabel}
+                  </Link>
                 </div>
               </form>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
+        {/* Desktop footer (compact) */}
         <Footer />
       </section>
     </>

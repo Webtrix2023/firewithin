@@ -1,214 +1,259 @@
 import React, { useState } from 'react';
-import { FiUser, FiMail, FiLock } from 'react-icons/fi';
-import { Link } from "react-router-dom";
+import { FiUser, FiMail } from 'react-icons/fi';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import { API } from '../api/config';
-import { useNavigate } from 'react-router-dom';
-import axios from "axios"
+
 const Register = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-    });
+  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [focused, setFocused] = useState({ name: false, email: false });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
 
-    const [focused, setFocused] = useState({
-        name: false,
-        email: false,
-    });
+  const handleChange = (e) =>
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-    const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(false);
-    const [serverError, setServerError] = useState("");
+  const validate = () => {
+    const next = {};
+    if (!formData.name.trim()) next.name = 'Name is required';
+    if (!formData.email.trim()) next.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) next.email = 'Invalid email format';
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
 
-    const handleChange = (e) =>
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setServerError('');
+    if (!validate()) return;
 
-    // ✅ simple validations
-    const validate = () => {
-        let newErrors = {};
+    try {
+      setLoading(true);
+      await API.post('/registerCustomer', formData, {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      });
+      navigate('/ty');
+    } catch (err) {
+      setServerError(err?.response?.data?.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        if (!formData.name.trim()) newErrors.name = "Name is required";
-        if (!formData.email.trim()) {
-            newErrors.email = "Email is required";
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = "Invalid email format";
-        }
-        // if (!formData.password) {
-        //     newErrors.password = "Password is required";
-        // } else if (formData.password.length < 6) {
-        //     newErrors.password = "Password must be at least 6 characters";
-        // }
+  return (
+    <>
+      {/* MOBILE: 3-row grid (logo / form / tiny footer link) — no scroll */}
+      <section className="md:hidden grid grid-rows-[auto_1fr_auto] h-[100svh] overflow-hidden bg-white">
+        {/* Top logo/brand */}
+        <header className="flex items-center justify-center pt-3">
+          <div className="flex flex-col items-center">
+            <img src="/logo.svg" alt="Logo" className="h-8 w-auto" />
+            <span className="mt-1 text-[10px] uppercase tracking-widest text-gray-500">
+              THE FIRE WITHIN
+            </span>
+          </div>
+        </header>
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setServerError("");
-
-        if (!validate()) return;
-
-        try {
-            setLoading(true);
-             formData.map((item)=>{
-                console.log(item)
-            })
-            const res = await API.post("/registerCustomer", formData, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                withCredentials: true, 
-            });
-
-           
-            navigate("/ty"); 
-        } catch (err) {
-            setServerError(err.response?.data?.message || "Something went wrong");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <>
-            {/* Main Section */}
-            <section
-                className="min-h-screen flex flex-col justify-between bg-center bg-cover"
-                style={{ backgroundImage: "url('/Mask group.png')" }}
-            >
-                {/* Content */}
-                <div className="flex flex-col md:flex-row items-center justify-around w-full flex-grow px-6 py-16">
-
-                    {/* Left Side Text (hidden on mobile) */}
-                    <div className="hidden md:flex items-center text-white">
-                        <h2 className="font-inter font-light text-[48px] md:text-[60px] lg:text-8xl md:leading-[125%] tracking-wide">
-                            Please<br /> enter your <br /> details to <br /> Register
-                        </h2>
-                    </div>
-
-                    {/* Right Side Form */}
-                    <div className="bg-white rounded-2xl shadow-lg w-full md:w-[40%]">
-                        <div className="py-16 px-8 md:py-20 md:px-16">
-                            <h2 className="text-center mb-0 font-inter font-bold text-[28px] tracking-wide uppercase">
-                                THE FIRE WITHIN
-                            </h2>
-
-                            <form onSubmit={handleSubmit} className="space-y-2 p-6">
-
-                                {/* Name */}
-                                <div>
-                                    <label className="block ml-12 text-sm font-normal font-inter text-slate-500 mb-2">
-                                        Name <span className="text-red-500 text-2xl">*</span>
-                                    </label>
-                                    <div className="flex items-center space-x-3">
-                                        <FiUser
-                                            className={`text-2xl ${focused.name ? "text-blue-600" : "text-gray-400"}`}
-                                        />
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            placeholder="Enter Name"
-                                            className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3.5 rounded-full outline-none text-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            required
-                                            onFocus={() => setFocused({ ...focused, name: true })}
-                                            onBlur={() => setFocused({ ...focused, name: false })}
-                                        />
-                                    </div> {errors.name && <p className='text-slate-800'>Name is required</p>}
-
-                                </div>
-
-                                {/* Email */}
-                                <div>
-                                    <label className="block ml-12 text-sm font-normal font-inter text-slate-500 mb-2">
-                                        Email <span className="text-red-500 text-2xl">*</span>
-                                    </label>
-                                    <div className="flex items-center space-x-3">
-                                        <FiMail
-                                            className={`text-2xl ${focused.email ? "text-blue-600" : "text-gray-400"}`}
-                                        />
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            placeholder="Enter Email"
-                                            className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3.5 rounded-full outline-none text-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            required
-                                            onFocus={() => setFocused({ ...focused, email: true })}
-                                            onBlur={() => setFocused({ ...focused, email: false })}
-                                        />
-
-
-                                    </div>
-                                    {errors.email && <p className='text-slate-800'>Email is invalid</p>}
-                                </div>
-
-                                {/* Password */}
-                                {/* <div>
-                                    <label className="block ml-12 text-sm font-normal font-inter text-slate-500 mb-2">
-                                        Password <span className="text-red-500 text-2xl">*</span>
-                                    </label>
-                                    <div className="flex items-center space-x-3">
-                                        <FiLock
-                                            className={`text-2xl ${focused.password ? "text-blue-600" : "text-gray-400"}`}
-                                        />
-                                        <input
-                                            type="password"
-                                            name="password"
-                                            placeholder="Enter password"
-                                            className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3.5 rounded-full outline-none text-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                            required
-                                            onFocus={() => setFocused({ ...focused, password: true })}
-                                            onBlur={() => setFocused({ ...focused, password: false })}
-                                        />
-                                    </div> {errors.email && <p className='text-slate-800'>Email is invalid</p>}
-
-                                </div> */}
-
-
-
-                                {/* Register Button */}
-                                <div className="flex flex-row items-center  pt-4 space-x-3  ml-8">
-                                    <button
-                                        type="submit"
-                                        onClick={handleSubmit}
-                                        className="bg-black text-white font-inter px-8 py-3 rounded-full hover:bg-gray-800 transition"
-                                    >
-                                        Register
-                                    </button>
-
-                                    {/* Forgot Password */}
-                                    <Link
-
-                                        to="/reset-password"
-                                        className="text-md text-gray-500 hover:underline "
-                                        state={{ page: "register" }}
-                                    >
-                                        Forgot Password?
-                                    </Link>
-                                </div>
-
-                                {/* Login link */}
-                                <p className="text-gray-500 text-sm mt-6 ml-8">
-                                    Already have an account?{" "}
-                                    <Link to="/login" className="text-blue-500 hover:underline">
-                                        Click here to login
-                                    </Link>
-                                </p>
-                            </form>
-                        </div>
-                    </div>
+        {/* Form card */}
+        <main className="flex items-center justify-center px-4">
+          <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg px-5 py-6">
+            <form onSubmit={handleSubmit} className="space-y-3">
+              {serverError && (
+                <div className="rounded-md bg-red-50 border border-red-200 text-red-700 px-3 py-2 text-sm">
+                  {serverError}
                 </div>
-                <Footer />
-            </section>
-        </>
-    );
+              )}
+
+              {/* Name */}
+              <div>
+                <label className="block text-xs font-medium text-slate-600 mb-1">
+                  Name <span className="text-red-500">*</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  <FiUser className={`text-xl ${focused.name ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter Name"
+                    className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    value={formData.name}
+                    onChange={handleChange}
+                    onFocus={() => setFocused(p => ({ ...p, name: true }))}
+                    onBlur={() => setFocused(p => ({ ...p, name: false }))}
+                    required
+                  />
+                </div>
+                {errors.name && <p className="mt-1 text-[11px] text-red-600">{errors.name}</p>}
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-xs font-medium text-slate-600 mb-1">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  <FiMail className={`text-xl ${focused.email ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter Email"
+                    className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onFocus={() => setFocused(p => ({ ...p, email: true }))}
+                    onBlur={() => setFocused(p => ({ ...p, email: false }))}
+                    required
+                  />
+                </div>
+                {errors.email && <p className="mt-1 text-[11px] text-red-600">{errors.email}</p>}
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col items-center gap-3 pt-1">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full bg-black text-white px-6 py-3 rounded-full transition
+                    ${loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-800'}`}
+                >
+                  {loading ? 'Registering…' : 'Register'}
+                </button>
+
+                <Link to="/reset-password" state={{ page: 'register' }} className="text-xs text-gray-500 hover:underline">
+                  Forgot Password?
+                </Link>
+
+                <p className="text-[11px] text-gray-500">
+                  Already have an account?{' '}
+                  <Link to="/login" className="text-blue-500 hover:underline">
+                    Login
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </div>
+        </main>
+
+        {/* Tiny sticky footer link */}
+        <footer className="flex items-center justify-center pb-3">
+          <Link to="/" className="text-[11px] text-gray-500 hover:text-gray-700 underline">
+            © {new Date().getFullYear()} Fire Within · Back to website
+          </Link>
+        </footer>
+      </section>
+
+      {/* DESKTOP: 2-column hero with background + compact typography */}
+      <section className="hidden md:flex md:flex-col md:justify-between md:min-h-screen md:bg-center md:bg-cover hero-bg">
+        <div className="flex flex-1 items-center justify-around w-full px-6 py-16">
+          {/* Left hero copy */}
+          <div className="hidden md:flex items-center text-white">
+            <h2  className="font-light leading-[1.08] mb-5 text-[clamp(3rem,7.2vw,6.25rem)]">
+                
+              <span className="md:block">Please</span>
+              <span className="md:block">enter your</span>
+              <span className="md:block">details to</span>
+              <span className="md:block">Register</span>
+            </h2>
+          </div>
+
+          {/* Form card */}
+          <div className="bg-white rounded-2xl shadow-lg w-[40%]">
+            <div className="py-16 px-12">
+              <h2 className="text-center mb-2 font-inter font-bold text-[26px] tracking-wide uppercase">
+                THE FIRE WITHIN
+              </h2>
+
+              <form onSubmit={handleSubmit} className="space-y-3 mt-2">
+                {serverError && (
+                  <div className="rounded-md bg-red-50 border border-red-200 text-red-700 px-3 py-2 text-sm">
+                    {serverError}
+                  </div>
+                )}
+
+                {/* Name */}
+                <div>
+                  <label className="block md:ml-10 text-sm font-normal font-inter text-slate-600 mb-2">
+                    Name <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex items-center space-x-3">
+                    <FiUser className={`text-2xl ${focused.name ? 'text-blue-600' : 'text-gray-400'}`} />
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Enter Name"
+                      className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3.5 rounded-full outline-none text-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      value={formData.name}
+                      onChange={handleChange}
+                      onFocus={() => setFocused(p => ({ ...p, name: true }))}
+                      onBlur={() => setFocused(p => ({ ...p, name: false }))}
+                      required
+                    />
+                  </div>
+                  {errors.name && <p className="mt-1 text-xs text-red-600 md:ml-10">{errors.name}</p>}
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label className="block md:ml-10 text-sm font-normal font-inter text-slate-600 mb-2">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex items-center space-x-3">
+                    <FiMail className={`text-2xl ${focused.email ? 'text-blue-600' : 'text-gray-400'}`} />
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Enter Email"
+                      className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3.5 rounded-full outline-none text-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      value={formData.email}
+                      onChange={handleChange}
+                      onFocus={() => setFocused(p => ({ ...p, email: true }))}
+                      onBlur={() => setFocused(p => ({ ...p, email: false }))}
+                      required
+                    />
+                  </div>
+                  {errors.email && <p className="mt-1 text-xs text-red-600 md:ml-10">{errors.email}</p>}
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-3 pt-4 md:ml-8">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className={`bg-black text-white font-inter px-7 py-3 rounded-full transition
+                      ${loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-800'}`}
+                  >
+                    {loading ? 'Registering…' : 'Register'}
+                  </button>
+
+                  <Link
+                    to="/reset-password"
+                    state={{ page: 'register' }}
+                    className="text-sm text-gray-500 hover:underline"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+
+                <p className="text-gray-500 text-sm mt-6 md:ml-8">
+                  Already have an account?{' '}
+                  <Link to="/login" className="text-blue-500 hover:underline">
+                    Click here to login
+                  </Link>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop footer (compact) */}
+        <Footer />
+      </section>
+    </>
+  );
 };
 
 export default Register;
