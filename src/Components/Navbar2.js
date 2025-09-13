@@ -5,7 +5,7 @@ import { FiFileText } from "react-icons/fi";
 const Navbar2 = () => {
   return (
      <nav className="flex justify-between items-center text-black
-      px-12 py-5 bg-white shadow">
+      md:px-12 px-2 py-5 bg-white shadow">
       {/* Left Side */}
       <div>
         <h1 className="text-3xl font-bold">THE FIRE WITHIN</h1>

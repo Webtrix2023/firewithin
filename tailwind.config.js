@@ -9,6 +9,10 @@ module.exports = {
         'extra-loose': '2.5',
         'super-loose': '3',
       },
+       fontFamily: {
+        inria: ['"Inria Serif"', 'serif'],
+        arsis: ['"Arsis DReg"', 'serif'],
+      },
     },
   }
   ,
