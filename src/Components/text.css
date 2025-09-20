@@ -1,0 +1,9 @@
+.first-page p:first-of-type::first-letter {
+  font-size: 2.5rem;     /* make it large */
+  font-weight: bold;       /* drop-cap style */
+  line-height: 1;
+  font-family: "Georgia", serif;
+}
+.page-content{
+    word-spacing: 5px;
+}

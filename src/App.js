@@ -7,6 +7,8 @@ import ForgotPassword from "./Components/ForgotPassword";
 import HomePage from "./Components/HomePage";
 import Player from "./Components/Player";
 import { Text } from "./Components/Text";
+import { Text2 } from "./Components/Text2"
+import { UpdatePassword } from "./Components/UpdatePassword";
 function App() {
   return (<Router>
 
@@ -19,7 +21,9 @@ function App() {
       <Route path="/reset-password" element={<ForgotPassword />} />
       <Route path="/hp" element={<HomePage />} />
       <Route path="/text" element={<Text />} />
+      <Route path="/text2" element={<Text2 />} />
       <Route path="/music" element={<Player />} />
+      <Route path="/update-password" element={<UpdatePassword />} />
     </Routes>
   </Router>)
 }
