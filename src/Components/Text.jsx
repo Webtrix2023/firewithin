@@ -15,7 +15,8 @@ export const Text = () => {
         }),
         [pageContent]
     );
-    const [chapterName, setChapterName] = useState("HOT METAL");
+
+    const [chapterName, setChapterName] = useState("");
     const [pageNumber, setPageNumber] = useState(1);
     const [sections, setSections] = useState([]);
     const [lessonIndex, setLessonIndex] = useState(0);    // number, not string
@@ -36,36 +37,14 @@ export const Text = () => {
     const appUrl = `https://firewithin.coachgenie.in/`;
 
     // helper: extracts <h1> text and removes it from HTML
-      // helper: extracts <h1> text and removes it from HTML
-  function splitContent(html, chapterName) {
+   function splitContent(html) {
     const temp = document.createElement("div");
     temp.innerHTML = html;
 
-    // Remove any headings (h1, h2, h3) since chapterName is already stored separately
-    temp.querySelectorAll("h1, h2, h3").forEach(el => el.remove());
-
-    // Remove first paragraph if it exactly matches chapterName
-    const firstParagraph = temp.querySelector("p");
-    if (firstParagraph) {
-        const text = firstParagraph.textContent.trim();
-        if (chapterName && text.toLowerCase() === chapterName.toLowerCase()) {
-            firstParagraph.remove();
-        } else if (firstParagraph.innerHTML.trim() === "<br>") {
-            firstParagraph.remove();
-        } else {
-            // Flatten <span> if it only wraps the first letter
-            firstParagraph.innerHTML = firstParagraph.innerHTML.replace(
-                /^<span[^>]*>(\w)<\/span>/,
-                "$1"
-            );
-        }
-    }
-
     return {
-        pageContent: temp.innerHTML,
+        pageContent: temp.innerHTML,  // take everything as-is
     };
 }
-
 
 
     // --- API Helpers ---
@@ -99,7 +78,7 @@ export const Text = () => {
                 const item = data.data[0];
 
                 if (item.introduction) {
-                    const { chapterName, pageContent } = splitContent(item.introduction);
+                    const { pageContent } = splitContent(item.introduction);
                     setPageContent(pageContent || "");
 
                 }
@@ -169,17 +148,15 @@ export const Text = () => {
     // ✅ For refresh — does not save progress
     const getCurrentPageDetails = async () => {
         try {
-            const res = await api.post("/currentPageDetails", {});
+            const res = await api.post("/currentPageDetails", { ttpe: "listen" });
             const data = res.data.data;
-
+            if (data.currentChapterDetails.section_name) setChapterName(data.currentChapterDetails.section_name)
             if (res.data.flag === "S" && data?.bookpage?.[0]) {
                 const item = data.bookpage[0];
-
                 if (item.introduction) {
                     const { chapterName, pageContent } = splitContent(item.introduction);
                     setPageContent(pageContent || "");
                 }
-                if (item.chapter_name != null) setChapterName(item.chapter_name);
 
                 if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
                 if (item.section_id != null) setCurrentSection(Number(item.section_id));
@@ -193,6 +170,46 @@ export const Text = () => {
             }
         } catch (err) {
             console.error(err);
+        }
+    };
+
+    const getLessonByPageNumber = async (pageNumber) => {
+        try {
+            const formData = new URLSearchParams();
+            formData.append("page_number", pageNumber);
+            formData.append("course_id", 1);
+
+            const res = await axios.post(
+                `${appUrl}get_lession_by_pageNo`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                        Accept: "*/*",
+                    },
+                    withCredentials: true,
+                }
+            );
+            const data = res.data;
+            if (res.data.flag === "S" && data.data) {
+                const item = data.data;
+                console.log(item)
+                if (item.introduction) {
+                    const { chapterName, pageContent } = splitContent(item.introduction);
+                    setPageContent(pageContent || "");
+                }
+                if (item.section_name != null) setChapterName(item.section_name);
+
+                if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
+                if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
+
+                // ✅ safe: only when explicitly called for navigation
+                if (item.lesson_id) updateAutoPage(item.lesson_id);
+
+                // 🚫 don’t call updateAutoPage here → avoid overwriting progress on refresh
+            }
+        } catch (e) {
+            console.error(e);
         }
     };
 
@@ -230,10 +247,43 @@ export const Text = () => {
     // --- Initial load ---
     useEffect(() => {
         // optional: loadPage({ type: "current" });
+        updateAutoPage(pageNumber);
         getCurrentPageDetails();
     }, []);
+    {/*Removed useEffect calling getPageDetails() */ }
+
+
+    {/*REmoved extra useEffect */ }
+
+    // useEffect(() => {
+    //     (async () => {
+
+    //         try {
+    //             const { data: res } = await api.post("/currentPageDetails", {});
+    //             if (res.flag === "S" && res.data?.bookpage?.[0]) {
+    //                 const item = res.data.bookpage[0];
+    //                 if (item.introduction) {
+    //                     const { chapterName, pageContent } = splitContent(item.introduction);
+    //                     setPageContent(pageContent || "");
+    //                     setChapterName(item.chapter_name || chapterName || "");
+    //                 }
+
+    //                 if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
+    //                 if (item.section_id != null) setCurrentSection(Number(item.section_id));
+    //                 if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
+    //                 setSections(Array.isArray(res.data.bookSectionDetails) ? res.data.bookSectionDetails : []);
+    //                 if (item.lesson_id) updateAutoPage(item.lesson_id);
+    //             }
+    //         } catch (e) {
+    //             console.error(e);
+    //         }
+    //     })();
+    // }, []);
+
+
 
     // Click anywhere in reading area
+
     const handleReadingAreaTap = () => {
         // If font menu is open, close it and DON'T toggle controls/navbar
         if (showFontMenu) {
@@ -266,6 +316,7 @@ export const Text = () => {
             document.removeEventListener("keydown", onKey);
         };
     }, [showFontMenu]);
+
     // Theme classes (no layout/color placement changes)
     const themeClasses = {
         light: "bg-[#ffffff] text-[#111]",
@@ -294,7 +345,8 @@ export const Text = () => {
     >
       {/* Navbar */}
       <div className={navbarVisible ? "block" : "hidden"}>
-        <Navbar2 />
+        <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
+
       </div>
 
       {/* Main reading surface */}
@@ -419,13 +471,13 @@ export const Text = () => {
                 aria-label="Previous page"
                 className="flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white h-10 w-10 sm:h-11 sm:w-11 transition"
                 onClick={() =>
-                                getPageDetails({
-                                    type: "prev",
-                                    section_id: currentSection,
-                                    course_id: 1,
-                                    lessonIndex: pageNumber - 1,
-                                })
-                            }
+                  getPageDetails({
+                    type: "prev",
+                    section_id: currentSection,
+                    course_id: 1,
+                    lessonIndex: pageNumber - 1,
+                  })
+                }
               >
                 <FaAngleLeft size={18} />
               </button>
@@ -433,13 +485,13 @@ export const Text = () => {
                 aria-label="Next page"
                 className="flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white h-10 w-10 sm:h-11 sm:w-11 transition"
                 onClick={() =>
-                                getPageDetails({
-                                    type: "next",
-                                    section_id: currentSection,
-                                    course_id: 1,
-                                    lessonIndex: pageNumber + 1,
-                                })
-                            }
+                  getPageDetails({
+                    type: "next",
+                    section_id: currentSection,
+                    course_id: 1,
+                    lessonIndex: pageNumber + 1,
+                  })
+                }
               >
                 <FaAngleRight size={18} />
               </button>

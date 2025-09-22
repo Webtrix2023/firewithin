@@ -23,7 +23,7 @@ const Navbar2 = (params) => {
             THE FIRE WITHIN
           </h1>
           <p className="font-normal text-[11px] sm:text-xs md:text-lg text-black/90 max-w-[65vw] md:max-w-none truncate">
-            CHAPTER-{params.chapterNumber} {params.chapterName}
+           {CurrPage !== HomePage ? `CHAPTER-${params.chapterNumber} ${params.chapterName}` : ""}
           </p>
         </div>
 

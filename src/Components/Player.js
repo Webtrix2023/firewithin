@@ -103,7 +103,7 @@ const Player = () => {
 
   const getCurrentPageDetails = async () => {
     try {
-      const res = await api.post("/currentPageDetails", {ttpe:"read"});
+      const res = await api.post("/currentPageDetails", { ttpe: "read" });
       const data = res.data.data;
 
       if (res.data.flag === "S" && data?.bookpage?.[0]) {
@@ -180,7 +180,7 @@ const Player = () => {
   // --- UI ---
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      <Navbar2 />
+      <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
       <div className="flex flex-1 bg-gray-100 justify-center relative overflow-hidden">
         <div className="w-full max-w-[90%] mt-20 h-fit sm:max-w-[80%] md:max-w-[65%] rounded-[5vw] overflow-hidden shadow-lg">
           {/*White Section */}
@@ -204,16 +204,16 @@ const Player = () => {
               <span>{formatTime(duration)}</span>
             </div>
           </div>
-          {/*White Section */}
+          {/*blue Section */}
           <div className="bg-[#0075FF] p-10 flex text-lg justify-center items-center gap-6">
-            <TfiControlSkipBackward className="text-white cursor-pointer" size={34} />
-            <TbRewindBackward15 className="text-white cursor-pointer" onClick={() => handleSkip(-15)} size={38} />
+            <TfiControlSkipBackward className="text-white cursor-pointer" size={44} />
+            <TbRewindBackward15 className="text-white cursor-pointer" onClick={() => handleSkip(-15)} size={48} />
             <button onClick={togglePlayPause} className="text-white rounded-full p-2">
-              {isPlaying ? <CiPause1 size={44} /> : <CiPlay1 size={44} />}
+              {isPlaying ? <CiPause1 size={54} /> : <CiPlay1 size={54} />}
             </button>
-            <TbRewindForward15 className="text-white cursor-pointer" onClick={() => handleSkip(15)} size={38} />
-            <TfiControlSkipForward className="text-white cursor-pointer" size={34} />
-            <FaListUl className="text-white cursor-pointer" size={34} onClick={() => setIsSliderOpen(!isSliderOpen)} />
+            <TbRewindForward15 className="text-white cursor-pointer" onClick={() => handleSkip(15)} size={48} />
+            <TfiControlSkipForward className="text-white cursor-pointer" size={44} />
+            <FaListUl className="text-white cursor-pointer" size={44} onClick={() => setIsSliderOpen(!isSliderOpen)} />
           </div>
         </div>
         {/* Slider Button */}

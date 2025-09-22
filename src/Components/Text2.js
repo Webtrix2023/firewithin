@@ -38,34 +38,15 @@ export const Text2 = () => {
     const appUrl = `https://firewithin.coachgenie.in/`;
 
     // helper: extracts <h1> text and removes it from HTML
-    function splitContent(html, chapterName) {
-        const temp = document.createElement("div");
-        temp.innerHTML = html;
+   function splitContent(html) {
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
 
-        // Remove any headings (h1, h2, h3) since chapterName is already stored separately
-        temp.querySelectorAll("h1, h2, h3").forEach(el => el.remove());
+    return {
+        pageContent: temp.innerHTML,  // take everything as-is
+    };
+}
 
-        // Remove first paragraph if it exactly matches chapterName
-        const firstParagraph = temp.querySelector("p");
-        if (firstParagraph) {
-            const text = firstParagraph.textContent.trim();
-            if (chapterName && text.toLowerCase() === chapterName.toLowerCase()) {
-                firstParagraph.remove();
-            } else if (firstParagraph.innerHTML.trim() === "<br>") {
-                firstParagraph.remove();
-            } else {
-                // Flatten <span> if it only wraps the first letter
-                firstParagraph.innerHTML = firstParagraph.innerHTML.replace(
-                    /^<span[^>]*>(\w)<\/span>/,
-                    "$1"
-                );
-            }
-        }
-
-        return {
-            pageContent: temp.innerHTML,
-        };
-    }
 
     // --- API Helpers ---
 
@@ -98,7 +79,7 @@ export const Text2 = () => {
                 const item = data.data[0];
 
                 if (item.introduction) {
-                    const { chapterName, pageContent } = splitContent(item.introduction);
+                    const { pageContent } = splitContent(item.introduction);
                     setPageContent(pageContent || "");
 
                 }
@@ -117,7 +98,7 @@ export const Text2 = () => {
 
     const updateAutoPage = async (page) => {
         try {
-            await axios.get(`${appUrl}autopage/${page}`);
+            await axios.get(`${appUrl}autopageSet/${page}`);
         } catch (err) {
             console.error(err);
         }
@@ -200,7 +181,7 @@ export const Text2 = () => {
             formData.append("course_id", 1);
 
             const res = await axios.post(
-                `${appUrl}get_lession_by_page_no`,
+                `${appUrl}get_lession_by_pageNo`,
                 formData,
                 {
                     headers: {
@@ -399,7 +380,7 @@ export const Text2 = () => {
                 {/* Scrollable Book Page */}
                 <div className="w-full max-w-4xl bg-white shadow-lg rounded-sm my-6 sm:my-10 p-6 sm:p-12 overflow-y-auto h-full">
                     {/* Chapter Title */}
-                    <h1
+                    {/* <h1
                         className="text-center mb-8 sm:mb-12 text-3xl sm:text-[120px]"
                         style={{
                             fontFamily: "Arsis DReg, serif",
@@ -408,7 +389,7 @@ export const Text2 = () => {
                         }}
                     >
                         {chapterName}
-                    </h1>
+                    </h1> */}
 
                     {/* Page Content */}
                     <div
