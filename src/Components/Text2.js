@@ -38,14 +38,14 @@ export const Text2 = () => {
     const appUrl = `https://firewithin.coachgenie.in/`;
 
     // helper: extracts <h1> text and removes it from HTML
-   function splitContent(html) {
-    const temp = document.createElement("div");
-    temp.innerHTML = html;
+    function splitContent(html) {
+        const temp = document.createElement("div");
+        temp.innerHTML = html;
 
-    return {
-        pageContent: temp.innerHTML,  // take everything as-is
-    };
-}
+        return {
+            pageContent: temp.innerHTML,  // take everything as-is
+        };
+    }
 
 
     // --- API Helpers ---
@@ -154,6 +154,8 @@ export const Text2 = () => {
             if (data.currentChapterDetails.section_name) setChapterName(data.currentChapterDetails.section_name)
             if (res.data.flag === "S" && data?.bookpage?.[0]) {
                 const item = data.bookpage[0];
+                console.log(item);
+
                 if (item.introduction) {
                     const { chapterName, pageContent } = splitContent(item.introduction);
                     setPageContent(pageContent || "");
@@ -247,11 +249,17 @@ export const Text2 = () => {
 
     // --- Initial load ---
     useEffect(() => {
-        // optional: loadPage({ type: "current" });
-        updateAutoPage(pageNumber);
-        getCurrentPageDetails();
+        const fetchData = async () => {
+            try {
+                await axios.get(`${appUrl}automodeSet/read`);
+                getCurrentPageDetails();
+            } catch (error) {
+                console.error("Error in useEffect:", error);
+            }
+        };
+
+        fetchData();
     }, []);
-    {/*Removed useEffect calling getPageDetails() */ }
 
 
     {/*REmoved extra useEffect */ }
@@ -378,26 +386,14 @@ export const Text2 = () => {
                 </div>
 
                 {/* Scrollable Book Page */}
-                <div className="w-full max-w-4xl bg-white shadow-lg rounded-sm my-6 sm:my-10 p-6 sm:p-12 overflow-y-auto h-full">
-                    {/* Chapter Title */}
-                    {/* <h1
-                        className="text-center mb-8 sm:mb-12 text-3xl sm:text-[120px]"
-                        style={{
-                            fontFamily: "Arsis DReg, serif",
-                            fontWeight: 400,
-                            lineHeight: "100%",
-                        }}
-                    >
-                        {chapterName}
-                    </h1> */}
-
+                <div className="w-full max-w-4xl bg-white shadow-lg my-10 rounded-sm p-6 sm:p-12 overflow-y-auto h-full">
                     {/* Page Content */}
                     <div
-                        className={`mx-auto leading-extra-loose font-serif px-16 text-2xl page-content ${lessonIndex === 0 ? "first-page" : ""}`}
+                        className={`mx-auto leading-extra-loose font-serif px-6 sm:px-16 text-2xl page-content ${lessonIndex === 0 ? "first-page" : ""
+                            }`}
                         style={{ fontSize: `${fontSize}rem`, textIndent: "50px" }}
                         dangerouslySetInnerHTML={{ __html: safeHtml }}
                     />
-
                 </div>
 
                 {/* Bottom Right Pagination */}
@@ -465,29 +461,28 @@ export const Text2 = () => {
                 <button
                     aria-label={isSliderOpen ? "Close chapters" : "Open chapters"}
                     onClick={(e) => { e.stopPropagation(); setIsSliderOpen(!isSliderOpen); }}
-                    className={`fixed top-1/2 -translate-y-1/2 z-40 text-blue-600 bg-white border border-neutral-200 px-3 py-4 rounded-l-full shadow-lg transition-all duration-300
-                      ${isSliderOpen ? "right-[85vw] sm:right-96" : "right-0"}`}
+                    className={`fixed top-1/2 -translate-y-1/2 z-40 text-blue-600 bg-white border border-neutral-200 pl-2 py-5 rounded-l-full shadow-lg transition-all duration-300
+                ${isSliderOpen ? "right-[85vw] sm:right-96" : "right-0"}`}
                 >
-                    {isSliderOpen ? <FaAngleRight /> : <FaAngleLeft />}
+                    {isSliderOpen ? <FaAngleRight size={28} /> : <FaAngleLeft size={28} />}
                 </button>
 
                 {/* Right Sidebar (Slide-in Drawer) */}
                 <div
-                    className={`fixed right-0 h-full z-40 transform transition-transform duration-300 ease-in-out bg-white border-l border-neutral-200 w-[85vw] sm:w-96
-                      ${isSliderOpen ? "translate-x-0" : "translate-x-full"}`}
+                    className={`absolute right-0 top-0 h-full z-40 transform transition-transform duration-300 ease-in-out 
+      bg-white border-l border-neutral-200 w-[85%] sm:w-96
+      ${isSliderOpen ? "translate-x-0" : "translate-x-full"}`}
                     role="dialog"
                     aria-label="Chapters"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <div className="h-full flex flex-col">
+                    <div className="flex flex-col h-full">
                         <h2 className="text-xl font-light border-b p-5 bg-blue-500 text-white">Chapters</h2>
                         <h2 className="text-xl font-light border-b p-5 text-gray-500">Contents</h2>
                         <div className="flex-1 overflow-y-auto">
                             <ul className="text-gray-500 font-semibold text-md sm:text-base">
                                 {sections.length === 0 ? (
-                                    <>
-                                        <li className="border-b border-b-gray-200 p-3">Loading…</li>
-                                    </>
+                                    <li className="border-b border-b-gray-200 p-3">Loading…</li>
                                 ) : (
                                     sections.map((s, i) => {
                                         const label = s.section_name || s.chapter_name || s.title || `Chapter ${i + 1}`;
@@ -495,7 +490,10 @@ export const Text2 = () => {
                                             <li
                                                 key={s.section_id ?? s.id ?? i}
                                                 className="border-b border-b-gray-200 p-3 hover:bg-neutral-50 cursor-pointer"
-                                                onClick={(e) => { e.stopPropagation(); openSection(s, i); }}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    openSection(s, i);
+                                                }}
                                             >
                                                 {`${i + 1}. ${label}`}
                                             </li>
@@ -507,7 +505,19 @@ export const Text2 = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
 
     )
 }
+
+{/* Chapter Title */ }
+{/* <h1
+                        className="text-center mb-8 sm:mb-12 text-3xl sm:text-[120px]"
+                        style={{
+                            fontFamily: "Arsis DReg, serif",
+                            fontWeight: 400,
+                            lineHeight: "100%",
+                        }}
+                    >
+                        {chapterName}
+                    </h1> */}

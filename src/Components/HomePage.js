@@ -34,7 +34,7 @@ const HomePage = () => {
                         {/* LISTEN */}
                         <div
                             className="flex flex-col items-center hover:cursor-pointer"
-                            onClick={() => navigate("/music")}
+                            onClick={() => navigate("/audio")}
                         >
                             <img src="/Group.png" alt="Listen" className="bg-cover w-28" />
                             <p className="text-2xl font-extralight mt-2">LISTEN</p>
@@ -42,9 +42,17 @@ const HomePage = () => {
 
                         {/* READ */}
                         <div className="flex flex-col items-center hover:cursor-pointer justify-center cursor-pointer"
-                         onClick={() => navigate("/text")}>
+                            onClick={() => navigate("/text2")}>
                             <img src="/Group 83.png" alt="Read" className="bg-cover w-28" />
                             <p className="text-2xl font-extralight mt-2">READ</p>
+                        </div>
+                        
+                        {/* PODCAST */}
+                        <div className="flex flex-col text-white items-center hover:cursor-pointer justify-center cursor-pointer"
+                            onClick={() => navigate("/podcast")}>
+                            <img src="/Group.svg" alt="Podcast" className="bg-cover w-28 text-white" />
+                            
+                            <p className="text-2xl font-extralight mt-2">PODCAST</p>
                         </div>
                     </div>
                 </div>

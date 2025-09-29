@@ -9,6 +9,7 @@ import Player from "./Components/Player";
 import { Text } from "./Components/Text";
 import { Text2 } from "./Components/Text2"
 import { UpdatePassword } from "./Components/UpdatePassword";
+import { PodCast } from "./Components/PodCast";
 function App() {
   return (<Router>
 
@@ -22,8 +23,9 @@ function App() {
       <Route path="/hp" element={<HomePage />} />
       <Route path="/text" element={<Text />} />
       <Route path="/text2" element={<Text2 />} />
-      <Route path="/music" element={<Player />} />
+      <Route path="/audio" element={<Player />} />
       <Route path="/update-password" element={<UpdatePassword />} />
+       <Route path="/podcast" element={<PodCast/>} />
     </Routes>
   </Router>)
 }

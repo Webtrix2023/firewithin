@@ -7,7 +7,7 @@ import { api } from "../api";
 import DOMPurify from "dompurify";
 
 export const Text = () => {
-      const [pageContent, setPageContent] = useState("");
+   const [pageContent, setPageContent] = useState("");
     const safeHtml = useMemo(
 
         () => DOMPurify.sanitize(pageContent, {
@@ -37,14 +37,14 @@ export const Text = () => {
     const appUrl = `https://firewithin.coachgenie.in/`;
 
     // helper: extracts <h1> text and removes it from HTML
-   function splitContent(html) {
-    const temp = document.createElement("div");
-    temp.innerHTML = html;
+    function splitContent(html) {
+        const temp = document.createElement("div");
+        temp.innerHTML = html;
 
-    return {
-        pageContent: temp.innerHTML,  // take everything as-is
-    };
-}
+        return {
+            pageContent: temp.innerHTML,  // take everything as-is
+        };
+    }
 
 
     // --- API Helpers ---
@@ -153,6 +153,8 @@ export const Text = () => {
             if (data.currentChapterDetails.section_name) setChapterName(data.currentChapterDetails.section_name)
             if (res.data.flag === "S" && data?.bookpage?.[0]) {
                 const item = data.bookpage[0];
+                console.log(item);
+
                 if (item.introduction) {
                     const { chapterName, pageContent } = splitContent(item.introduction);
                     setPageContent(pageContent || "");
@@ -246,11 +248,17 @@ export const Text = () => {
 
     // --- Initial load ---
     useEffect(() => {
-        // optional: loadPage({ type: "current" });
-        updateAutoPage(pageNumber);
-        getCurrentPageDetails();
+        const fetchData = async () => {
+            try {
+                await axios.get(`${appUrl}automodeSet/read`);
+                getCurrentPageDetails();
+            } catch (error) {
+                console.error("Error in useEffect:", error);
+            }
+        };
+
+        fetchData();
     }, []);
-    {/*Removed useEffect calling getPageDetails() */ }
 
 
     {/*REmoved extra useEffect */ }
@@ -438,13 +446,13 @@ export const Text = () => {
         >
           <div className="mx-auto max-w-[72ch]">
             {/* Chapter title */}
-            <h1
+            {/* <h1
               className={`text-center mb-6 sm:mb-8 font-light ${contentColor[theme]
                 } text-[clamp(1.5rem,5vw,3rem)] leading-tight`}
               style={{ fontFamily: "Arsis DReg, serif" }}
             >
               {chapterName}
-            </h1>
+            </h1> */}
 
             {/* Content */}
             <div
@@ -510,45 +518,34 @@ export const Text = () => {
           </div>
         </div>
 
-        {/* Chapters toggle */}
+        {/* Slider Button */}
         <button
           aria-label={isSliderOpen ? "Close chapters" : "Open chapters"}
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsSliderOpen(!isSliderOpen);
-          }}
-          className={`fixed top-1/2 -translate-y-1/2 z-40 text-blue-600 bg-white border border-neutral-200 px-3 py-4 rounded-l-full shadow-lg transition-all duration-300
-            ${isSliderOpen ? "right-[85vw] sm:right-96" : "right-0"}`}
+          onClick={(e) => { e.stopPropagation(); setIsSliderOpen(!isSliderOpen); }}
+          className={`fixed top-1/2 -translate-y-1/2 z-40 text-blue-600 bg-white border border-neutral-200 pl-2 py-5 rounded-l-full shadow-lg transition-all duration-300
+                ${isSliderOpen ? "right-[85vw] sm:right-96" : "right-0"}`}
         >
-          {isSliderOpen ? <FaAngleRight /> : <FaAngleLeft />}
+          {isSliderOpen ? <FaAngleRight size={28} /> : <FaAngleLeft size={28} />}
         </button>
-
-        {/* Chapters Drawer */}
-        <aside
-          className={`fixed right-0 top-0 h-full z-40 transform transition-transform duration-300 ease-in-out bg-white border-l border-neutral-200 w-[85vw] sm:w-96
-            ${isSliderOpen ? "translate-x-0" : "translate-x-full"}`}
+        {/* Right Sidebar (Slide-in Drawer) */}
+        <div
+          className={`absolute right-0 top-0 h-full z-40 transform transition-transform duration-300 ease-in-out 
+      bg-white border-l border-neutral-200 w-[85%] sm:w-96
+      ${isSliderOpen ? "translate-x-0" : "translate-x-full"}`}
           role="dialog"
           aria-label="Chapters"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="h-full flex flex-col">
-            <h2 className="text-xl font-light border-b p-5 bg-blue-500 text-white">
-              Chapters
-            </h2>
-            <h2 className="text-xl font-light border-b p-5 text-gray-500">
-              Contents
-            </h2>
+          <div className="flex flex-col h-full">
+            <h2 className="text-xl font-light border-b p-5 bg-blue-500 text-white">Chapters</h2>
+            <h2 className="text-xl font-light border-b p-5 text-gray-500">Contents</h2>
             <div className="flex-1 overflow-y-auto">
               <ul className="text-gray-500 font-semibold text-md sm:text-base">
                 {sections.length === 0 ? (
                   <li className="border-b border-b-gray-200 p-3">Loading…</li>
                 ) : (
                   sections.map((s, i) => {
-                    const label =
-                      s.section_name ||
-                      s.chapter_name ||
-                      s.title ||
-                      `Chapter ${i + 1}`;
+                    const label = s.section_name || s.chapter_name || s.title || `Chapter ${i + 1}`;
                     return (
                       <li
                         key={s.section_id ?? s.id ?? i}
@@ -566,7 +563,7 @@ export const Text = () => {
               </ul>
             </div>
           </div>
-        </aside>
+        </div>
       </main>
     </div>
   );
