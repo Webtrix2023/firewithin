@@ -46,12 +46,14 @@ const HomePage = () => {
                             <img src="/Group 83.png" alt="Read" className="bg-cover w-28" />
                             <p className="text-2xl font-extralight mt-2">READ</p>
                         </div>
-                        
+
                         {/* PODCAST */}
                         <div className="flex flex-col text-white items-center hover:cursor-pointer justify-center cursor-pointer"
                             onClick={() => navigate("/podcast")}>
-                            <img src="/Group.svg" alt="Podcast" className="bg-cover w-28 text-white" />
-                            
+                            <img src="/Group.svg" alt="Podcast"
+                                className="w-28 filter invert brightness-0"
+                            />
+
                             <p className="text-2xl font-extralight mt-2">PODCAST</p>
                         </div>
                     </div>
