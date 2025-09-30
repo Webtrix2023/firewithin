@@ -26,7 +26,7 @@ const Landing = () => {
                 <span className="md:block">content</span>
                 </h2>
 
-            <Link to="/register" className="inline-block">
+            <Link to="/signup" className="inline-block">
               <span
                 className="
                   bg-white text-black rounded-full transition hover:bg-white/90

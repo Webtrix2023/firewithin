@@ -14,19 +14,23 @@ function App() {
   return (<Router>
 
     {/* Route Definitions */}
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/ty" element={<ThankYouPage />} />
-      <Route path="/reset-password" element={<ForgotPassword />} />
-      <Route path="/hp" element={<HomePage />} />
-      <Route path="/text" element={<Text />} />
-      <Route path="/text2" element={<Text2 />} />
-      <Route path="/audio" element={<Player />} />
-      <Route path="/update-password" element={<UpdatePassword />} />
-       <Route path="/podcast" element={<PodCast/>} />
-    </Routes>
+      <Routes>
+        {/* Public pages */}
+        <Route path="/" element={<Home />} />                 
+        <Route path="/signup" element={<Register />} />       // "register" → "signup"
+        <Route path="/login" element={<Login />} />
+        <Route path="/thank-you" element={<ThankYouPage />} />// "ty" → descriptive
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<UpdatePassword />} />
+
+        {/* App pages */}
+        <Route path="/dashboard" element={<HomePage />} />    // "hp" → "dashboard"
+        <Route path="/Books/text-advanced" element={<Text />} />     
+        <Route path="/Books/text" element={<Text2 />} />
+        <Route path="/Books/listen" element={<Player />} />  
+        <Route path="/Books/podcasts" element={<PodCast />} />      
+      </Routes>
+
   </Router>)
 }
 

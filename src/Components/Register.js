@@ -36,7 +36,7 @@ const Register = () => {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
-      navigate('/ty');
+      navigate('/thank-you');
     } catch (err) {
       setServerError(err?.response?.data?.message || 'Something went wrong');
     } finally {
@@ -123,7 +123,7 @@ const Register = () => {
                   {loading ? 'Registering…' : 'Register'}
                 </button>
 
-                <Link to="/reset-password" state={{ page: 'register' }} className="text-xs text-gray-500 hover:underline">
+                <Link to="/forgot-password" state={{ page: 'register' }} className="text-xs text-gray-500 hover:underline">
                   Forgot Password?
                 </Link>
 
@@ -230,7 +230,7 @@ const Register = () => {
                   </button>
 
                   <Link
-                    to="/reset-password"
+                    to="/forgot-password"
                     state={{ page: 'register' }}
                     className="text-sm text-gray-500 hover:underline"
                   >

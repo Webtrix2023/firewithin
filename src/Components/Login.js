@@ -34,7 +34,7 @@ const Login = () => {
         localStorage.setItem('customer_image', res.data?.customer_image || '');
         localStorage.setItem('authid', res.data?.customer_id || '');
         localStorage.setItem('is_logged_in', 'true');
-        navigate('/text');
+        navigate('/dashboard');
       } else {
         setError(res.msg || 'Login failed');
       }
@@ -134,7 +134,7 @@ const Login = () => {
                   </button>
 
                   <Link
-                    to="/reset-password"
+                    to="/forgot-password"
                     state={{ page: "login" }}
                     className="text-xs text-gray-500 hover:underline"
                   >
@@ -143,7 +143,7 @@ const Login = () => {
 
                   <p className="text-[11px] text-gray-500">
                     Don’t have an account?{" "}
-                    <Link to="/register" className="text-blue-500 hover:underline">
+                    <Link to="/signup" className="text-blue-500 hover:underline">
                       Register
                     </Link>
                   </p>
@@ -235,7 +235,7 @@ const Login = () => {
                     </button>
 
                     <Link
-                      to="/reset-password"
+                      to="/forgot-password"
                       state={{ page: "login" }}
                       className="text-md text-gray-500 hover:underline"
                     >
@@ -245,7 +245,7 @@ const Login = () => {
 
                   <p className="text-gray-500 text-sm mt-6 md:ml-8">
                     Don’t have an account?{" "}
-                    <Link to="/register" className="text-blue-500 hover:underline">
+                    <Link to="/signup" className="text-blue-500 hover:underline">
                       Click here to register
                     </Link>
                   </p>

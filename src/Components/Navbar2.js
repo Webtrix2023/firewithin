@@ -9,13 +9,13 @@ const Navbar2 = (params) => {
   const location = useLocation();
   const [displayMenu, setDisplayMenu] = useState(false)
   // Check current path
-  const isMusicPage = location.pathname === "/audio";
-  const isTextPage = location.pathname === "/text" || "/text2";
+  const isMusicPage = location.pathname === "/Books/listen";
+  const isTextPage = location.pathname === "/Books/text" || "/Books/text-advanced";
   const CurrPage = location.pathname;
-  const HomePage = "/hp";
+  const HomePage = "/dashboard";
 
   return (
-    <nav className="w-full bg-white shadow">
+    <nav className="w-full bg-white shadow ">
       <div className="mx-auto flex flex-wrap items-center justify-between px-3 py-2.5 md:py-4 ">
         {/* Left: Title + Chapter */}
         <div className="leading-tight mb-2 md:mb-0 flex-1 min-w-[180px] md:pl-10">
@@ -34,7 +34,7 @@ const Navbar2 = (params) => {
               aria-label="Switch to Text"
               title="Read Text"
               className="p-1.5 md:p-2 rounded-full hover:text-blue-700"
-              onClick={() => navigate("/text2")}
+              onClick={() => navigate("/Books/text")}
             >
               <img
                 className="read w-4 sm:w-5 md:w-6 lg:w-7"
@@ -47,7 +47,7 @@ const Navbar2 = (params) => {
               aria-label="Switch to Music"
               title="Listen"
               className="p-1.5 md:p-2 rounded-full hover:text-blue-700"
-              onClick={() => navigate("/audio")}
+              onClick={() => navigate("/Books/listen")}
             > <img
                 className="listen w-4 sm:w-5 md:w-6 lg:w-7"
                 src="https://firewithin.coachgenie.in/images//sites/listen-i.svg"
@@ -72,7 +72,7 @@ const Navbar2 = (params) => {
             className="p-1.5 md:p-2 rounded-full hover:text-blue-700"
             onClick={() => {
               if (CurrPage === HomePage) navigate(-1);
-              else navigate("/hp");
+              else navigate("/dashboard");
             }}
           >
             <img
@@ -87,7 +87,7 @@ const Navbar2 = (params) => {
           {displayMenu && (
             <div className="absolute right-0 top-full mt-2 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50">
               <button
-                onClick={() => navigate("/update-password")}
+                onClick={() => navigate("/reset-password")}
                 className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base"
               >
                 My Account

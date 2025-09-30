@@ -25,25 +25,69 @@ const Player = () => {
   const intervalRef = useRef(null);
   const [resumeTime, setResumeTime] = useState(0);
 
+  useEffect(() => {
+  const fetchData = async () => {
+    try {
+      // 1. Fetch backend progress
+      const res = await axios.get(`${appUrl}automodeSet/listen`);
+      const savedTime = res.data?.time || 0; // adjust key based on backend response
+      console.log("INside UseEffect")
+      updateAutoPage(lessonIndex);
+      getCurrentPageDetails();
+
+      console.log("UseEffect", lessonIndex, "savedTime:", savedTime);
+
+      // 2. When Howler loads, seek to savedTime
+      if (soundRef.current) {
+        soundRef.current.once("load", () => {
+          soundRef.current.seek(savedTime);
+          setCurrentTime(savedTime);
+
+          // 3. Auto-play if you want
+          soundRef.current.play();
+          setIsPlaying(true);
+
+          intervalRef.current = setInterval(() => {
+            const current = soundRef.current.seek();
+            setCurrentTime(current);
+
+            if (Math.floor(current) % 5 === 0) {
+              saveCurrentTime(current);
+            }
+          }, 1000);
+        });
+      }
+    } catch (error) {
+      console.error("Error in useEffect:", error);
+    }
+  };
+
+  fetchData();
+
+  return () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+}, []);
+
   // ✅ Setup Howler when src changes
   useEffect(() => {
     if (!audioSrc) return;
 
-    // 🔹 Kill old sound instance
+    // Kill old instance
     if (soundRef.current) {
       soundRef.current.unload();
       soundRef.current = null;
     }
 
-    // 🔹 Create new sound
     const sound = new Howl({
       src: [audioSrc],
       html5: true,
       preload: true,
       onload: () => {
         const dur = sound.duration();
-        console.log("current duration",dur)
-        if (dur > 0) setDuration(dur);
+        if (dur > 0) {
+          setDuration(dur);
+        }
 
         if (resumeTime > 0 && resumeTime < dur) {
           sound.seek(resumeTime);
@@ -59,15 +103,20 @@ const Player = () => {
 
     soundRef.current = sound;
 
+    // ✅ Trick: play-pause quickly to force duration calculation
+    sound.play();
+    setTimeout(() => {
+      sound.pause();
+      sound.seek(resumeTime > 0 ? resumeTime : 0);
+    }, 10); // 50ms is enough to trigger metadata load
+
     return () => {
-      // cleanup on unmount
       if (soundRef.current) {
         soundRef.current.unload();
         soundRef.current = null;
       }
     };
-  }, [audioSrc]); // 👈 reruns whenever src changes
-
+  }, [audioSrc]);
 
   // --- API Methods (same as your code) ---
   const loadPage = async ({ sectionId = currentSection, index = lessonIndex, type = "current", saveProgress = false } = {}) => {
@@ -121,7 +170,7 @@ const Player = () => {
 
   const updateAutoPage = async (page) => {
     try {
-      await axios.get(`${appUrl}autopage/${page}`);
+      await axios.get(`${appUrl}autopageSet/${page}`);
     } catch (err) {
       console.error(err);
     }
@@ -150,9 +199,7 @@ const Player = () => {
             setAudioSrc(`${appUrl}audio.php?file=${generatedFileName}`); // use it immediately
 
             console.log("Generated filename:", generatedFileName);
-            console.log("inside current");
           }
-
 
         }
 
@@ -162,7 +209,6 @@ const Player = () => {
 
         // ✅ Sections
         setSections(Array.isArray(data.bookSectionDetails) ? data.bookSectionDetails : []);
-
 
       }
     } catch (err) {
@@ -187,7 +233,6 @@ const Player = () => {
     fetchData();
   }, []);
 
-
   // --- Audio Controls (Howler) ---
   const togglePlayPause = () => {
     if (!soundRef.current) return;
@@ -209,7 +254,6 @@ const Player = () => {
     }
     setIsPlaying(!isPlaying);
   };
-
 
   const handleSeek = (e) => {
     if (!soundRef.current) return;
@@ -238,7 +282,7 @@ const Player = () => {
     setLessonIndex(0);
 
     loadPage({ sectionId, index: 0, type: "section", saveProgress: true });
-
+    setIsPlaying(false)
     const label =
       section.section_name ||
       section.chapter_name ||

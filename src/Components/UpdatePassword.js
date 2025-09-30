@@ -73,7 +73,7 @@ export const UpdatePassword = () => {
           withCredentials: true,
         }
       );
-      navigate("/ty");
+      navigate("/thank-you");
     } catch (err) {
       setServerError(err?.response?.data?.message || "Something went wrong");
     } finally {
