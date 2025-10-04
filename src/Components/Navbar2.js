@@ -4,13 +4,14 @@ import { MdOutlineUndo } from "react-icons/md";
 import { FiFileText } from "react-icons/fi";
 import { BsFileEarmarkMusic } from "react-icons/bs";
 import { useNavigate, useLocation } from "react-router-dom";
+import { APP_URL } from "../config";
 const Navbar2 = (params) => {
   const navigate = useNavigate()
   const location = useLocation();
   const [displayMenu, setDisplayMenu] = useState(false)
   // Check current path
-  const isMusicPage = location.pathname === "/Books/listen";
-  const isTextPage = location.pathname === "/Books/text" || "/Books/text-advanced";
+  const isMusicPage = location.pathname === "/book/listen";
+  const isTextPage = location.pathname === "/book/read" || "/book/read-advanced";
   const CurrPage = location.pathname;
   const HomePage = "/dashboard";
 
@@ -19,7 +20,7 @@ const Navbar2 = (params) => {
       <div className="mx-auto flex flex-wrap items-center justify-between px-3 py-2.5 md:py-4 ">
         {/* Left: Title + Chapter */}
         <div className="leading-tight mb-2 md:mb-0 flex-1 min-w-[180px] md:pl-10">
-          <h1 className="font-bold text-base sm:text-lg md:text-2xl lg:text-3xl text-black/90">
+          <h1 onClick={()=>{ navigate('/dashboard');}} className="font-bold text-base sm:text-lg md:text-2xl lg:text-3xl text-black/90">
             THE FIRE WITHIN
           </h1>
           <p className="font-normal text-[11px] sm:text-xs md:text-base lg:text-lg text-black/90 max-w-[65vw] md:max-w-none truncate">
@@ -34,11 +35,11 @@ const Navbar2 = (params) => {
               aria-label="Switch to Text"
               title="Read Text"
               className="p-1.5 md:p-2 rounded-full hover:text-blue-700"
-              onClick={() => navigate("/Books/text")}
+              onClick={() => navigate("/book/read")}
             >
               <img
                 className="read w-4 sm:w-5 md:w-6 lg:w-7"
-                src="https://firewithin.coachgenie.in/images//sites/read-small.svg"
+                src={`${APP_URL}/images//sites/read-small.svg`}
                 alt="Read"
               />
             </button>
@@ -47,10 +48,10 @@ const Navbar2 = (params) => {
               aria-label="Switch to Music"
               title="Listen"
               className="p-1.5 md:p-2 rounded-full hover:text-blue-700"
-              onClick={() => navigate("/Books/listen")}
+              onClick={() => navigate("/book/listen")}
             > <img
                 className="listen w-4 sm:w-5 md:w-6 lg:w-7"
-                src="https://firewithin.coachgenie.in/images//sites/listen-i.svg"
+                src={`${APP_URL}/images//sites/listen-i.svg`}
                 alt="Listen"
               />
 
@@ -77,7 +78,7 @@ const Navbar2 = (params) => {
           >
             <img
               className="w-4 sm:w-5 md:w-6 lg:w-7"
-              src="https://firewithin.coachgenie.in/images//sites/back.svg"
+              src={`${APP_URL}/images//sites/back.svg`}
               alt="Undo"
             />
           </button>

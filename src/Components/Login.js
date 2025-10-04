@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiMail, FiLock } from 'react-icons/fi';
 import { Link, useNavigate } from "react-router-dom";
 import Footer from './Footer';
@@ -11,7 +11,13 @@ const Login = () => {
   const [focused, setFocused] = useState({ email: false, password: false });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
+  
+  useEffect(() => {
+    const checkLogin = localStorage.getItem("is_logged_in");
+    if(checkLogin){
+        navigate('/dashboard');
+    }
+  },[])
   const handleChange = (e) =>
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -33,7 +39,7 @@ const Login = () => {
         localStorage.setItem('email', res.data?.email || '');
         localStorage.setItem('customer_image', res.data?.customer_image || '');
         localStorage.setItem('authid', res.data?.customer_id || '');
-        localStorage.setItem('is_logged_in', 'true');
+        localStorage.setItem('is_logged_in',true);
         navigate('/dashboard');
       } else {
         setError(res.msg || 'Login failed');
@@ -48,13 +54,7 @@ const Login = () => {
   return (
     <>
       {/* Mobile: fixed 3-row grid in 100svh (no scroll). Desktop: original hero layout. */}
-      <section
-        className="
-          md:bg-center md:bg-cover hero-bg
-          md:min-h-screen
-        "
-       
-      >
+      <section className="md:bg-center md:bg-cover hero-bg md:min-h-screen">
         {/* MOBILE LAYOUT */}
         <div className="md:hidden grid grid-rows-[auto_1fr_auto] h-[100svh] overflow-hidden">
           {/* Top: logo / small brand line */}
@@ -67,7 +67,6 @@ const Login = () => {
               </span>
             </div>
           </header>
-
           {/* Middle: the form (centered, no extra margins) */}
           <main className="flex items-center justify-center px-4">
             <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg px-5 py-6">
@@ -121,7 +120,6 @@ const Login = () => {
                     />
                   </div>
                 </div>
-
                 {/* Actions */}
                 <div className="flex flex-col items-center gap-3 pt-1">
                   <button
@@ -132,7 +130,6 @@ const Login = () => {
                   >
                     {loading ? "Logging in..." : "LOGIN"}
                   </button>
-
                   <Link
                     to="/forgot-password"
                     state={{ page: "login" }}
@@ -140,7 +137,6 @@ const Login = () => {
                   >
                     Forgot Password?
                   </Link>
-
                   <p className="text-[11px] text-gray-500">
                     Don’t have an account?{" "}
                     <Link to="/signup" className="text-blue-500 hover:underline">
@@ -151,7 +147,6 @@ const Login = () => {
               </form>
             </div>
           </main>
-
           {/* Bottom: tiny footer link */}
           <footer className="flex items-center justify-center pb-3">
             <Link to="/" className="text-[11px] text-gray-500 hover:text-gray-700 underline">
@@ -159,7 +154,6 @@ const Login = () => {
             </Link>
           </footer>
         </div>
-
         {/* DESKTOP LAYOUT (unchanged look) */}
         <div className="hidden md:flex min-h-screen flex-col justify-between">
           <div className="flex flex-1 items-center justify-around w-full px-6 py-16">

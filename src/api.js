@@ -1,3 +1,4 @@
+import { APP_URL } from "./config";
 // import axios from 'axios';
 
 // // If you're on Create React App, use REACT_APP_* env vars.
@@ -23,7 +24,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://firewithin.coachgenie.in",
+  baseURL:APP_URL,
   withCredentials: true, // REQUIRED so ci_session is sent on every request
   headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" },
 });

@@ -5,6 +5,8 @@ import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 import { FiType, FiSun, FiMoon } from "react-icons/fi";
 import { api } from "../api";
 import DOMPurify from "dompurify";
+import { toast } from "react-toastify";
+import { APP_URL } from "../config";
 
 export const Text = () => {
    const [pageContent, setPageContent] = useState("");
@@ -33,8 +35,6 @@ export const Text = () => {
     // refs for outside click on font menu
     const fontBtnRef = useRef(null);
     const fontMenuRef = useRef(null);
-
-    const appUrl = `https://firewithin.coachgenie.in/`;
 
     // helper: extracts <h1> text and removes it from HTML
     function splitContent(html) {
@@ -90,6 +90,9 @@ export const Text = () => {
                 // ✅ only update autopage on navigation
                 if (saveProgress && item.lesson_id) updateAutoPage(item.lesson_id);
             }
+            if (data.flag === "F") {
+                    toast.error(data.msg);
+            }
         } catch (e) {
             console.error(e);
         }
@@ -97,7 +100,7 @@ export const Text = () => {
 
     const updateAutoPage = async (page) => {
         try {
-            await axios.get(`${appUrl}autopageSet/${page}`);
+            await axios.get(`${APP_URL}autopageSet/${page}`);
         } catch (err) {
             console.error(err);
         }
@@ -115,7 +118,7 @@ export const Text = () => {
         };
         {/*Endpoint changed from pageDetails to getpageDetails */ }
         try {
-            const res = await axios.post(`${appUrl}getpageDetails`, payload, {
+            const res = await axios.post(`${APP_URL}getpageDetails`, payload, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
                     Accept: "*/*",
@@ -139,6 +142,9 @@ export const Text = () => {
 
                 // ✅ safe: only when explicitly called for navigation
                 if (item.lesson_id) updateAutoPage(item.lesson_id);
+            }
+            if (data.flag === "F") {
+                    toast.error(data.msg);
             }
         } catch (err) {
             console.error(err);
@@ -182,7 +188,7 @@ export const Text = () => {
             formData.append("course_id", 1);
 
             const res = await axios.post(
-                `${appUrl}get_lession_by_pageNo`,
+                `${APP_URL}get_lession_by_pageNo`,
                 formData,
                 {
                     headers: {
@@ -250,7 +256,7 @@ export const Text = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await axios.get(`${appUrl}automodeSet/read`);
+                await axios.get(`${APP_URL}automodeSet/read`);
                 getCurrentPageDetails();
             } catch (error) {
                 console.error("Error in useEffect:", error);
