@@ -1,3 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inria+Serif:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@font-face {
+  font-family: 'arsis-dreg';
+  src: url('./fonts/Arsis-DReg-Regular.ttf') format('truetype');
+}
+.first-page p:first-of-type::first-letter {
+  font-size: 2.5rem;     /* make it large */
+  font-weight: bold;       /* drop-cap style */
+  line-height: 1;
+  font-family: "Georgia", serif;
+}
+.page-content {text-align: justify;}
+.page-content p {
+  font-size: 20px;
+  text-indent: 50px;
+  line-height: 200%;
+  font-family: Inria Serif !important;
+  color: #333c4e;
+}
+.ql-align-center{
+  text-align: center;
+}
+.ql-size-huge {
+  font-size: 48px;
+  font-weight: bold;
+}
+.page-content{
+    word-spacing: 5px;
+}
+.page-content h1 {
+  font-family: arsis-dreg;
+  font-size: 150px;
+  letter-spacing: 10px;
+    font-weight: 500;
+  line-height: 1.2;
+}
 .App {
   text-align: center;
 }

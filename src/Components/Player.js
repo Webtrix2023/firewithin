@@ -5,6 +5,8 @@ import Navbar2 from "./Navbar2";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 import { api } from "../api";
 import { Howl } from "howler";
+import { toast } from "react-toastify";
+import { APP_URL } from "../config";
 
 const Player = () => {
   const [audioSrc, setAudioSrc] = useState("");
@@ -20,7 +22,6 @@ const Player = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [chapterNumber, setChapterNumber] = useState(1);
-  const appUrl = `https://firewithin.coachgenie.in/`;
   const soundRef = useRef(null);
   const intervalRef = useRef(null);
   const [resumeTime, setResumeTime] = useState(0);
@@ -29,7 +30,7 @@ const Player = () => {
   const fetchData = async () => {
     try {
       // 1. Fetch backend progress
-      const res = await axios.get(`${appUrl}automodeSet/listen`);
+      const res = await axios.get(`${APP_URL}automodeSet/listen`);
       const savedTime = res.data?.time || 0; // adjust key based on backend response
       console.log("INside UseEffect")
       updateAutoPage(lessonIndex);
@@ -128,7 +129,7 @@ const Player = () => {
       body.append("lesson_index", String(index));
       body.append("ttpe", "read");
       await updateAutoPage(index);
-      const res = await api.post("/pageDetails", body, {
+      const res = await api.post("/getpageDetails", body, {
         headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
         withCredentials: true,
       });
@@ -148,20 +149,22 @@ const Player = () => {
           // ✅ Set current section
           if (chapter.section_id != null)
             setCurrentSection(Number(chapter.section_id));
-          console.log()
           // ✅ File name (section_id + file_id)
           if (res?.data?.file) {
-            console.log("res file")
-            console.log(chapter.section_id, res.data.file.file_id)
+            // console.log("res file")
+            // console.log(chapter.section_id, res.data.file.file_id)
             setFileId(res.data.file.file_id);
             setResumeTime(res.data.file.timeStart || 0);
             const generatedFileName = `1@${chapter.section_id}@${res.data.file.file_id}@The_Fire_Within_Chapter_${chapter.section_id}_R1.mp3`;
-
-            setAudioSrc(`${appUrl}audio.php?file=${generatedFileName}`);
-            console.log("Generated filename:", generatedFileName);
+            setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`);
+            //console.log("Generated filename:", generatedFileName);
           }
         }
       }
+      if (flag === "F") {
+        toast.error(res.msg);
+      }
+      
 
     } catch (e) {
       console.error(e);
@@ -170,7 +173,7 @@ const Player = () => {
 
   const updateAutoPage = async (page) => {
     try {
-      await axios.get(`${appUrl}autopageSet/${page}`);
+      await axios.get(`${APP_URL}autopageSet/${page}`);
     } catch (err) {
       console.error(err);
     }
@@ -196,7 +199,7 @@ const Player = () => {
             setFileId(data.file_id);
             const generatedFileName = `1@${chapter.section_id}@${data.file_id}@The_Fire_Within_Chapter_${chapter.section_id}_R1.mp3`;
 
-            setAudioSrc(`${appUrl}audio.php?file=${generatedFileName}`); // use it immediately
+            setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`); // use it immediately
 
             console.log("Generated filename:", generatedFileName);
           }
@@ -220,7 +223,7 @@ const Player = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await axios.get(`${appUrl}automodeSet/listen`);
+        await axios.get(`${APP_URL}automodeSet/listen`);
         updateAutoPage(lessonIndex);
         getCurrentPageDetails();
         console.log("UseEffect", lessonIndex)
@@ -344,7 +347,7 @@ const Player = () => {
   // --- Save current time to backend ---
   const saveCurrentTime = async (time) => {
     try {
-      await axios.post(`${appUrl}updateAutoTimeSet/${file_id}`, { time });
+      await axios.post(`${APP_URL}updateAutoTimeSet/${file_id}`, { time });
     } catch (err) {
       console.error("Error saving time:", err);
     }

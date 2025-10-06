@@ -5,6 +5,7 @@ import axios from "axios";
 import { CiPlay1, CiPause1 } from "react-icons/ci";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import Navbar2 from "./Navbar2"
+import { APP_URL } from "../config";
 
 export const PodCast = () => {
     const [audioSrc, setAudioSrc] = useState("");
@@ -19,7 +20,6 @@ export const PodCast = () => {
     const [currentSection, setCurrentSection] = useState(0);
     const [isSliderOpen, setIsSliderOpen] = useState(false);
     const [chapterNumber, setChapterNumber] = useState(1);
-    const appUrl = `https://firewithin.coachgenie.in/`;
     const soundRef = useRef(null);
     const intervalRef = useRef(null);
     useEffect(() => {
@@ -56,7 +56,7 @@ export const PodCast = () => {
 
     const updateAutoPage = async (page) => {
         try {
-            await axios.get(`${appUrl}autopage/${page}`);
+            await axios.get(`${APP_URL}autopage/${page}`);
         } catch (err) {
             console.error(err);
         }
@@ -64,7 +64,7 @@ export const PodCast = () => {
 
     const getCurrentPageDetails = async () => {
         try {
-            const res = await api.post("/currentPageDetails", { type: "read" });
+            const res = await api.post("/currentPageDetails", { type: "podcast" });
             const { flag, data } = res.data;
             if (flag === "S" && data) {
                 // ✅ Current Chapter
@@ -76,12 +76,12 @@ export const PodCast = () => {
                     if (chapter.section_name) setChapterName(chapter.section_name);
                     if (chapter.section_id != null) await setCurrentSection(Number(chapter.section_id));
                     if (chapter.section_index != null) setLessonIndex(Number(chapter.section_index));
-                    console.log(chapter.section_id)
+                    console.log()
                     // ✅ File name (using section_id + file_id directly)
                     if (data.file_id) {
-                        const generatedFileName = `1@${chapter.section_id}@${data.file_id}@The_Fire_Within_Chapter_${chapter.section_id}_R1.mp3`;
+                        const generatedFileName = `1@${chapter.section_id}@${data.firstAudiofile[0].lesson_id}@${data.firstAudiofile[0].file_name}`;
 
-                        setAudioSrc(`${appUrl}audio.php?file=${generatedFileName}`); // use it immediately
+                        setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`); // use it immediately
 
                         console.log("Generated filename:", generatedFileName);
                         console.log("inside current");
@@ -108,7 +108,7 @@ export const PodCast = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await axios.get(`${appUrl}automodeSet/listen`);
+                await axios.get(`${APP_URL}automodeSet/podcast`);
                 getCurrentPageDetails();
                 console.log("UseEffect", lessonIndex)
 
@@ -209,7 +209,7 @@ export const PodCast = () => {
                     if (data.file_id) {
                         console.log(chapter.section_id, data.file_id)
                         const generatedFileName = `1@${chapter.section_id}@${data.file_id}@The_Fire_Within_Chapter_${chapter.section_id}_R1.mp3`;
-                        setAudioSrc(`${appUrl}audio.php?file=${generatedFileName}`);
+                        setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`);
                         console.log("Generated filename:", generatedFileName);
                     }
 
@@ -281,7 +281,7 @@ export const PodCast = () => {
                     {/* Top Section */}
                     <div className="flex flex-1 flex-col sm:flex-row items-center justify-center gap-6 p-6">
                         <div className="flex-shrink-0">
-                            <img src="/Group (2).png" className="w-20 sm:w-28 md:w-32 lg:w-40" />
+                            <img src={`${process.env.PUBLIC_URL}/PodCast.png`} className="w-20 sm:w-28 md:w-32 lg:w-40" alt="Image"/>
                         </div>
                         <div className="text-center sm:text-left">
                             <h4 className="text-[#0075FF] text-lg sm:text-xl md:text-4xl font-extrabold">

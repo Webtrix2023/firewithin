@@ -4,6 +4,7 @@
   line-height: 1;
   font-family: "Georgia", serif;
 }
-.page-content{
-    word-spacing: 5px;
-}
+/* .page-content * {
+  font-size: inherit !important;
+  line-height: 1.8;
+} */

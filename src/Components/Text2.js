@@ -7,6 +7,8 @@ import { api } from "../api";
 import DOMPurify from "dompurify";
 import { useMemo } from "react";
 import "./text.css"
+import { toast } from "react-toastify";
+import { APP_URL } from "../config";
 export const Text2 = () => {
     const [pageContent, setPageContent] = useState("");
     const safeHtml = useMemo(
@@ -27,16 +29,13 @@ export const Text2 = () => {
     const [controlsVisible, setControlsVisible] = useState(true);
     const [navbarVisible, setNavbarVisible] = useState(true);
     const [showFontMenu, setShowFontMenu] = useState(false);
-    const [fontSize, setFontSize] = useState(1.05); // rem
+    const [fontSize, setFontSize] = useState(2.08); // rem
     const [theme, setTheme] = useState("light");
     const [isSliderOpen, setIsSliderOpen] = useState(false);
 
     // refs for outside click on font menu
     const fontBtnRef = useRef(null);
     const fontMenuRef = useRef(null);
-
-    const appUrl = `https://firewithin.coachgenie.in/`;
-
     // helper: extracts <h1> text and removes it from HTML
     function splitContent(html) {
         const temp = document.createElement("div");
@@ -67,7 +66,7 @@ export const Text2 = () => {
             body.append("lesson_index", String(index));
             body.append("ttpe", "listen");
             {/*Endpoint changed from pageDetails to getpageDetails */ }
-            const { data } = await api.post("/getpageDetails", body, {
+            const { data } = await api.post(`${APP_URL}/getpageDetails`, body, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
                     Accept: "*/*",
@@ -91,6 +90,9 @@ export const Text2 = () => {
                 // ✅ only update autopage on navigation
                 if (saveProgress && item.lesson_id) updateAutoPage(item.lesson_id);
             }
+            if (data.flag === "F") {
+                toast.error(data.msg);
+            }
         } catch (e) {
             console.error(e);
         }
@@ -98,7 +100,7 @@ export const Text2 = () => {
 
     const updateAutoPage = async (page) => {
         try {
-            await axios.get(`${appUrl}autopageSet/${page}`);
+            await axios.get(`${APP_URL}autopageSet/${page}`);
         } catch (err) {
             console.error(err);
         }
@@ -116,7 +118,7 @@ export const Text2 = () => {
         };
         {/*Endpoint changed from pageDetails to getpageDetails */ }
         try {
-            const res = await axios.post(`${appUrl}getpageDetails`, payload, {
+            const res = await axios.post(`${APP_URL}getpageDetails`, payload, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
                     Accept: "*/*",
@@ -140,6 +142,9 @@ export const Text2 = () => {
 
                 // ✅ safe: only when explicitly called for navigation
                 if (item.lesson_id) updateAutoPage(item.lesson_id);
+            }
+            if (data.flag === "F") {
+                toast.error(data.msg);
             }
         } catch (err) {
             console.error(err);
@@ -183,7 +188,7 @@ export const Text2 = () => {
             formData.append("course_id", 1);
 
             const res = await axios.post(
-                `${appUrl}get_lession_by_pageNo`,
+                `${APP_URL}get_lession_by_pageNo`,
                 formData,
                 {
                     headers: {
@@ -251,7 +256,7 @@ export const Text2 = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await axios.get(`${appUrl}automodeSet/read`);
+                await axios.get(`${APP_URL}automodeSet/read`);
                 getCurrentPageDetails();
             } catch (error) {
                 console.error("Error in useEffect:", error);
@@ -386,15 +391,24 @@ export const Text2 = () => {
                 </div>
 
                 {/* Scrollable Book Page */}
-                <div className="w-full max-w-4xl bg-white shadow-lg my-10 rounded-sm p-6 sm:p-12 overflow-y-auto h-full">
+                <div className="w-full max-w-5xl bg-white shadow-lg my-10 rounded-sm p-6 sm:p-12 overflow-y-auto h-full">
                     {/* Page Content */}
                     <div
-                        className={`mx-auto leading-extra-loose font-serif px-6 sm:px-16 text-2xl page-content ${lessonIndex === 0 ? "first-page" : ""
+                        className={`mx-auto leading-extra-loose font-serif px-6 sm:px-16 text-2xl  ${lessonIndex === 0 ? "first-page" : ""
                             }`}
-                        style={{ fontSize: `${fontSize}rem`, textIndent: "50px" }}
-                        dangerouslySetInnerHTML={{ __html: safeHtml }}
-                    />
+                        style={{
+                            fontSize: `${fontSize}rem`,
+                            textIndent: "50px",
+                            lineHeight: "1.8",
+                        }}
+                    >
+                        <div 
+                            className="page-content [&_p]:text-inherit [&_span]:text-inherit [&_em]:text-inherit [&_strong]:text-inherit"
+                            dangerouslySetInnerHTML={{ __html: safeHtml }}
+                        />
+                    </div>
                 </div>
+
 
                 {/* Bottom Right Pagination */}
                 <div className="absolute bottom-4 right-4 sm:static sm:self-end flex flex-col items-center gap-3 m-4 sm:m-10">
