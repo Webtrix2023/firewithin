@@ -28,7 +28,8 @@ function App() {
         <Route path="/Books/text-advanced" element={<Text />} />     
         <Route path="/Books/text" element={<Text2 />} />
         <Route path="/Books/listen" element={<Player />} />  
-        <Route path="/Books/podcasts" element={<PodCast />} />      
+        <Route path="/Books/podcasts" element={<PodCast />} />    
+
       </Routes>
 
   </Router>)
