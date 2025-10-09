@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { FiMail } from 'react-icons/fi';
 import Footer from "./Footer";
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
+
+import { api, ensureCsrf } from '../api';
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({ email: '' });
   const [focused, setFocused] = useState({ email: false });
   const [loading, setLoading] = useState(false);
@@ -24,13 +28,24 @@ const ForgotPassword = () => {
     setMsg('');
     setError('');
     setLoading(true);
-    try {
-      // TODO: call your API endpoint to start reset flow
-      // await API.post('/forgot', { email: formData.email });
+     try {
+        setMsg('If this email exists, a reset link has been sent.');
 
-      setMsg('If this email exists, a reset link has been sent.');
+        const body = new URLSearchParams();
+        body.append("email", formData.email);
+
+        const {data:res} = await api.post("/sentVfCode", body, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        });
+
+      if (res.flag === 'S') {
+        setMsg('A reset link has been sent.');
+        navigate('/login');
+      } else {
+        setError(res.msg || 'Failed to send verification code');
+      }
     } catch (err) {
-      setError(err?.response?.data?.message || 'Something went wrong');
+      setError(err?.response?.data?.error || err?.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }

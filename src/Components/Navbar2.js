@@ -112,7 +112,7 @@ const Navbar2 = (params) => {
           {displayMenu && (
             <div className="absolute right-0 top-full mt-2 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50">
               <button
-                onClick={() => navigate("/reset-password")}
+                onClick={() => navigate("/account")}
                 className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base"
               >
                 My Account

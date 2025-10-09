@@ -5,6 +5,7 @@ import Home from "./Pages/Home";
 import Login from "./Components/Login";
 import ThankYouPage from "./Components/ThankYouPage";
 import ForgotPassword from "./Components/ForgotPassword";
+import Account from "./Components/Account";
 import HomePage from "./Components/HomePage";
 import Player from "./Components/Player";
 import { Text } from "./Components/Text";
@@ -31,6 +32,7 @@ function App() {
         <Route path="/thank-you" element={<ThankYouPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<UpdatePassword />} />
+        <Route path="/account" element={<Account />} />
 
 
         {/* Protected Routes */}

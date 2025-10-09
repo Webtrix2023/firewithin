@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { API } from "../api/config";
 import { CgProfile } from "react-icons/cg";
 
 export const UpdatePassword = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const vfcode = searchParams.get("vfcode");
+  const customerID = searchParams.get("auth-id");
 
   const [formData, setFormData] = useState({
-    oldPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
@@ -15,6 +18,7 @@ export const UpdatePassword = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   const handleChange = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -25,10 +29,6 @@ export const UpdatePassword = () => {
   const validate = () => {
     let newErrors = {};
 
-    if (!formData.oldPassword) {
-      newErrors.oldPassword = "Old password is required";
-    }
-
     if (!formData.newPassword) {
       newErrors.newPassword = "New password is required";
     } else if (formData.newPassword.length < 8) {
@@ -38,7 +38,8 @@ export const UpdatePassword = () => {
     } else if (!/[0-9]/.test(formData.newPassword)) {
       newErrors.newPassword = "Password must include a number";
     } else if (!/[!@#$%^&*]/.test(formData.newPassword)) {
-      newErrors.newPassword = "Password must include a special character (!@#$%^&*)";
+      newErrors.newPassword =
+        "Password must include a special character (!@#$%^&*)";
     }
 
     if (!formData.confirmPassword) {
@@ -48,7 +49,7 @@ export const UpdatePassword = () => {
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // valid if no errors
+    return Object.keys(newErrors).length === 0;
   };
 
   // -------------------
@@ -57,23 +58,31 @@ export const UpdatePassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServerError("");
+    setSuccessMsg("");
 
     if (!validate()) return; // stop if invalid
-
     try {
       setLoading(true);
-      await API.post(
-        "/updatePassword",
-        {
-          oldPassword: formData.oldPassword,
-          newPassword: formData.newPassword,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      navigate("/thank-you");
+      const body = new URLSearchParams();
+      body.append("password", formData.newPassword);
+      body.append("c_password", formData.confirmPassword);
+      body.append("code", vfcode);
+      body.append("customerID", customerID);
+
+      const {data:res} = await API.post("/updatePassword", body, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      });
+
+      console.log('res : ',res);
+      
+      if (res.flag === "S") {
+        setSuccessMsg(res.msg);
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+      } else {
+        setServerError(res.msg);
+      }
     } catch (err) {
       setServerError(err?.response?.data?.message || "Something went wrong");
     } finally {
@@ -94,44 +103,27 @@ export const UpdatePassword = () => {
       {/* Form Section */}
       <div className="flex flex-1 items-center justify-center px-4 py-10">
         <div className="w-full md:w-[40vw] bg-white rounded-2xl shadow-lg px-10 md:px-28 py-10 md:py-20">
-          {/* Heading */}
           <h2 className="text-lg font-medium text-gray-500 mb-1">
-            Welcome Landon Bill
+            Welcome
           </h2>
           <h1 className="text-2xl font-normal text-blue-600 mb-12">
-            Update password
+            Set Your New Password
           </h1>
 
-          {/* Server error */}
+          {/* Server or success messages */}
           {serverError && (
             <div className="mb-4 rounded-md bg-red-50 border border-red-200 text-red-700 px-3 py-2 text-sm">
               {serverError}
             </div>
           )}
+          {successMsg && (
+            <div className="mb-4 rounded-md bg-green-50 border border-green-200 text-green-700 px-3 py-2 text-sm">
+              {successMsg}
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Old Password */}
-            <div>
-              <label className="block text-sm font-medium text-slate-500 mb-2 ml-4">
-                Old Password <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="password"
-                name="oldPassword"
-                placeholder="Old Password"
-                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                value={formData.oldPassword}
-                onChange={handleChange}
-                required
-              />
-              {errors.oldPassword && (
-                <p className="text-red-500 text-xs mt-1 ml-4">
-                  {errors.oldPassword}
-                </p>
-              )}
-            </div>
-
             {/* New Password */}
             <div>
               <label className="block text-sm font-medium text-slate-500 mb-2 ml-4">
