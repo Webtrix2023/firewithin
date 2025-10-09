@@ -6,7 +6,7 @@ import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 import { api } from "../api";
 import { Howl } from "howler";
 import { toast } from "react-toastify";
-import { APP_URL } from "../config";
+import { API_URL } from "../config";
 
 const Player = () => {
   const [audioSrc, setAudioSrc] = useState("");
@@ -30,7 +30,7 @@ const Player = () => {
   const fetchData = async () => {
     try {
       // 1. Fetch backend progress
-      const res = await axios.get(`${APP_URL}automodeSet/listen`);
+      const res = await axios.get(`${API_URL}automodeSet/listen`);
       const savedTime = res.data?.time || 0; // adjust key based on backend response
       console.log("INside UseEffect")
       updateAutoPage(lessonIndex);
@@ -156,7 +156,7 @@ const Player = () => {
             setFileId(res.data.file.file_id);
             setResumeTime(res.data.file.timeStart || 0);
             const generatedFileName = `1@${chapter.section_id}@${res.data.file.file_id}@The_Fire_Within_Chapter_${chapter.section_id}_R1.mp3`;
-            setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`);
+            setAudioSrc(`${API_URL}audio.php?file=${generatedFileName}`);
             //console.log("Generated filename:", generatedFileName);
           }
         }
@@ -173,7 +173,7 @@ const Player = () => {
 
   const updateAutoPage = async (page) => {
     try {
-      await axios.get(`${APP_URL}autopageSet/${page}`);
+      await axios.get(`${API_URL}autopageSet/${page}`);
     } catch (err) {
       console.error(err);
     }
@@ -199,7 +199,7 @@ const Player = () => {
             setFileId(data.file_id);
             const generatedFileName = `1@${chapter.section_id}@${data.file_id}@The_Fire_Within_Chapter_${chapter.section_id}_R1.mp3`;
 
-            setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`); // use it immediately
+            setAudioSrc(`${API_URL}audio.php?file=${generatedFileName}`); // use it immediately
 
             console.log("Generated filename:", generatedFileName);
           }
@@ -223,7 +223,7 @@ const Player = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await axios.get(`${APP_URL}automodeSet/listen`);
+        await axios.get(`${API_URL}automodeSet/listen`);
         updateAutoPage(lessonIndex);
         getCurrentPageDetails();
         console.log("UseEffect", lessonIndex)
@@ -347,7 +347,7 @@ const Player = () => {
   // --- Save current time to backend ---
   const saveCurrentTime = async (time) => {
     try {
-      await axios.post(`${APP_URL}updateAutoTimeSet/${file_id}`, { time });
+      await axios.post(`${API_URL}updateAutoTimeSet/${file_id}`, { time });
     } catch (err) {
       console.error("Error saving time:", err);
     }
@@ -398,29 +398,29 @@ const Player = () => {
           </div>
           {/* Blue Section */}
           <div className="bg-[#0075FF] p-10 flex text-lg justify-center items-center gap-6">
-            <button id="prev-page" class="changePage" data-type="section" data-section="4" data-course="1" data-lessonindex="0" onClick={() => handlePrev()}>
+            <button id="prev-page" className="changePage hover:cursor-pointer transition-transform hover:scale-105" data-type="section" data-section="4" data-course="1" data-lessonindex="0" onClick={() => handlePrev()}>
               <svg width="33" height="37" viewBox="0 0 33 37" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2 6.27147V30.3178M28.651 2.10423C28.8648 1.93616 29.1218 1.83141 29.3926 1.80198C29.6634 1.77256 29.9371 1.81965 30.1823 1.93786C30.4275 2.05607 30.6342 2.24062 30.7788 2.47036C30.9235 2.7001 31.0001 2.96573 31 3.23682V33.3525C30.9997 33.6234 30.9227 33.8887 30.7779 34.1181C30.6331 34.3475 30.4263 34.5317 30.1812 34.6496C29.9361 34.7675 29.6626 34.8144 29.392 34.7849C29.1214 34.7554 28.8646 34.6506 28.651 34.4827L9.48442 19.4272C9.31244 19.2922 9.17345 19.1201 9.07789 18.924C8.98233 18.7278 8.93269 18.5126 8.93269 18.2947C8.93269 18.0767 8.98233 17.8615 9.07789 17.6653C9.17345 17.4692 9.31244 17.2971 9.48442 17.1621L28.651 2.10423Z" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
-            <button id="rewindBtn" onClick={() => handleSkip(-15)}><svg width="48" height="53" viewBox="0 0 48 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <button id="rewindBtn" className="hover:cursor-pointer transition-transform hover:scale-105" onClick={() => handleSkip(-15)}><svg width="48" height="53" viewBox="0 0 48 53" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 28.7228C2 33.0471 3.28231 37.2743 5.68477 40.8698C8.08723 44.4654 11.5019 47.2678 15.4971 48.9226C19.4922 50.5774 23.8884 51.0104 28.1296 50.1668C32.3708 49.3232 36.2666 47.2408 39.3244 44.183C42.3822 41.1253 44.4645 37.2295 45.3081 32.9883C46.1518 28.747 45.7188 24.3509 44.064 20.3557C42.4091 16.3606 39.6067 12.9459 36.0112 10.5434C32.4157 8.14095 28.1884 6.85864 23.8641 6.85864M16.5761 19.0054V36.0108" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
               <path d="M31.1522 19.0054H26.2935C25.6492 19.0054 25.0313 19.2614 24.5757 19.717C24.1201 20.1726 23.8642 20.7905 23.8642 21.4348V25.0788C23.8642 25.7231 24.1201 26.341 24.5757 26.7966C25.0313 27.2522 25.6492 27.5082 26.2935 27.5082H28.7228C29.3671 27.5082 29.9851 27.7641 30.4407 28.2197C30.8962 28.6753 31.1522 29.2932 31.1522 29.9375V33.5815C31.1522 34.2258 30.8962 34.8437 30.4407 35.2993C29.9851 35.7549 29.3671 36.0109 28.7228 36.0109H23.8642M23.8642 6.8587H5.64404M5.64404 6.8587L10.5027 2M5.64404 6.8587L10.5027 11.7174" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg></button>
-            <button onClick={togglePlayPause} className="text-white rounded-full p-2">
+            <button onClick={togglePlayPause} className="text-white rounded-full p-2 hover:cursor-pointer transition-transform hover:scale-105">
               {isPlaying ? <CiPause1 size={54} /> : <CiPlay1 size={54} />}
             </button>
-            <button id="forwardBtn" onClick={() => handleSkip(15)}><svg width="47" height="53" viewBox="0 0 47 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <button id="forwardBtn" className="hover:cursor-pointer transition-transform hover:scale-105" onClick={() => handleSkip(15)}><svg width="47" height="53" viewBox="0 0 47 53" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M45.4568 28.7228C45.4568 33.0471 44.1745 37.2743 41.772 40.8699C39.3696 44.4654 35.9548 47.2678 31.9597 48.9226C27.9646 50.5775 23.5684 51.0105 19.3272 50.1668C15.086 49.3232 11.1901 47.2409 8.13238 44.1831C5.07463 41.1253 2.99227 37.2295 2.14864 32.9883C1.30501 28.7471 1.73799 24.3509 3.39283 20.3558C5.04768 16.3606 7.85006 12.9459 11.4456 10.5435C15.0411 8.141 19.2683 6.8587 23.5927 6.8587H41.8128M41.8128 6.8587L36.9541 2M41.8128 6.8587L36.9541 11.7174M16.3046 19.0054V36.0109" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
               <path d="M30.8808 19.0054H26.0221C25.3778 19.0054 24.7599 19.2613 24.3043 19.7169C23.8487 20.1725 23.5928 20.7904 23.5928 21.4347V25.0787C23.5928 25.723 23.8487 26.341 24.3043 26.7965C24.7599 27.2521 25.3778 27.5081 26.0221 27.5081H28.4515C29.0958 27.5081 29.7137 27.764 30.1693 28.2196C30.6249 28.6752 30.8808 29.2931 30.8808 29.9374V33.5815C30.8808 34.2258 30.6249 34.8437 30.1693 35.2993C29.7137 35.7549 29.0958 36.0108 28.4515 36.0108H23.5928" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
             </button>
-            <button id="next-page" class="changePage" data-type="section" data-section="6" data-course="1" data-lessonindex="0" onClick={() => handleNext()}>
+            <button id="next-page" className="changePage hover:cursor-pointer transition-transform hover:scale-105"  data-type="section" data-section="6" data-course="1" data-lessonindex="0" onClick={() => handleNext()}>
               <svg width="33" height="37" viewBox="0 0 33 37" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M31.4565 6.27147V30.3178M4.80554 2.10423C4.59179 1.93616 4.33476 1.83141 4.06393 1.80198C3.7931 1.77256 3.51942 1.81965 3.27424 1.93786C3.02907 2.05607 2.82233 2.24062 2.6777 2.47036C2.53308 2.7001 2.45643 2.96573 2.45654 3.23682V33.3525C2.45689 33.6234 2.53387 33.8887 2.67867 34.1181C2.82347 34.3475 3.03024 34.5317 3.27533 34.6496C3.52042 34.7675 3.79392 34.8144 4.06453 34.7849C4.33515 34.7554 4.59195 34.6506 4.80554 34.4827L23.9721 19.4272C24.1441 19.2922 24.2831 19.1201 24.3787 18.924C24.4742 18.7278 24.5239 18.5126 24.5239 18.2947C24.5239 18.0767 24.4742 17.8615 24.3787 17.6653C24.2831 17.4692 24.1441 17.2971 23.9721 17.1621L4.80554 2.10423Z" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
-            <button class="indexact" onClick={() => setIsSliderOpen(!isSliderOpen)}>
+            <button className="indexact hover:cursor-pointer transition-transform hover:scale-105" onClick={() => setIsSliderOpen(!isSliderOpen)}>
               <svg width="42" height="34" viewBox="0 0 42 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M14.1546 2.29584H39.957M4.77185 2.31965L4.7953 2.29346M4.77185 16.6042L4.7953 16.578M1.95703 30.3888L3.83357 32.2935L8.52493 27.5319M14.1546 16.5804H39.957M14.1546 30.865H39.957" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>

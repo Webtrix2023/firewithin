@@ -23,7 +23,7 @@ function ProtectedRoute({ children }) {
 
 function App() {
   return (
-    <Router basename={process.env.REACT_APP_BASENAME}>
+    <Router>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
@@ -32,7 +32,7 @@ function App() {
         <Route path="/thank-you" element={<ThankYouPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<UpdatePassword />} />
-        <Route path="/account" element={<Account />} />
+       
 
 
         {/* Protected Routes */}
@@ -41,6 +41,14 @@ function App() {
           element={
             <ProtectedRoute>
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <Account />
             </ProtectedRoute>
           }
         />

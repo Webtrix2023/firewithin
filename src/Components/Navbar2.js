@@ -4,7 +4,8 @@ import { MdOutlineUndo } from "react-icons/md";
 import { FiFileText } from "react-icons/fi";
 import { BsFileEarmarkMusic } from "react-icons/bs";
 import { useNavigate, useLocation } from "react-router-dom";
-import { APP_URL } from "../config";
+import { API_URL } from "../config";
+import podcast_img from '../assets/podcast-icon.svg';
 const Navbar2 = (params) => {
   const navigate = useNavigate()
   const location = useLocation();
@@ -37,11 +38,11 @@ const Navbar2 = (params) => {
       <div className="mx-auto flex flex-wrap items-center justify-between px-3 py-2.5 md:py-4 ">
         {/* Left: Title + Chapter */}
         <div className="leading-tight mb-2 md:mb-0 flex-1 min-w-[180px] md:pl-10">
-          <h1 onClick={() => { navigate('/dashboard'); }} className="font-bold text-base sm:text-lg md:text-2xl lg:text-3xl text-black/90">
+          <h1 onClick={() => { navigate('/dashboard'); }} className="font-bold cursor-pointer text-base sm:text-lg md:text-2xl lg:text-3xl text-black/90">
             THE FIRE WITHIN
           </h1>
           <p className="font-normal text-[11px] sm:text-xs md:text-base lg:text-lg text-black/90 max-w-[65vw] md:max-w-none truncate">
-            {CurrPage !== HomePage ? `CHAPTER-${params.chapterNumber} ${params.chapterName}` : ""}
+            {params?.chapterNumber ? `CHAPTER-${params?.chapterNumber ?? ""} ${params?.chapterName ?? ""}` : " "}
           </p>
         </div>
 
@@ -51,12 +52,12 @@ const Navbar2 = (params) => {
             <button
               aria-label="Switch to Text"
               title="Read Text"
-              className="p-1.5 md:p-2 rounded-full hover:text-blue-700"
+              className="p-1.5 md:p-2 rounded-full hover:text-blue-700 hover:cursor-pointer transition-transform hover:scale-105"
               onClick={() => navigate("/book/read")}
             >
               <img
                 className="read w-4 sm:w-5 md:w-6 lg:w-7"
-                src={`${APP_URL}/images//sites/read-small.svg`}
+                src={`${API_URL}/images//sites/read-small.svg`}
                 alt="Read"
               />
             </button>
@@ -64,28 +65,34 @@ const Navbar2 = (params) => {
             <button
               aria-label="Switch to Music"
               title="Listen"
-              className="p-1.5 md:p-2 rounded-full hover:text-blue-700"
+              className="p-1.5 md:p-2 rounded-full hover:text-blue-700 hover:cursor-pointer transition-transform hover:scale-105"
               onClick={() => navigate("/book/listen")}
             > <img
                 className="listen w-4 sm:w-5 md:w-6 lg:w-7"
-                src={`${APP_URL}/images//sites/listen-i.svg`}
+                src={`${API_URL}/images//sites/listen-i.svg`}
                 alt="Listen"
               />
 
             </button>
           ) : null}
 
-
+<button
+              aria-label="Switch to Music"
+              title="Listen"
+              className="p-1.5 md:p-2 rounded-full hover:text-blue-700 hover:cursor-pointer transition-transform hover:scale-105"
+               onClick={()=>navigate("/book/podcasts")}
+            > 
           <img
             className="read w-4 sm:w-5 md:w-6 lg:w-7"
-             src={`${process.env.PUBLIC_URL}/Vector.png`}
+             src={podcast_img}
             alt="Read"
-            onClick={()=>navigate("/book/podcasts")}
+           
           />
+          </button>
           <button
             aria-label="Profile"
             title="Profile"
-            className="p-1.5 md:p-2 rounded-full hover:text-blue-700"
+            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 hover:cursor-pointer transition-transform hover:scale-105"
             onClick={() => setDisplayMenu(!displayMenu)}
           >
             <CgProfile className="text-lg sm:text-xl md:text-2xl lg:text-3xl" />
@@ -94,7 +101,7 @@ const Navbar2 = (params) => {
           <button
             aria-label="Undo"
             title="Undo"
-            className="p-1.5 md:p-2 rounded-full hover:text-blue-700"
+            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 hover:cursor-pointer transition-transform hover:scale-105"
             onClick={() => {
               if (CurrPage === HomePage) navigate(-1);
               else navigate("/dashboard");
@@ -102,7 +109,7 @@ const Navbar2 = (params) => {
           >
             <img
               className="w-4 sm:w-5 md:w-6 lg:w-7"
-              src={`${APP_URL}/images//sites/back.svg`}
+              src={`${API_URL}/images//sites/back.svg`}
               alt="Undo"
             />
           </button>
@@ -113,12 +120,12 @@ const Navbar2 = (params) => {
             <div className="absolute right-0 top-full mt-2 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50">
               <button
                 onClick={() => navigate("/account")}
-                className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base"
+                className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base hover:cursor-pointer transition-transform hover:scale-105"
               >
                 My Account
               </button>
               <hr />
-              <button className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base" onClick={() => handleLogout()}>
+              <button className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base hover:cursor-pointer transition-transform hover:scale-105" onClick={() => handleLogout()}>
                 Logout
               </button>
             </div>

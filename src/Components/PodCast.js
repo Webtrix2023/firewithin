@@ -5,7 +5,7 @@ import axios from "axios";
 import { CiPlay1, CiPause1 } from "react-icons/ci";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import Navbar2 from "./Navbar2"
-import { APP_URL } from "../config";
+import { API_URL } from "../config";
 
 export const PodCast = () => {
     const [audioSrc, setAudioSrc] = useState("");
@@ -56,7 +56,7 @@ export const PodCast = () => {
 
     const updateAutoPage = async (page) => {
         try {
-            await axios.get(`${APP_URL}autopage/${page}`);
+            await axios.get(`${API_URL}autopage/${page}`);
         } catch (err) {
             console.error(err);
         }
@@ -81,7 +81,7 @@ export const PodCast = () => {
                     if (data.file_id) {
                         const generatedFileName = `1@${chapter.section_id}@${data.firstAudiofile[0].lesson_id}@${data.firstAudiofile[0].file_name}`;
 
-                        setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`); // use it immediately
+                        setAudioSrc(`${API_URL}audio.php?file=${generatedFileName}`); // use it immediately
 
                         console.log("Generated filename:", generatedFileName);
                         console.log("inside current");
@@ -108,7 +108,7 @@ export const PodCast = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await axios.get(`${APP_URL}automodeSet/podcast`);
+                await axios.get(`${API_URL}automodeSet/podcast`);
                 getCurrentPageDetails();
                 console.log("UseEffect", lessonIndex)
 
@@ -209,7 +209,7 @@ export const PodCast = () => {
                     if (data.file_id) {
                         console.log(chapter.section_id, data.file_id)
                         const generatedFileName = `1@${chapter.section_id}@${data.file_id}@The_Fire_Within_Chapter_${chapter.section_id}_R1.mp3`;
-                        setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`);
+                        setAudioSrc(`${API_URL}audio.php?file=${generatedFileName}`);
                         console.log("Generated filename:", generatedFileName);
                     }
 

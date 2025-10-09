@@ -11,11 +11,9 @@
 }
 .page-content {text-align: justify;}
 .page-content p {
-  font-size: 20px;
   text-indent: 50px;
   line-height: 200%;
   font-family: Inria Serif !important;
-  color: #333c4e;
 }
 .ql-align-center{
   text-align: center;

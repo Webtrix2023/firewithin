@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { API } from "../api/config";
 import { CgProfile } from "react-icons/cg";
+import Navbar2 from "./Navbar2";
 
 export const UpdatePassword = () => {
   const navigate = useNavigate();
@@ -93,12 +94,7 @@ export const UpdatePassword = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Navbar */}
-      <nav className="px-6 md:px-10 py-8 shadow-sm flex justify-between items-center bg-white">
-        <h1 className="font-bold text-base sm:text-lg md:text-3xl text-black/90">
-          THE FIRE WITHIN
-        </h1>
-        <CgProfile className="text-xl md:text-3xl text-blue-500" />
-      </nav>
+      <Navbar2></Navbar2>
 
       {/* Form Section */}
       <div className="flex flex-1 items-center justify-center px-4 py-10">
