@@ -191,6 +191,7 @@ export const Text = () => {
 
             const res = await axios.post(
                 `${API_URL}get_lession_by_pageNo`,
+                `${API_URL}get_lession_by_pageNo`,
                 formData,
                 {
                     headers: {
@@ -259,6 +260,7 @@ export const Text = () => {
         const fetchData = async () => {
             try {
                 await axios.get(`${API_URL}automodeSet/read`);
+                await axios.get(`${API_URL}automodeSet/read`);
                 getCurrentPageDetails();
             } catch (error) {
                 console.error("Error in useEffect:", error);
@@ -305,6 +307,7 @@ export const Text = () => {
 
     // Theme classes (no layout/color placement changes)
     const themeClasses = {
+        light: "bg-[#ffffff] text-[#333c4e]",
         light: "bg-[#ffffff] text-[#333c4e]",
         sepia: "bg-[#f4ecd8] text-[#2b2a27]",
         dark: "bg-[#111] text-[#f1f1f1]",
