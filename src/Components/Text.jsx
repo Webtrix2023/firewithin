@@ -10,6 +10,7 @@ import { API_URL } from "../config";
 
 export const Text = () => {
   const [pageContent, setPageContent] = useState("");
+  let debounceTimer;
   const safeHtml = useMemo(
 
     () => DOMPurify.sanitize(pageContent, {
@@ -176,7 +177,8 @@ export const Text = () => {
         console.log("mode");
         console.log(data?.customer_details);
         setTheme(data?.customer_details?.[0]?.mode || 'light');
-        setFontSize(data?.customer_details?.[0]?.selected_font || 1.05);
+        //setFontSize(data?.customer_details?.[0]?.selected_font || 1.05);
+        setFontSize(Number(data?.customer_details?.[0]?.selected_font) || 1.05);
       }
     } catch (err) {
       console.error(err);
@@ -185,12 +187,16 @@ export const Text = () => {
 
   const getLessonByPageNumber = async (pageNumber) => {
     try {
+
+        // setLessonIndex(pageNumber);
+        // setPageNumber(pageNumber);
+        // loadPage({ index: pageNumber, type: "prev", saveProgress: true });
+
       const formData = new URLSearchParams();
       formData.append("page_number", pageNumber);
       formData.append("course_id", 1);
 
             const res = await axios.post(
-                `${API_URL}get_lession_by_pageNo`,
                 `${API_URL}get_lession_by_pageNo`,
                 formData,
                 {
@@ -201,13 +207,11 @@ export const Text = () => {
                     withCredentials: true,
                 }
             );
-            const data = res.data;
-            if (res.data.flag === "S" && data.data) {
-                const item = data.data;
-                console.log(item)
+            const item = res.data;
+            if (item.introduction !== "") {
                 if (item.introduction) {
-                    const { chapterName, pageContent } = splitContent(item.introduction);
-                    setPageContent(pageContent || "");
+                    //const { chapterName, pageContent } = splitContent(item.introduction);
+                    setPageContent(item.introduction || "");
                 }
                 if (item.section_name != null) setChapterName(item.section_name);
 
@@ -216,8 +220,6 @@ export const Text = () => {
 
         // ✅ safe: only when explicitly called for navigation
         if (item.lesson_id) updateAutoPage(item.lesson_id);
-
-        // 🚫 don’t call updateAutoPage here → avoid overwriting progress on refresh
       }
     } catch (e) {
       console.error(e);
@@ -259,7 +261,6 @@ export const Text = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await axios.get(`${API_URL}automodeSet/read`);
                 await axios.get(`${API_URL}automodeSet/read`);
                 getCurrentPageDetails();
             } catch (error) {
@@ -308,7 +309,6 @@ export const Text = () => {
     // Theme classes (no layout/color placement changes)
     const themeClasses = {
         light: "bg-[#ffffff] text-[#333c4e]",
-        light: "bg-[#ffffff] text-[#333c4e]",
         sepia: "bg-[#f4ecd8] text-[#2b2a27]",
         dark: "bg-[#111] text-[#f1f1f1]",
     };
@@ -319,7 +319,7 @@ export const Text = () => {
         dark: "text-[#e9e9e9]",
     };
     const mutedColor = {
-        light: "text-neutral-300", // adjust for white text on light bg
+        light: "text-neutral-600", // adjust for white text on light bg
         sepia: "text-[#6b5e48]",
         dark: "text-neutral-400",
     };
@@ -552,12 +552,37 @@ export const Text = () => {
             </div>
 
             <div
-              className={`flex items-center gap-2 text-xs sm:text-sm ${mutedColor[theme]} bg-white text-gray-700 pr-1 rounded-full`}
+              className={`flex items-center gap-2 text-xs sm:text-sm ${themeClasses[theme]} bg-white text-gray-700 pr-2 rounded-full`}
               aria-live="polite"
             >
-              <span className="inline-flex  items-center justify-center bg-black text-white h-7 px-4 rounded-full text-xs sm:text-sm">
+              {/* <span className="inline-flex  items-center justify-center bg-black text-white h-7 px-4 rounded-full text-xs sm:text-sm">
                 {pageNumber}
               </span>
+               */}
+               <input
+                            type="number"
+                            value={pageNumber}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setPageNumber(value);
+
+                              // Clear old timer
+                              clearTimeout(debounceTimer);
+
+                              // Set new timer (e.g. 500ms delay)
+                              debounceTimer = setTimeout(() => {
+                                if (value > 0 && value <= 388) {
+                                  getLessonByPageNumber(value);
+                                } else if (value > 388) {
+                                  alert("Page limit exceeded");
+                                }
+                              }, 500);
+                            }}
+                            className="w-8 sm:w-8 py-1 pl-2 sm:py-2 rounded-full text-center border-gray-300 focus:outline-none  
+    [&::-webkit-outer-spin-button]:appearance-none 
+    [&::-webkit-inner-spin-button]:appearance-none 
+    [appearance:textfield]"
+                        />
               <span>of</span>
               <span>325</span>
             </div>

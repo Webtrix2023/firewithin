@@ -1,8 +1,10 @@
 import React from "react";
+import {useNavigate } from 'react-router-dom';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 const ThankYouPage = () => {
+    const navigate = useNavigate();
   return (
     <div className="min-h-[100svh] flex flex-col">
       {/* Navbar */}
@@ -29,7 +31,7 @@ const ThankYouPage = () => {
               Thank you for registering!
             </h1>
             <p className="text-base sm:text-xl md:text-2xl font-light text-gray-200 leading-relaxed">
-              Please check your registered email for login credentials once you are approved.
+              Please check your registered email for login credentials.<button onClick={()=>{navigate('/login');}}>Click here to login.</button>
             </p>
           </div>
         </div>

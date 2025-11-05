@@ -1,65 +1,93 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import Navbar2 from "./Navbar2";
 import { useNavigate } from "react-router-dom";
 import Henry from "../assets/Henry.jpg";
+import Henry_mob from "../assets/henry_mobile.png";
 import listen_img from "../assets/listen.png";
 import read_img from "../assets/read.png";
 import podcast_img from "../assets/podcast.svg";
+import { useLanguage } from "../LanguageContext";
 const HomePage = () => {
+  const { t, lang, changeLanguage } = useLanguage();
   const navigate = useNavigate();
+     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
 
+  // 🔄 Update on window resize
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   return (
     <div className="min-h-screen flex flex-col text-white">
       {/* Navbar */}
       <Navbar2 />
+   <div
+        className="relative flex flex-col md:flex-row items-center md:items-center justify-center md:justify-end min-h-screen w-full px-6 md:px-16 py-12 bg-[#1e2c33] bg-cover bg-center transition-all duration-500"
+        style={{
+          backgroundImage: isDesktop ? `url(${Henry})` : "none",
+        }}
+      >
+  {/* Mobile Image (top center) */}
+  <div className="block md:hidden mb-6">
+    <img
+      src={Henry_mob}
+      alt="The Fire Within"
+      className="w-[115px] mx-auto rounded-lg shadow-md object-cover"
+    />
+  </div>
 
+  {/* Right side content */}
+  <div className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10">
+    <h2 className="text-3xl sm:text-4xl font-bold mb-4 leading-snug">{t("title")}</h2>
+
+    <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-8">{t("description")}
+    </p>
+
+    {/* Buttons */}
+    <div className="flex flex-wrap justify-center md:justify-start gap-10 sm:gap-14 text-center">
+      {/* LISTEN */}
+      <div
+        className="flex flex-col items-center hover:cursor-pointer transition-transform hover:scale-105 w-20 sm:w-24 md:w-28"
+        onClick={() => navigate("/book/listen")}
+      >
+        <img
+          src={listen_img}
+          alt="Listen"
+          className="object-contain w-14 sm:w-16 md:w-20 lg:w-24"
+        />
+        <p className="text-base sm:text-xl font-extralight mt-2">{t("listen")}</p>
+      </div>
+
+      {/* READ */}
+      <div
+        className="flex flex-col items-center hover:cursor-pointer transition-transform hover:scale-105 w-20 sm:w-24 md:w-28"
+        onClick={() => navigate("/book/read")}
+      >
+        <img
+          src={read_img}
+          alt="Read"
+          className="object-contain w-14 sm:w-16 md:w-20 lg:w-24"
+        />
+        <p className="text-base sm:text-xl font-extralight mt-2">{t("read")}</p>
+      </div>
+
+      {/* PODCAST */}
+      <div
+        className="flex flex-col items-center hover:cursor-pointer transition-transform hover:scale-105 w-20 sm:w-24 md:w-28"
+        onClick={() => navigate("/book/podcasts")}
+      >
+        <img
+          src={podcast_img}
+          alt="Podcast"
+          className="object-contain w-14 sm:w-16 md:w-20 lg:w-24 filter invert brightness-0"
+        />
+        <p className="text-base sm:text-xl font-extralight mt-2">{t("podcast")}</p>
+      </div>
+    </div>
+  </div>
+</div>
             {/* Main Div */}
-            <div
-                className="relative flex bg-center bg-cover flex-col md:flex-row items-center justify-end px-6 py-12 w-full flex-1"
-                style={{
-                    backgroundImage: `url("${Henry}")`,
-                }}
-            >
-                {/* Right - Text */}
-                <div className="relative ml-40 md:w-[35%] mt-8 md:mt-0 md:pr-4 mr-20 flex flex-col z-10">
-                    <h2 className="text-3xl font-bold mb-4">The Fire Within</h2>
-                    <p className="text-gray-300 text-md leading-relaxed mb-6">
-                        is an autobiography by industrialist Henry M. Rowan, chronicling his remarkable journey from a young engineer
-                        to the founder of Inductotherm Industries, Inc. The book traces his life from small-town America through World War II
-                        flight school and into his entrepreneurial endeavors. In 1953, Rowan started Inductotherm at his kitchen table,
-                        selling his house and risking everything to pursue his vision. His record-breaking $100 million gift to a small
-                        New Jersey college in 1992 brought him international attention, but it was just one chapter in a lifetime of bold
-                        decisions and personal resilience. The Fire Within is not only a tale of innovation and grit but also a
-                        quintessential American success story.
-                    </p>
-
-                    {/* Buttons */}
-                    <div className="flex justify-center items-center gap-16">
-                        {/* LISTEN */}
-                        <div
-                            className="flex flex-col items-center hover:cursor-pointer transition-transform hover:scale-105"
-                            onClick={() => navigate("/book/listen")}>
-                            <img src={listen_img} alt="Listen" className="bg-cover w-28" />
-                            <p className="text-2xl font-extralight mt-2">LISTEN</p>
-                        </div>
-
-                        {/* READ */}
-                        <div className="flex flex-col items-center hover:cursor-pointer transition-transform hover:scale-105"
-                            onClick={() => navigate("/book/read")}>
-                            <img src={read_img} alt="Read" className="bg-cover w-28" />
-                            <p className="text-2xl font-extralight mt-2">READ</p>
-                        </div>
-                        {/* PODCAST */}
-                        <div className="flex flex-col items-center hover:cursor-pointer transition-transform hover:scale-105"
-                            onClick={() => navigate("/book/podcasts")}>
-                            <img src={podcast_img} alt="Podcast"
-                                className="w-28 filter invert brightness-0"
-                            />
-                            <p className="text-2xl font-extralight mt-2">PODCAST</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };

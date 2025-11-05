@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate, BrowserRouter } from "react-router-dom";
 import Register from "./Components/Register";
 import Home from "./Pages/Home";
 import Login from "./Components/Login";
@@ -13,6 +13,9 @@ import { Text2 } from "./Components/Text2";
 import { UpdatePassword } from "./Components/UpdatePassword";
 import { PodCast } from "./Components/PodCast";
 import './App.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { LanguageProvider } from "./LanguageContext";
 function ProtectedRoute({ children }) {
   const isLoggedIn = localStorage.getItem("is_logged_in");
   if (!isLoggedIn) {
@@ -23,7 +26,10 @@ function ProtectedRoute({ children }) {
 
 function App() {
   return (
-    <Router>
+    // {/*basename="/ws-new"*/}
+    <BrowserRouter >
+      <LanguageProvider>
+      <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
@@ -85,7 +91,9 @@ function App() {
           }
         />
       </Routes>
-    </Router>
+      </LanguageProvider>
+    </BrowserRouter>
+
   );
 }
 

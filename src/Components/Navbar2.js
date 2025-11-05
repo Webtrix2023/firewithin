@@ -1,107 +1,175 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CgProfile } from "react-icons/cg";
-import { MdOutlineUndo } from "react-icons/md";
-import { FiFileText } from "react-icons/fi";
-import { BsFileEarmarkMusic } from "react-icons/bs";
 import { useNavigate, useLocation } from "react-router-dom";
 import { API_URL } from "../config";
-import podcast_img from '../assets/podcast-icon.svg';
+import podcast_img from "../assets/podcast-icon.svg";
+import { useFloating, offset, flip, shift, autoUpdate } from "@floating-ui/react";
+import { useLanguage } from "../LanguageContext"; // ✅ make sure this path matches your hook location
+
 const Navbar2 = (params) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const location = useLocation();
-  const [displayMenu, setDisplayMenu] = useState(false)
-  // Check current path
-  const isMusicPage = location.pathname === "/book/listen";
-  const isTextPage = location.pathname === "/book/read" || "/book/read-advanced";
-  const CurrPage = location.pathname;
-  const HomePage = "/dashboard";
+  const [displayMenu, setDisplayMenu] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
+
+  // ✅ useLanguage hook (replaces local state)
+  const { t, lang, changeLanguage } = useLanguage();
+
+  // Floating UI setup
+  const { refs, floatingStyles, update } = useFloating({
+    placement: "bottom-end",
+    middleware: [offset(8), flip(), shift()],
+  });
+
+  useEffect(() => {
+    if (!refs.reference.current || !refs.floating.current) return;
+    return autoUpdate(refs.reference.current, refs.floating.current, update);
+  }, [refs.reference, refs.floating, update]);
 
   const handleLogout = () => {
-    // Remove all authentication-related data
-    localStorage.removeItem("authid");
-    localStorage.removeItem("customer_image");
-    localStorage.removeItem("email");
-    localStorage.removeItem("is_logged_in");
-    localStorage.removeItem("name");
-
-    // Optionally clear everything at once:
-    // localStorage.clear();
-
-    // Redirect to login page
-    // window.location.href = "/login";
-    // OR (if using useNavigate):
+    localStorage.clear();
     navigate("/login", { replace: true });
   };
 
+  // Page checks
+  const CurrPage = location.pathname;
+  const isMusicPage = CurrPage === "/book/listen";
+  const isTextPage =
+    CurrPage === "/book/read" || CurrPage === "/book/read-advanced";
+  const HomePage = "/dashboard";
+
+  // ✅ Global language change (no need to manage local state)
+  const handleLanguageChange = (newLang) => {
+    changeLanguage(newLang);
+    setShowLangMenu(false);
+    localStorage.setItem("preferredLang", newLang);
+  };
+
   return (
-    <nav className="w-full bg-white shadow ">
-      <div className="mx-auto flex flex-wrap items-center justify-between px-3 py-2.5 md:py-4 ">
-        {/* Left: Title + Chapter */}
+    <nav className="w-full bg-white shadow sticky top-0 z-10">
+      <div className="mx-auto flex flex-wrap items-center justify-between px-3 py-2.5 md:py-4">
+        {/* Left: Title */}
         <div className="leading-tight mb-2 md:mb-0 flex-1 min-w-[180px] md:pl-10">
-          <h1 onClick={() => { navigate('/dashboard'); }} className="font-bold cursor-pointer text-base sm:text-lg md:text-2xl lg:text-3xl text-black/90">
-            THE FIRE WITHIN
+          <h1
+            onClick={() => navigate("/dashboard")}
+            className="font-bold cursor-pointer text-base sm:text-lg md:text-2xl lg:text-3xl text-black/90"
+          >
+            {t("app_name")}
           </h1>
           <p className="font-normal text-[11px] sm:text-xs md:text-base lg:text-lg text-black/90 max-w-[65vw] md:max-w-none truncate">
-            {params?.chapterNumber ? `CHAPTER-${params?.chapterNumber ?? ""} ${params?.chapterName ?? ""}` : " "}
+            {params?.chapterNumber
+              ? `${t("chapter")} - ${params?.chapterNumber ?? ""} ${params?.chapterName ?? ""}`
+              : " "}
           </p>
         </div>
 
-        {/* Right: Icons */}
+        {/* Right: Icons + Language */}
         <div className="flex items-center gap-2 sm:gap-3 md:gap-5 lg:gap-6 text-blue-500 relative">
+          {/* Listen / Read Toggle */}
           {isMusicPage ? (
             <button
               aria-label="Switch to Text"
-              title="Read Text"
-              className="p-1.5 md:p-2 rounded-full hover:text-blue-700 hover:cursor-pointer transition-transform hover:scale-105"
+              title={t("READ_TEXT")}
+              className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
               onClick={() => navigate("/book/read")}
             >
               <img
-                className="read w-4 sm:w-5 md:w-6 lg:w-7"
-                src={`${API_URL}/images//sites/read-small.svg`}
+                className="w-4 sm:w-5 md:w-6 lg:w-7"
+                src={`${API_URL}/images/sites/read-small.svg`}
                 alt="Read"
               />
             </button>
           ) : isTextPage ? (
             <button
               aria-label="Switch to Music"
-              title="Listen"
-              className="p-1.5 md:p-2 rounded-full hover:text-blue-700 hover:cursor-pointer transition-transform hover:scale-105"
+              title={t("LISTEN")}
+              className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
               onClick={() => navigate("/book/listen")}
-            > <img
-                className="listen w-4 sm:w-5 md:w-6 lg:w-7"
-                src={`${API_URL}/images//sites/listen-i.svg`}
+            >
+              <img
+                className="w-4 sm:w-5 md:w-6 lg:w-7"
+                src={`${API_URL}/images/sites/listen-i.svg`}
                 alt="Listen"
               />
-
             </button>
           ) : null}
 
-<button
-              aria-label="Switch to Music"
-              title="Listen"
-              className="p-1.5 md:p-2 rounded-full hover:text-blue-700 hover:cursor-pointer transition-transform hover:scale-105"
-               onClick={()=>navigate("/book/podcasts")}
-            > 
-          <img
-            className="read w-4 sm:w-5 md:w-6 lg:w-7"
-             src={podcast_img}
-            alt="Read"
-           
-          />
+          {/* Podcast */}
+          <button
+            aria-label="Podcast"
+            title="Podcast"
+            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
+            onClick={() => navigate("/book/podcasts")}
+          >
+            <img
+              className="w-4 sm:w-5 md:w-6 lg:w-7"
+              src={podcast_img}
+              alt="Podcast"
+            />
           </button>
+
+          {/* 🌐 Language Selector */}
+          <button
+            ref={refs.setReference}
+            aria-label="Select Language"
+            title="Select Language"
+            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
+            onClick={() => setShowLangMenu((prev) => !prev)}
+          >
+            🌐
+            <span className="ml-1 text-sm uppercase hidden sm:inline">{lang}</span>
+          </button>
+
+          {showLangMenu && (
+            <div
+              ref={refs.setFloating}
+              style={floatingStyles}
+              className="bg-white border border-gray-200 rounded-md shadow-lg w-44 sm:w-48 z-50"
+            >
+              <ul className="py-2 text-sm text-gray-700">
+                <li>
+                  <button
+                    onClick={() => handleLanguageChange("en")}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    English
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => handleLanguageChange("ko")}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Korean (한국인)
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => handleLanguageChange("zh")}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Chinese (中国人)
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
+
+          {/* Profile */}
           <button
             aria-label="Profile"
             title="Profile"
-            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 hover:cursor-pointer transition-transform hover:scale-105"
+            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
             onClick={() => setDisplayMenu(!displayMenu)}
           >
             <CgProfile className="text-lg sm:text-xl md:text-2xl lg:text-3xl" />
           </button>
 
+          {/* Back */}
           <button
-            aria-label="Undo"
-            title="Undo"
-            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 hover:cursor-pointer transition-transform hover:scale-105"
+            aria-label="Back to dashboard"
+            title="Back to dashboard"
+            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
             onClick={() => {
               if (CurrPage === HomePage) navigate(-1);
               else navigate("/dashboard");
@@ -109,32 +177,32 @@ const Navbar2 = (params) => {
           >
             <img
               className="w-4 sm:w-5 md:w-6 lg:w-7"
-              src={`${API_URL}/images//sites/back.svg`}
-              alt="Undo"
+              src={`${API_URL}/images/sites/back.svg`}
+              alt="Back to dashboard"
             />
           </button>
 
-
-          {/* Dropdown Menu */}
+          {/* Profile Dropdown */}
           {displayMenu && (
-            <div className="absolute right-0 top-full mt-2 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50">
+            <div className="absolute right-0 top-full mt-4 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50">
               <button
                 onClick={() => navigate("/account")}
-                className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base hover:cursor-pointer transition-transform hover:scale-105"
+                className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base"
               >
-                My Account
+                {t("MY_ACCOUNT")}
               </button>
               <hr />
-              <button className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base hover:cursor-pointer transition-transform hover:scale-105" onClick={() => handleLogout()}>
-                Logout
+              <button
+                onClick={handleLogout}
+                className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base"
+              >
+                {t("LOGOUT")}
               </button>
             </div>
           )}
         </div>
       </div>
     </nav>
-
-
   );
 };
 

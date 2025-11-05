@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 
 import { api, ensureCsrf } from '../api';
+import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const ForgotPassword = () => {
     setError('');
     setLoading(true);
      try {
-        setMsg('If this email exists, a reset link has been sent.');
+        //setMsg('If this email exists, a reset link has been sent.');
 
         const body = new URLSearchParams();
         body.append("email", formData.email);
@@ -39,9 +40,10 @@ const ForgotPassword = () => {
         });
 
       if (res.flag === 'S') {
-        setMsg('A reset link has been sent.');
+        toast.success('A reset link has been sent.');
         navigate('/login');
       } else {
+        toast.error('A reset link has been sent.');
         setError(res.msg || 'Failed to send verification code');
       }
     } catch (err) {

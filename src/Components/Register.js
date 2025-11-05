@@ -3,6 +3,7 @@ import { FiUser, FiMail } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import { API } from '../api/config';
+import { toast } from 'react-toastify';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -32,11 +33,29 @@ const Register = () => {
 
     try {
       setLoading(true);
-      await API.post('/registerCustomer', formData, {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true,
-      });
-      navigate('/thank-you');
+      const body = new URLSearchParams();
+            body.append("name", formData?.name);
+            body.append("email", formData?.email);
+            const { data } = await API.post("/registerCustomer", body, {
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                Accept: "*/*",
+              },
+              withCredentials: true,
+            });
+            if (data.flag === "S") {
+                navigate('/thank-you');
+                setLoading(false);
+            }else{
+              toast.error(data.msg);
+              setLoading(false);
+            }
+            
+      // await API.post('/registerCustomer', formData, {
+      //   headers: { 'Content-Type': 'application/json' },
+      //   withCredentials: true,
+      // });
+      
     } catch (err) {
       setServerError(err?.response?.data?.message || 'Something went wrong');
     } finally {

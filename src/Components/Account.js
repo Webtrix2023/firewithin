@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { API } from "../api/config";
 import { CgProfile } from "react-icons/cg";
 import Navbar2 from "./Navbar2";
+import { toast } from "react-toastify";
 
 const Account = () => {
   const navigate = useNavigate();
@@ -69,9 +70,11 @@ const Account = () => {
       if (res.flag === "S") {
         setServerMsg({ type: "success", text: "Password changed successfully!" });
         setFormData({ old_password: "", new_password: "", verify_password: "" });
+        toast.success("Password changed successfully!");
         setTimeout(() => navigate("/dashboard"), 3000);
       } else {
-        setServerMsg({ type: "error", text: res.msg });
+        toast.error(res.msg);
+        //setServerMsg({ type: "error", text: res.msg });
       }
     } catch (err) {
       setServerMsg({ type: "error", text: "Something went wrong" });

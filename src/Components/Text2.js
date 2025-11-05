@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { API_URL } from "../config";
 export const Text2 = () => {
     const [pageContent, setPageContent] = useState("");
+      let debounceTimer;
     const safeHtml = useMemo(
 
         () => DOMPurify.sanitize(pageContent, {
@@ -180,12 +181,16 @@ export const Text2 = () => {
             console.error(err);
         }
     };
-
     const getLessonByPageNumber = async (pageNumber) => {
-        try {
-            const formData = new URLSearchParams();
-            formData.append("page_number", pageNumber);
-            formData.append("course_id", 1);
+    try {
+
+        // setLessonIndex(pageNumber);
+        // setPageNumber(pageNumber);
+        // loadPage({ index: pageNumber, type: "prev", saveProgress: true });
+
+      const formData = new URLSearchParams();
+      formData.append("page_number", pageNumber);
+      formData.append("course_id", 1);
 
             const res = await axios.post(
                 `${API_URL}get_lession_by_pageNo`,
@@ -198,28 +203,63 @@ export const Text2 = () => {
                     withCredentials: true,
                 }
             );
-            const data = res.data;
-            if (res.data.flag === "S" && data.data) {
-                const item = data.data;
-                console.log(item)
+            const item = res;
+            if (item.introduction !== "") {
                 if (item.introduction) {
-                    const { chapterName, pageContent } = splitContent(item.introduction);
-                    setPageContent(pageContent || "");
+                    //const { chapterName, pageContent } = splitContent(item.introduction);
+                    setPageContent(item.introduction || "");
                 }
                 if (item.section_name != null) setChapterName(item.section_name);
 
-                if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
-                if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
+        if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
+        if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
 
-                // ✅ safe: only when explicitly called for navigation
-                if (item.lesson_id) updateAutoPage(item.lesson_id);
+        // ✅ safe: only when explicitly called for navigation
+        if (item.lesson_id) updateAutoPage(item.lesson_id);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+    // const getLessonByPageNumber = async (pageNumber) => {
+    //     try {
+    //         const formData = new URLSearchParams();
+    //         formData.append("page_number", pageNumber);
+    //         formData.append("course_id", 1);
 
-                // 🚫 don’t call updateAutoPage here → avoid overwriting progress on refresh
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    };
+    //         const res = await axios.post(
+    //             `${API_URL}get_lession_by_pageNo`,
+    //             formData,
+    //             {
+    //                 headers: {
+    //                     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    //                     Accept: "*/*",
+    //                 },
+    //                 withCredentials: true,
+    //             }
+    //         );
+    //         const data = res.data;
+    //         if (res.data.flag === "S" && data.data) {
+    //             const item = data.data;
+    //             console.log(item)
+    //             if (item.introduction) {
+    //                 const { chapterName, pageContent } = splitContent(item.introduction);
+    //                 setPageContent(pageContent || "");
+    //             }
+    //             if (item.section_name != null) setChapterName(item.section_name);
+
+    //             if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
+    //             if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
+
+    //             // ✅ safe: only when explicitly called for navigation
+    //             if (item.lesson_id) updateAutoPage(item.lesson_id);
+
+    //             // 🚫 don’t call updateAutoPage here → avoid overwriting progress on refresh
+    //         }
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // };
 
     // --- Navigation handlers ---
     const handleNext = (e) => {
@@ -447,17 +487,23 @@ export const Text2 = () => {
                         <input
                             type="number"
                             value={pageNumber}
-                            onChange={(e) => {
-                                const value = Number(e.target.value);
-                                setPageNumber(value);
+                             onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setPageNumber(value);
 
+                              // Clear old timer
+                              clearTimeout(debounceTimer);
+
+                              // Set new timer (e.g. 500ms delay)
+                              debounceTimer = setTimeout(() => {
                                 if (value > 0 && value <= 388) {
-                                    getLessonByPageNumber(value); // ✅ use 'value', not 'pageNumber'
-                                } else {
-                                    alert("Page limit exceeded");
+                                  getLessonByPageNumber(value);
+                                } else if (value > 388) {
+                                  alert("Page limit exceeded");
                                 }
+                              }, 500);
                             }}
-                            className="w-12 sm:w-16 py-1 sm:py-2 rounded-full text-center border-gray-300 focus:outline-none  
+                            className="w-12 sm:w-16 py-1 sm:py-2 rounded-full text-center border-gray-700 focus:outline-none  
     [&::-webkit-outer-spin-button]:appearance-none 
     [&::-webkit-inner-spin-button]:appearance-none 
     [appearance:textfield]"
@@ -465,8 +511,8 @@ export const Text2 = () => {
 
 
 
-                        <span className="text-gray-500">of</span>
-                        <span className="text-gray-500">325</span>
+                        <span className="text-gray-700">of</span>
+                        <span className="text-gray-700">325</span>
                     </div>
 
                 </div>
