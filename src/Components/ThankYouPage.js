@@ -2,8 +2,10 @@ import React from "react";
 import {useNavigate } from 'react-router-dom';
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { useLanguage } from "../LanguageContext";
 
 const ThankYouPage = () => {
+  const { t, lang, changeLanguage } = useLanguage();
     const navigate = useNavigate();
   return (
     <div className="min-h-[100svh] flex flex-col">
@@ -28,10 +30,10 @@ const ThankYouPage = () => {
         >
           <div className="w-full max-w-5xl text-center">
             <h1 className="font-light leading-tight mb-4 text-3xl sm:text-5xl md:text-7xl">
-              Thank you for registering!
+              {t("thank_you_for_registering")}
             </h1>
             <p className="text-base sm:text-xl md:text-2xl font-light text-gray-200 leading-relaxed">
-              Please check your registered email for login credentials.<button onClick={()=>{navigate('/login');}}>Click here to login.</button>
+              {t("email_for_login_credentials")}<button onClick={()=>{navigate('/login');}}>{t("click_here_to_login")}</button>
             </p>
           </div>
         </div>

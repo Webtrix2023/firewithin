@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from "../LanguageContext";
 
 const Landing = () => {
+  const { t, lang, changeLanguage } = useLanguage();
   return (
     <section className="relative overflow-hidden">
       {/* Background (fills the section) */}
@@ -21,9 +23,10 @@ const Landing = () => {
           <div className="max-w-[52rem] mx-auto md:mx-0 md:ml-20">
             <h2
                 className="font-light leading-[1.08] mb-5 text-[clamp(3rem,7.2vw,6.25rem)]">
-                <span className="md:block">Discover a </span>
+                <span className="md:block">{t("discover")} </span>
+                {/* <span className="md:block">Discover a </span>
                 <span className="md:block">world of digital </span>
-                <span className="md:block">content</span>
+                <span className="md:block">content</span> */}
                 </h2>
 
             <Link to="/signup" className="inline-block">
@@ -34,7 +37,7 @@ const Landing = () => {
                   text-[clamp(1rem,2vw,1.1rem)]     /* modest size */
                 "
               >
-                Register Now
+                {t("register_now")}
               </span>
             </Link>
           </div>

@@ -32,7 +32,7 @@ const HomePage = () => {
   <div className="block md:hidden mb-6">
     <img
       src={Henry_mob}
-      alt="The Fire Within"
+      alt={t("title")}
       className="w-[115px] mx-auto rounded-lg shadow-md object-cover"
     />
   </div>
@@ -53,7 +53,7 @@ const HomePage = () => {
       >
         <img
           src={listen_img}
-          alt="Listen"
+          alt={t("listen")}
           className="object-contain w-14 sm:w-16 md:w-20 lg:w-24"
         />
         <p className="text-base sm:text-xl font-extralight mt-2">{t("listen")}</p>
@@ -66,7 +66,7 @@ const HomePage = () => {
       >
         <img
           src={read_img}
-          alt="Read"
+          alt={t("read")}
           className="object-contain w-14 sm:w-16 md:w-20 lg:w-24"
         />
         <p className="text-base sm:text-xl font-extralight mt-2">{t("read")}</p>
@@ -79,7 +79,7 @@ const HomePage = () => {
       >
         <img
           src={podcast_img}
-          alt="Podcast"
+          alt={t("podcast")}
           className="object-contain w-14 sm:w-16 md:w-20 lg:w-24 filter invert brightness-0"
         />
         <p className="text-base sm:text-xl font-extralight mt-2">{t("podcast")}</p>

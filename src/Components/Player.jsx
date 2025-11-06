@@ -408,11 +408,11 @@ const Player = () => {
         >
           <div className="flex flex-col h-full">
             <h2 className="text-xl font-light border-b p-5 bg-blue-500 text-white">${t("chapters")}</h2>
-            <h2 className="text-xl font-light border-b p-5 text-gray-500">Contents</h2>
+            <h2 className="text-xl font-light border-b p-5 text-gray-500">{t("contents")}</h2>
             <div className="flex-1 overflow-y-auto">
               <ul className="text-gray-500 font-semibold text-md sm:text-base">
                 {sections.length === 0 ? (
-                  <li className="border-b border-b-gray-200 p-3">Loading…</li>
+                  <li className="border-b border-b-gray-200 p-3">{t("loading")}</li>
                 ) : (
                   sections.map((s, i) => {
                     const label =

@@ -69,14 +69,14 @@ const Navbar2 = (params) => {
           {isMusicPage ? (
             <button
               aria-label="Switch to Text"
-              title={t("READ_TEXT")}
+              title={t("Read")}
               className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
               onClick={() => navigate("/book/read")}
             >
               <img
                 className="w-4 sm:w-5 md:w-6 lg:w-7"
                 src={`${API_URL}/images/sites/read-small.svg`}
-                alt="Read"
+                alt={t("Read")}
               />
             </button>
           ) : isTextPage ? (
@@ -89,7 +89,7 @@ const Navbar2 = (params) => {
               <img
                 className="w-4 sm:w-5 md:w-6 lg:w-7"
                 src={`${API_URL}/images/sites/listen-i.svg`}
-                alt="Listen"
+                alt={t("LISTEN")}
               />
             </button>
           ) : null}
@@ -97,14 +97,14 @@ const Navbar2 = (params) => {
           {/* Podcast */}
           <button
             aria-label="Podcast"
-            title="Podcast"
+            title={t("podcast")}
             className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
             onClick={() => navigate("/book/podcasts")}
           >
             <img
               className="w-4 sm:w-5 md:w-6 lg:w-7"
               src={podcast_img}
-              alt="Podcast"
+              alt={t("podcast")}
             />
           </button>
 
@@ -112,7 +112,7 @@ const Navbar2 = (params) => {
           <button
             ref={refs.setReference}
             aria-label="Select Language"
-            title="Select Language"
+            title={t("select_language")}
             className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
             onClick={() => setShowLangMenu((prev) => !prev)}
           >
@@ -158,7 +158,7 @@ const Navbar2 = (params) => {
           {/* Profile */}
           <button
             aria-label="Profile"
-            title="Profile"
+            title={t("profile")}
             className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
             onClick={() => setDisplayMenu(!displayMenu)}
           >
@@ -168,7 +168,7 @@ const Navbar2 = (params) => {
           {/* Back */}
           <button
             aria-label="Back to dashboard"
-            title="Back to dashboard"
+            title={t("back_to_dashboard")}
             className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
             onClick={() => {
               if (CurrPage === HomePage) navigate(-1);
@@ -178,7 +178,7 @@ const Navbar2 = (params) => {
             <img
               className="w-4 sm:w-5 md:w-6 lg:w-7"
               src={`${API_URL}/images/sites/back.svg`}
-              alt="Back to dashboard"
+              alt={t("back_to_dashboard")}
             />
           </button>
 
@@ -189,14 +189,14 @@ const Navbar2 = (params) => {
                 onClick={() => navigate("/account")}
                 className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base"
               >
-                {t("MY_ACCOUNT")}
+                {t("my_account")}
               </button>
               <hr />
               <button
                 onClick={handleLogout}
                 className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base"
               >
-                {t("LOGOUT")}
+                {t("logout")}
               </button>
             </div>
           )}

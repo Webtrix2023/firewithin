@@ -5,9 +5,11 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 
 import { api, ensureCsrf } from '../api';
 import { toast } from 'react-toastify';
+import { useLanguage } from "../LanguageContext";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const { t, lang, changeLanguage } = useLanguage();
   
   const [formData, setFormData] = useState({ email: '' });
   const [focused, setFocused] = useState({ email: false });
@@ -19,7 +21,7 @@ const ForgotPassword = () => {
   const location = useLocation();
   const page = (location.state && location.state.page) ? location.state.page : '';
   const backPath = page ? `/${page}` : '/';
-  const backLabel = page || 'home';
+  const backLabel = page || '$t{(login)}';
 
   const handleChange = (e) =>
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -62,7 +64,7 @@ const ForgotPassword = () => {
           <div className="flex flex-col items-center">
             <img src="/logo.svg" alt="Logo" className="h-8 w-auto" />
             <span className="mt-1 text-[10px] uppercase tracking-widest text-gray-500">
-              THE FIRE WITHIN
+              {t("app_name")}
             </span>
           </div>
         </header>
@@ -84,14 +86,14 @@ const ForgotPassword = () => {
 
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">
-                  Email <span className="text-red-500">*</span>
+                  {t("email")} <span className="text-red-500">*</span>
                 </label>
                 <div className="flex items-center gap-2">
                   <FiMail className={`text-xl ${focused.email ? 'text-blue-600' : 'text-gray-400'}`} />
                   <input
                     type="email"
                     name="email"
-                    placeholder="Enter Email"
+                    placeholder={t("enter_email")}
                     className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     value={formData.email}
                     onChange={handleChange}
@@ -109,7 +111,7 @@ const ForgotPassword = () => {
                   className={`w-full bg-black text-white px-6 py-3 rounded-full transition
                     ${loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-800'}`}
                 >
-                  {loading ? 'Verifying…' : 'VERIFY'}
+                  {loading ? `${t("verifying")}` : `${t("verify")}`}
                 </button>
 
                 <Link to={backPath} className="text-xs text-gray-500 hover:underline">
@@ -123,7 +125,7 @@ const ForgotPassword = () => {
         {/* Tiny sticky footer link */}
         <footer className="flex items-center justify-center pb-3">
           <Link to="/" className="text-[11px] text-gray-500 hover:text-gray-700 underline">
-            © {new Date().getFullYear()} Fire Within · Back to website
+            © {new Date().getFullYear()}{t("fire_within")} · {t("back_to_website")}
           </Link>
         </footer>
       </section>
@@ -134,8 +136,8 @@ const ForgotPassword = () => {
           {/* Left hero copy */}
           <div className="hidden md:flex items-center text-white">
             <h2 className="font-inter font-light leading-[1.08] tracking-wide text-[clamp(2.25rem,5vw,4rem)]">
-              <span className="md:block">Forgot</span>
-              <span className="md:block">password.</span>
+              <span className="md:block">{t("forgot_password_title")}</span>
+              {/*<span className="md:block">password.</span>*/}
             </h2>
           </div>
 
@@ -143,7 +145,7 @@ const ForgotPassword = () => {
           <div className="bg-white rounded-2xl shadow-lg w-[40%]">
             <div className="py-16 px-12">
               <h2 className="text-center mb-2 font-inter font-bold text-[26px] tracking-wide uppercase">
-                THE FIRE WITHIN
+                {t("app_name")}
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-3 mt-2">
@@ -161,14 +163,14 @@ const ForgotPassword = () => {
                 {/* Email */}
                 <div>
                   <label className="block md:ml-10 text-sm font-normal font-inter text-slate-600 mb-2">
-                    Email <span className="text-red-500">*</span>
+                    {t("email")} <span className="text-red-500">*</span>
                   </label>
                   <div className="flex items-center space-x-3">
                     <FiMail className={`text-2xl ${focused.email ? 'text-blue-600' : 'text-gray-400'}`} />
                     <input
                       type="email"
                       name="email"
-                      placeholder="Enter Email"
+                      placeholder={t("enter_email")}
                       className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3.5 rounded-full outline-none text-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                       value={formData.email}
                       onChange={handleChange}
@@ -187,11 +189,11 @@ const ForgotPassword = () => {
                     className={`bg-black text-white font-inter px-7 py-3 rounded-full transition
                       ${loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-800'}`}
                   >
-                    {loading ? 'Verifying…' : 'VERIFY'}
+                    {loading ? `${t("verifying")}` : `${t("verify")}`}
                   </button>
 
                   <Link to={backPath} className="text-sm text-gray-500 hover:underline">
-                    Back to {backLabel}
+                    {t("back_to")}{backLabel}
                   </Link>
                 </div>
               </form>
