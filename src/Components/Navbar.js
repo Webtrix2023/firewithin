@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from "../LanguageContext";
 
 const Navbar = () => {
+  const { t, lang, changeLanguage } = useLanguage();
   return (
     <nav className="w-full bg-white/95 shadow-sm">
       {/* full-width, comfy padding on desktop */}
@@ -21,7 +23,7 @@ const Navbar = () => {
                        hover:bg-neutral-800 transition
                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30"
           >
-            Login
+            {t("login")}
           </Link>
         </div>
       </div>

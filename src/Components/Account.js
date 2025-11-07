@@ -4,9 +4,11 @@ import { API } from "../api/config";
 import { CgProfile } from "react-icons/cg";
 import Navbar2 from "./Navbar2";
 import { toast } from "react-toastify";
+import { useLanguage } from "../LanguageContext";
 
 const Account = () => {
   const navigate = useNavigate();
+  const { t, lang, changeLanguage } = useLanguage();
 
   const [formData, setFormData] = useState({
     old_password: "",
@@ -91,8 +93,8 @@ const Account = () => {
       {/* Form Section */}
       <div className="flex flex-1 items-center justify-center px-4 py-10">
         <div className="w-full md:w-[40vw] bg-white rounded-2xl shadow-lg px-10 md:px-28 py-10 md:py-20">
-          <h2 className="text-lg font-medium text-gray-500 mb-1">Welcome</h2>
-          <h1 className="text-2xl font-normal text-blue-600 mb-12">Change Password</h1>
+          <h2 className="text-lg font-medium text-gray-500 mb-1">{t("welcome")}</h2>
+          <h1 className="text-2xl font-normal text-blue-600 mb-12">{t("change_password")}</h1>
 
           {/* Server or success messages */}
           {serverMsg.text && (
@@ -111,12 +113,12 @@ const Account = () => {
             {/* Old Password */}
             <div>
               <label className="block text-sm font-medium text-slate-500 mb-2 ml-4">
-                Old Password <span className="text-red-500">*</span>
+                {t("old_password")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="password"
                 name="old_password"
-                placeholder="Enter Old Password"
+                placeholder={t("enter_old_password")}
                 className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 value={formData.old_password}
                 onChange={handleChange}
@@ -130,12 +132,12 @@ const Account = () => {
             {/* New Password */}
             <div>
               <label className="block text-sm font-medium text-slate-500 mb-2 ml-4">
-                New Password <span className="text-red-500">*</span>
+               {t("new_password")}<span className="text-red-500">*</span>
               </label>
               <input
                 type="password"
                 name="new_password"
-                placeholder="New Password"
+                placeholder={t("new_password")}
                 className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 value={formData.new_password}
                 onChange={handleChange}
@@ -149,12 +151,12 @@ const Account = () => {
             {/* Verify Password */}
             <div>
               <label className="block text-sm font-medium text-slate-500 mb-2 ml-4">
-                Verify New Password <span className="text-red-500">*</span>
+                {t("verify_password")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="password"
                 name="verify_password"
-                placeholder="Verify New Password"
+                placeholder={t("verify_password")}
                 className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 value={formData.verify_password}
                 onChange={handleChange}
@@ -173,7 +175,7 @@ const Account = () => {
                 loading ? "opacity-60 cursor-not-allowed" : "hover:bg-gray-800"
               }`}
             >
-              {loading ? "Updating…" : "UPDATE"}
+              {loading ? `${t("updating")}` : `${t("update")}`}
             </button>
           </form>
         </div>
