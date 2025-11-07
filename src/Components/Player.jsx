@@ -322,15 +322,15 @@ const Player = () => {
               max="100"
               value={duration > 0 ? (currentTime / duration) * 100 : 0}
               onChange={handleSeek}
-              className="
-    w-full h-2 rounded-lg cursor-pointer appearance-none
-  "
+              className=" w-full h-2 rounded-lg cursor-pointer appearance-none
+"
               style={{
+                "accent-color": "#FF2C00",
                 background:
                   duration > 0
                     ? `linear-gradient(
             to right, 
-            #0075FF ${(currentTime / duration) * 100}%, 
+            #FF2C00 ${(currentTime / duration) * 100}%, 
             #e5e7eb ${(currentTime / duration) * 100}%, 
             #e5e7eb 100%
           )`
@@ -348,7 +348,7 @@ const Player = () => {
             </div>
           </div>
           {/* Blue Section */}
-          <div className="bg-[#0075FF] p-10 flex text-lg justify-center items-center gap-6">
+          <div className="bg-[#FF2C00] p-10 flex text-lg justify-center items-center gap-6">
             <button id="prev-page" className="changePage hover:cursor-pointer group transition-all duration-300" data-type="section" data-section="4" data-course="1" data-lessonindex="0" onClick={() => handlePrev()}>
               <svg className="w-6 h-6 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-300 ease-in-out group-hover:scale-110" viewBox="0 0 33 37" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2 6.27147V30.3178M28.651 2.10423C28.8648 1.93616 29.1218 1.83141 29.3926 1.80198C29.6634 1.77256 29.9371 1.81965 30.1823 1.93786C30.4275 2.05607 30.6342 2.24062 30.7788 2.47036C30.9235 2.7001 31.0001 2.96573 31 3.23682V33.3525C30.9997 33.6234 30.9227 33.8887 30.7779 34.1181C30.6331 34.3475 30.4263 34.5317 30.1812 34.6496C29.9361 34.7675 29.6626 34.8144 29.392 34.7849C29.1214 34.7554 28.8646 34.6506 28.651 34.4827L9.48442 19.4272C9.31244 19.2922 9.17345 19.1201 9.07789 18.924C8.98233 18.7278 8.93269 18.5126 8.93269 18.2947C8.93269 18.0767 8.98233 17.8615 9.07789 17.6653C9.17345 17.4692 9.31244 17.2971 9.48442 17.1621L28.651 2.10423Z" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -392,7 +392,7 @@ const Player = () => {
         <button
           aria-label={isSliderOpen ? "Close chapters" : "Open chapters"}
           onClick={(e) => { e.stopPropagation(); setIsSliderOpen(!isSliderOpen); }}
-          className={`fixed top-1/2 -translate-y-1/2 z-40 text-blue-600 bg-white border border-neutral-200 pl-2 py-5 rounded-l-full shadow-lg transition-all duration-300
+          className={`fixed top-1/2 -translate-y-1/2 z-40 text-red-600 bg-white border border-neutral-200 pl-2 py-5 rounded-l-full shadow-lg transition-all duration-300
                 ${isSliderOpen ? "right-[85vw] sm:right-96" : "right-0"}`}
         >
           {isSliderOpen ? <FaAngleRight size={28} /> : <FaAngleLeft size={28} />}
@@ -407,7 +407,7 @@ const Player = () => {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex flex-col h-full">
-            <h2 className="text-xl font-light border-b p-5 bg-blue-500 text-white">${t("chapters")}</h2>
+            <h2 className="text-xl font-light border-b p-5 bg-red-500 text-white">{t("chapters")}</h2>
             <h2 className="text-xl font-light border-b p-5 text-gray-500">{t("contents")}</h2>
             <div className="flex-1 overflow-y-auto">
               <ul className="text-gray-500 font-semibold text-md sm:text-base">

@@ -2,9 +2,21 @@ import React, { useState, useEffect } from "react";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate, useLocation } from "react-router-dom";
 import { API_URL } from "../config";
-import podcast_img from "../assets/podcast-icon.svg";
-import { useFloating, offset, flip, shift, autoUpdate } from "@floating-ui/react";
+import { api } from "../api";
+import podcast_img from "../assets/podcast.png";
+import backRed from "../assets/backRed.png";
+import ListenRed from "../assets/ListenRed.png";
+import readRed from "../assets/readRed.png";
+import langv from "../assets/lang.png";
+import {
+  useFloating,
+  offset,
+  flip,
+  shift,
+  autoUpdate,
+} from "@floating-ui/react";
 import { useLanguage } from "../LanguageContext"; // ✅ make sure this path matches your hook location
+import axios from "axios";
 
 const Navbar2 = (params) => {
   const navigate = useNavigate();
@@ -43,6 +55,23 @@ const Navbar2 = (params) => {
     changeLanguage(newLang);
     setShowLangMenu(false);
     localStorage.setItem("preferredLang", newLang);
+    updateLanguage(newLang);
+  };
+
+  const updateLanguage = async (newLang) => {
+    try {
+      //await axios.get(`${API_URL}updateLanguage/${newLang}`);
+      const body = new URLSearchParams();
+      body.append("lang", newLang);
+      const res = await api.post("/updateLanguage", body, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        withCredentials: true,
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -58,24 +87,31 @@ const Navbar2 = (params) => {
           </h1>
           <p className="font-normal text-[11px] sm:text-xs md:text-base lg:text-lg text-black/90 max-w-[65vw] md:max-w-none truncate">
             {params?.chapterNumber
-              ? `${t("chapter")} - ${params?.chapterNumber ?? ""} ${params?.chapterName ?? ""}`
+              ? `${t("chapter")} - ${params?.chapterNumber ?? ""} ${
+                  params?.chapterName ?? ""
+                }`
               : " "}
           </p>
         </div>
 
         {/* Right: Icons + Language */}
-        <div className="flex items-center gap-2 sm:gap-3 md:gap-5 lg:gap-6 text-blue-500 relative">
+        <div className="flex items-center gap-2 sm:gap-3 md:gap-5 lg:gap-6 text-red-500 relative">
           {/* Listen / Read Toggle */}
           {isMusicPage ? (
             <button
               aria-label="Switch to Text"
               title={t("Read")}
-              className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
+              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
               onClick={() => navigate("/book/read")}
             >
-              <img
+              {/* <img
                 className="w-4 sm:w-5 md:w-6 lg:w-7"
                 src={`${API_URL}/images/sites/read-small.svg`}
+                alt={t("Read")}
+              /> */}
+              <img
+                className="w-4 sm:w-5 md:w-6 lg:w-7"
+                src={readRed}
                 alt={t("Read")}
               />
             </button>
@@ -83,12 +119,17 @@ const Navbar2 = (params) => {
             <button
               aria-label="Switch to Music"
               title={t("LISTEN")}
-              className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
+              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
               onClick={() => navigate("/book/listen")}
             >
+              {/* <img
+                className="w-4 sm:w-5 md:w-6 lg:w-7"
+                src={`${API_URL}/images/sites/`}
+                alt={t("LISTEN")}
+              /> */}
               <img
                 className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={`${API_URL}/images/sites/listen-i.svg`}
+                src={ListenRed}
                 alt={t("LISTEN")}
               />
             </button>
@@ -98,7 +139,7 @@ const Navbar2 = (params) => {
           <button
             aria-label="Podcast"
             title={t("podcast")}
-            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
+            className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
             onClick={() => navigate("/book/podcasts")}
           >
             <img
@@ -113,11 +154,17 @@ const Navbar2 = (params) => {
             ref={refs.setReference}
             aria-label="Select Language"
             title={t("select_language")}
-            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
+            className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
             onClick={() => setShowLangMenu((prev) => !prev)}
           >
-            🌐
-            <span className="ml-1 text-sm uppercase hidden sm:inline">{lang}</span>
+            <img
+              className="w-4 sm:w-5 md:w-6 lg:w-7 inline"
+              src={langv}
+              alt={t("lang")}
+            />
+            <span className="ml-1 text-lg uppercase hidden sm:inline">
+              {lang}
+            </span>
           </button>
 
           {showLangMenu && (
@@ -159,7 +206,7 @@ const Navbar2 = (params) => {
           <button
             aria-label="Profile"
             title={t("profile")}
-            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
+            className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
             onClick={() => setDisplayMenu(!displayMenu)}
           >
             <CgProfile className="text-lg sm:text-xl md:text-2xl lg:text-3xl" />
@@ -169,15 +216,20 @@ const Navbar2 = (params) => {
           <button
             aria-label="Back to dashboard"
             title={t("back_to_dashboard")}
-            className="p-1.5 md:p-2 rounded-full hover:text-blue-700 transition-transform hover:scale-105"
+            className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
             onClick={() => {
               if (CurrPage === HomePage) navigate(-1);
               else navigate("/dashboard");
             }}
           >
-            <img
+            {/* <img
               className="w-4 sm:w-5 md:w-6 lg:w-7"
               src={`${API_URL}/images/sites/back.svg`}
+              alt={t("back_to_dashboard")}
+            /> */}
+            <img
+              className="w-4 sm:w-5 md:w-6 lg:w-7"
+              src={backRed}
               alt={t("back_to_dashboard")}
             />
           </button>
