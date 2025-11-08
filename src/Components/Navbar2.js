@@ -46,8 +46,10 @@ const Navbar2 = (params) => {
   // Page checks
   const CurrPage = location.pathname;
   const isMusicPage = CurrPage === "/book/listen";
-  const isTextPage =
-    CurrPage === "/book/read" || CurrPage === "/book/read-advanced";
+  //const isTextPage = CurrPage === "/book/read" || CurrPage === "/book/read-advanced";
+  const isTextPage = CurrPage === "/book/read";
+  const isPodcast = CurrPage === "/book/podcasts";
+  const idDashboard = CurrPage === "/dashboard";
   const HomePage = "/dashboard";
 
   // ✅ Global language change (no need to manage local state)
@@ -69,13 +71,14 @@ const Navbar2 = (params) => {
         },
         withCredentials: true,
       });
+      window.location.reload();
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <nav className="w-full bg-white shadow sticky top-0 z-10">
+    <nav className="w-full bg-gradient-to-r from-gray-300 to-white shadow sticky top-0 z-10">
       <div className="mx-auto flex flex-wrap items-center justify-between px-3 py-2.5 md:py-4">
         {/* Left: Title */}
         <div className="leading-tight mb-2 md:mb-0 flex-1 min-w-[180px] md:pl-10">
@@ -100,7 +103,7 @@ const Navbar2 = (params) => {
           {isMusicPage ? (
             <button
               aria-label="Switch to Text"
-              title={t("Read")}
+              title={t("read")}
               className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
               onClick={() => navigate("/book/read")}
             >
@@ -112,13 +115,13 @@ const Navbar2 = (params) => {
               <img
                 className="w-4 sm:w-5 md:w-6 lg:w-7"
                 src={readRed}
-                alt={t("Read")}
+                alt={t("read")}
               />
             </button>
           ) : isTextPage ? (
             <button
               aria-label="Switch to Music"
-              title={t("LISTEN")}
+              title={t("listen")}
               className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
               onClick={() => navigate("/book/listen")}
             >
@@ -130,12 +133,49 @@ const Navbar2 = (params) => {
               <img
                 className="w-4 sm:w-5 md:w-6 lg:w-7"
                 src={ListenRed}
-                alt={t("LISTEN")}
+                alt={t("listen")}
               />
             </button>
           ) : null}
-
+          
+          {isPodcast ? (<>
+            <button
+              aria-label="Switch to Text"
+              title={t("read")}
+              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+              onClick={() => navigate("/book/read")}
+            >
+              {/* <img
+                className="w-4 sm:w-5 md:w-6 lg:w-7"
+                src={`${API_URL}/images/sites/read-small.svg`}
+                alt={t("Read")}
+              /> */}
+              <img
+                className="w-4 sm:w-5 md:w-6 lg:w-7"
+                src={readRed}
+                alt={t("read")}
+              />
+            </button>
+            <button
+              aria-label="Switch to Music"
+              title={t("listen")}
+              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+              onClick={() => navigate("/book/listen")}
+            >
+              {/* <img
+                className="w-4 sm:w-5 md:w-6 lg:w-7"
+                src={`${API_URL}/images/sites/`}
+                alt={t("LISTEN")}
+              /> */}
+              <img
+                className="w-4 sm:w-5 md:w-6 lg:w-7"
+                src={ListenRed}
+                alt={t("listen")}
+              />
+            </button></>
+          ) : null}
           {/* Podcast */}
+          {(!idDashboard && !isPodcast)&& (
           <button
             aria-label="Podcast"
             title={t("podcast")}
@@ -148,7 +188,7 @@ const Navbar2 = (params) => {
               alt={t("podcast")}
             />
           </button>
-
+          )}
           {/* 🌐 Language Selector */}
           <button
             ref={refs.setReference}
@@ -171,7 +211,7 @@ const Navbar2 = (params) => {
             <div
               ref={refs.setFloating}
               style={floatingStyles}
-              className="bg-white border border-gray-200 rounded-md shadow-lg w-44 sm:w-48 z-50"
+              className="bg-white border border-gray-200 rounded-md shadow-lg w-44 sm:w-48 z-1000"
             >
               <ul className="py-2 text-sm text-gray-700">
                 <li>
@@ -190,14 +230,14 @@ const Navbar2 = (params) => {
                     Korean (한국인)
                   </button>
                 </li>
-                <li>
+                {/* <li>
                   <button
                     onClick={() => handleLanguageChange("zh")}
                     className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   >
                     Chinese (中国人)
                   </button>
-                </li>
+                </li> */}
               </ul>
             </div>
           )}
@@ -213,6 +253,7 @@ const Navbar2 = (params) => {
           </button>
 
           {/* Back */}
+          {!idDashboard && (
           <button
             aria-label="Back to dashboard"
             title={t("back_to_dashboard")}
@@ -222,6 +263,7 @@ const Navbar2 = (params) => {
               else navigate("/dashboard");
             }}
           >
+           
             {/* <img
               className="w-4 sm:w-5 md:w-6 lg:w-7"
               src={`${API_URL}/images/sites/back.svg`}
@@ -233,7 +275,7 @@ const Navbar2 = (params) => {
               alt={t("back_to_dashboard")}
             />
           </button>
-
+          )}
           {/* Profile Dropdown */}
           {displayMenu && (
             <div className="absolute right-0 top-full mt-4 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50">

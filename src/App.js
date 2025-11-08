@@ -27,7 +27,7 @@ function ProtectedRoute({ children }) {
 function App() {
   return (
     // {/*basename="/ws-new"*/}
-    <BrowserRouter >
+    <BrowserRouter>
       <LanguageProvider>
       <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
@@ -38,9 +38,6 @@ function App() {
         <Route path="/thank-you" element={<ThankYouPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<UpdatePassword />} />
-       
-
-
         {/* Protected Routes */}
         <Route
           path="/dashboard"
@@ -59,7 +56,7 @@ function App() {
           }
         />
         <Route
-          path="/book/read-advanced"
+          path="/book/read"
           element={
             <ProtectedRoute>
               <Text />
@@ -67,7 +64,7 @@ function App() {
           }
         />
         <Route
-          path="/book/read"
+          path="/book/read-old"
           element={
             <ProtectedRoute>
               <Text2 />

@@ -6,7 +6,7 @@ import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 import { api } from "../api";
 import { Howl } from "howler";
 import { toast } from "react-toastify";
-import { API_URL } from "../config";
+import { API_URL, APP_URL } from "../config";
 import { useLanguage } from "../LanguageContext";
 const Player = () => {
     const { t, lang, changeLanguage } = useLanguage();
@@ -139,7 +139,7 @@ const Player = () => {
       if (flag === "S" && data) {
         if (data.currentChapterDetails) {
           const chapter = data.currentChapterDetails;
-          if (chapter.section_name) setChapterName(chapter.section_name);
+          if (chapter.section_name) setChapterName(lang !== "en" ? chapter?.[`section_name_${lang}`]?.trim() : chapter.section_name);
           if (chapter.section_id != null) await setCurrentSection(Number(chapter.section_id));
           if (chapter.section_index != null) setLessonIndex(Number(chapter.section_index));
           // ✅ File name (using section_id + file_id directly)
@@ -162,7 +162,7 @@ const Player = () => {
               setResumeTime(timedata[audioDetails[0]?.lesson_id] || 0);
             }
             const generatedFileName = `1@${chapter.section_id}@${data.file_id}@The_Fire_Within_Chapter_${chapter.section_id}_R1.mp3`;
-            setAudioSrc(`${API_URL}audio.php?file=${generatedFileName}`); // use it immediately
+            setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`); // use it immediately
           }
         }
 
@@ -244,13 +244,18 @@ const Player = () => {
      await updateAutoPage(sectionId);
       await getCurrentPageDetails();
     setIsPlaying(false)
-    const label =
-      section.section_name ||
-      section.chapter_name ||
-      section.title ||
-      `${t("chapter")} ${i + 1}`;
+      const label = (lang !== "en" ? section?.[`section_name_${lang}`]?.trim() : section.section_name)
+           || section?.chapter_name?.trim() 
+           || section?.title?.trim() 
+           || `Chapter ${i + 1}`;
+            setChapterName(label);
+    // const label =
+    //   section.section_name ||
+    //   section.chapter_name ||
+    //   section.title ||
+    //   `${t("chapter")} ${i + 1}`;
     setChapterNumber(i + 1);
-    setChapterName(label);
+    //setChapterName(label);
   };
 
   const handlePrev = async () => {
@@ -259,7 +264,7 @@ const Player = () => {
     try {
       const chapter = prevChapter;
 
-      if (chapter.section_name) setChapterName(chapter.section_name);
+      if (chapter.section_name) setChapterName(lang !== "en" ? chapter?.[`section_name_${lang}`]?.trim() : chapter.section_name);
       if (chapter.section_id != null) setCurrentSection(Number(chapter.section_id));
       if (chapter.section_index != null) setLessonIndex(Number(chapter.section_index));
       await updateAutoPage(chapter.section_id);
@@ -276,7 +281,7 @@ const Player = () => {
     try {
       const chapter = nextChapter;
 
-      if (chapter.section_name) setChapterName(chapter.section_name);
+      if (chapter.section_name) setChapterName(lang !== "en" ? chapter?.[`section_name_${lang}`]?.trim() : chapter.section_name);
       if (chapter.section_id != null) setCurrentSection(Number(chapter.section_id));
       if (chapter.section_index != null) setLessonIndex(Number(chapter.section_index));
 
@@ -309,12 +314,12 @@ const Player = () => {
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
       {/* Main Div */}
-      <div className="flex flex-1 bg-gray-100 justify-center relative overflow-hidden">
+      <div className="flex flex-1 bg-gradient-to-b from-gray-500 to-gray-300 justify-center relative overflow-hidden">
         <div className="w-full max-w-[90%] mt-20 h-fit sm:max-w-[80%] md:max-w-[65%] rounded-[5vw] overflow-hidden shadow-lg">
           {/* White Section */}
           <div className="bg-white p-6 sm:p-10 md:p-16">
             <h2 className="text-gray-500 font-normal text-base sm:text-lg md:text-xl mb-4">
-              ${t("chapter")}-{currentSection} {chapterName}
+              {t("chapter")}-{currentSection} {chapterName}
             </h2>
             <input
               type="range"
@@ -415,8 +420,10 @@ const Player = () => {
                   <li className="border-b border-b-gray-200 p-3">{t("loading")}</li>
                 ) : (
                   sections.map((s, i) => {
-                    const label =
-                      s.section_name || s.chapter_name || s.title || `Chapter ${i + 1}`;
+                    const label = (lang !== "en" ? s?.[`section_name_${lang}`]?.trim() : s.section_name)
+           || s?.chapter_name?.trim() 
+           || s?.title?.trim() 
+           || `Chapter ${i + 1}`;
                     return (
                       <li
                         key={s.section_id ?? s.id ?? i}

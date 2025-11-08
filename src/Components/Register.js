@@ -68,12 +68,11 @@ const Register = () => {
   return (
     <>
       {/* MOBILE: 3-row grid (logo / form / tiny footer link) — no scroll */}
-      <section className="md:hidden grid grid-rows-[auto_1fr_auto] h-[100svh] overflow-hidden bg-white">
+      <section className="md:hidden grid grid-rows-[auto_1fr_auto] h-[100svh] overflow-hidden bg-white hero-bg">
         {/* Top logo/brand */}
         <header className="flex items-center justify-center pt-3">
           <div className="flex flex-col items-center">
-            <img src="/logo.svg" alt="Logo" className="h-8 w-auto" />
-            <span className="mt-1 text-[10px] uppercase tracking-widest text-gray-500">
+            <span className="mt-1 text-lg uppercase tracking-widest text-gray-500">
               {t("app_name")}
             </span>
           </div>
@@ -154,17 +153,14 @@ const Register = () => {
                     {t("login")}
                   </Link>
                 </p>
+                <p className="pt-2 text-gray-500 text-sm text-center mt-6 md:ml-8"><a href="/">{t("back_to_website")}</a></p>
               </div>
             </form>
           </div>
         </main>
 
         {/* Tiny sticky footer link */}
-        <footer className="flex items-center justify-center pb-3">
-          <Link to="/" className="text-[11px] text-gray-500 hover:text-gray-700 underline">
-            © {new Date().getFullYear()} {t("fire_within")} · {t("back_to_website")}
-          </Link>
-        </footer>
+        <Footer></Footer>
       </section>
 
       {/* DESKTOP: 2-column hero with background + compact typography */}
@@ -265,6 +261,7 @@ const Register = () => {
                     {t("click_here_to_login")}
                   </Link>
                 </p>
+                <p className="pt-2 text-gray-500 text-sm text-center mt-6 md:ml-8"><a href="/">{t("back_to_website")}</a></p>
               </form>
             </div>
           </div>

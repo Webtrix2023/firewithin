@@ -82,7 +82,7 @@ export const Text = () => {
           setPageContent(pageContent || "");
 
         }
-        if (item.chapter_name != null) setChapterName(item.chapter_name);
+        if (item.chapter_name != null) setChapterName(lang !== "en" ? item?.[`section_name_${lang}`]?.trim() : item.section_name);
         if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
         if (item.section_id != null) setCurrentSection(Number(item.section_id));
         if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
@@ -136,7 +136,7 @@ export const Text = () => {
           const { chapterName, pageContent } = splitContent(item.introduction);
           setPageContent(pageContent || "");
         }
-        if (item.chapter_name != null) setChapterName(item.chapter_name);
+        if (item.chapter_name != null) setChapterName(lang !== "en" ? item?.[`section_name_${lang}`]?.trim() : item.section_name);
 
         if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
         if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
@@ -215,7 +215,7 @@ export const Text = () => {
                     //const { chapterName, pageContent } = splitContent(item.introduction);
                     setPageContent(item.introduction || "");
                 }
-                if (item.section_name != null) setChapterName(item.section_name);
+                if (item.section_name != null) setChapterName(lang !== "en" ? item?.[`section_name_${lang}`]?.trim() : item.section_name);
 
         if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
         if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
@@ -251,12 +251,18 @@ export const Text = () => {
 
     loadPage({ sectionId, index: 0, type: "section", saveProgress: true });
 
-    const label =
-      section.section_name ||
-      section.chapter_name ||
-      section.title ||
-      `Chapter ${i + 1}`;
-    setChapterName(label);
+    // const label =
+    //   section.section_name ||
+    //   section.chapter_name ||
+    //   section.title ||
+    //   `Chapter ${i + 1}`;
+    // setChapterName(label);
+    const label = (lang !== "en" ? section?.[`section_name_${lang}`]?.trim() : section.section_name)
+           || section?.chapter_name?.trim() 
+           || section?.title?.trim() 
+           || `Chapter ${i + 1}`;
+            setChapterName(label);
+
   };
 
     // --- Initial load ---
@@ -504,7 +510,7 @@ export const Text = () => {
 
             {/* Content */}
             <div
-              className="reader-html page-content leading-[1.85] text-justify"
+              className="reader-html page-content leading-[1.85] mt-4 text-justify"
               style={{
                 fontSize: `${fontSize}rem`,
                 WebkitHyphens: "auto",
@@ -525,7 +531,7 @@ export const Text = () => {
             <div className="flex items-center gap-2">
               <button
                 aria-label="Previous page"
-                className="flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white h-10 w-10 sm:h-11 sm:w-11 transition"
+                className="flex items-center justify-center rounded-full bg-red-700 hover:bg-red-800 text-white h-10 w-10 sm:h-11 sm:w-11 transition"
                 onClick={() =>
                   getPageDetails({
                     type: "prev",
@@ -539,7 +545,7 @@ export const Text = () => {
               </button>
               <button
                 aria-label="Next page"
-                className="flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white h-10 w-10 sm:h-11 sm:w-11 transition"
+                className="flex items-center justify-center rounded-full bg-red-700 hover:bg-red-800 text-white h-10 w-10 sm:h-11 sm:w-11 transition"
                 onClick={() =>
                   getPageDetails({
                     type: "next",
@@ -595,7 +601,7 @@ export const Text = () => {
         <button
           aria-label={isSliderOpen ? "Close chapters" : "Open chapters"}
           onClick={(e) => { e.stopPropagation(); setIsSliderOpen(!isSliderOpen); }}
-          className={`fixed top-1/2 -translate-y-1/2 z-40 text-blue-600 bg-white border border-neutral-200 pl-2 py-5 rounded-l-full shadow-lg transition-all duration-300
+          className={`fixed top-1/2 -translate-y-1/2 z-40 text-red-600 bg-white border border-neutral-200 pl-2 py-5 rounded-l-full shadow-lg transition-all duration-300
                 ${isSliderOpen ? "right-[85vw] sm:right-96" : "right-0"}`}
         >
           {isSliderOpen ? <FaAngleRight size={28} /> : <FaAngleLeft size={28} />}
@@ -611,7 +617,7 @@ export const Text = () => {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex flex-col h-full">
-            <h2 className="text-xl font-light border-b p-5 bg-blue-500 text-white">{t("chapters")}</h2>
+            <h2 className="text-xl font-light border-b p-5 bg-red-500 text-white">{t("chapters")}</h2>
             <h2 className="text-xl font-light border-b p-5 text-gray-500">{t("contents")}</h2>
             <div className="flex-1 overflow-y-auto">
               <ul className="text-gray-500 font-semibold text-md sm:text-base">
@@ -619,7 +625,10 @@ export const Text = () => {
                   <li className="border-b border-b-gray-200 p-3">{t("loading")}</li>
                 ) : (
                   sections.map((s, i) => {
-                    const label = s.section_name || s.chapter_name || s.title || `Chapter ${i + 1}`;
+                    const label = (lang !== "en" ? s?.[`section_name_${lang}`]?.trim() : s.section_name)
+           || s?.chapter_name?.trim() 
+           || s?.title?.trim() 
+           || `Chapter ${i + 1}`;
                     return (
                       <li
                         key={s.section_id ?? s.id ?? i}
