@@ -16,6 +16,7 @@ import {
 import { toast } from "react-toastify";
 import podcast_img from "../assets/podcast-red.svg";
 import { useLanguage } from "../LanguageContext";
+import BG from "../assets/BG.jpg";
 
 export const PodCast = () => {
   const { t, lang, changeLanguage } = useLanguage();
@@ -160,7 +161,12 @@ export const PodCast = () => {
           const chapter = data.currentChapterDetails;
 
           // console.log(chapter)
-          if (chapter.section_name) setChapterName(lang !== "en" ? chapter?.[`section_name_${lang}`]?.trim() : chapter.section_name);
+          if (chapter.section_name)
+            setChapterName(
+              lang !== "en"
+                ? chapter?.[`section_name_${lang}`]?.trim()
+                : chapter.section_name
+            );
           if (chapter.section_id != null)
             await setCurrentSection(Number(chapter.section_id));
           if (chapter.section_index != null)
@@ -401,7 +407,12 @@ export const PodCast = () => {
     try {
       const chapter = prevChapter;
 
-      if (chapter.section_name) setChapterName(lang !== "en" ? chapter?.[`section_name_${lang}`]?.trim() : chapter.section_name);
+      if (chapter.section_name)
+        setChapterName(
+          lang !== "en"
+            ? chapter?.[`section_name_${lang}`]?.trim()
+            : chapter.section_name
+        );
       if (chapter.section_id != null)
         setCurrentSection(Number(chapter.section_id));
       if (chapter.section_index != null)
@@ -416,7 +427,12 @@ export const PodCast = () => {
   const handleNext = async () => {
     try {
       const chapter = nextChapter;
-      if (chapter.section_name) setChapterName(lang !== "en" ? chapter?.[`section_name_${lang}`]?.trim() : chapter.section_name);
+      if (chapter.section_name)
+        setChapterName(
+          lang !== "en"
+            ? chapter?.[`section_name_${lang}`]?.trim()
+            : chapter.section_name
+        );
       if (chapter.section_id != null)
         setCurrentSection(Number(chapter.section_id));
       if (chapter.section_index != null)
@@ -442,12 +458,14 @@ export const PodCast = () => {
     //   `Chapter ${i + 1}`;
     // setChapterNumber(i + 1);
     // setChapterName(label);
-     const label = (lang !== "en" ? section?.[`section_name_${lang}`]?.trim() : section.section_name)
-           || section?.chapter_name?.trim() 
-           || section?.title?.trim() 
-           || `Chapter ${i + 1}`;
-            setChapterName(label);
-
+    const label =
+      (lang !== "en"
+        ? section?.[`section_name_${lang}`]?.trim()
+        : section.section_name) ||
+      section?.chapter_name?.trim() ||
+      section?.title?.trim() ||
+      `Chapter ${i + 1}`;
+    setChapterName(label);
   };
   const setLangUpdate = async (lang) => {
     await updatePodcastLang(lang);
@@ -461,7 +479,16 @@ export const PodCast = () => {
       <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
 
       {/* Main wrapper */}
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-gray-500 to-gray-300  relative ">
+      {/* <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-gray-500 to-gray-300  relative "> */}
+      <div
+        className="flex flex-1 justify-center relative overflow-hidden"
+        style={{
+          backgroundImage: `linear-gradient(rgba(128,128,128,0.5), rgba(200,200,200,0.5)), url(${BG})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
         {/* Player Card */}
         <div className="max-h-[400px] h-[70vh] w-[95%] sm:w-4/5 md:w-2/3 lg:w-1/2 rounded-3xl flex flex-col justify-between bg-[#000000] shadow-xl">
           {/* Top Section */}
@@ -494,7 +521,7 @@ export const PodCast = () => {
               onChange={handleSeek}
               className="w-[95%] h-2 rounded-lg appearance-none cursor-pointer self-center"
               style={{
-                "accent-color": "#FF2C00",
+                "accent-color": "rgb(155, 45, 22)",
                 background: `linear-gradient(to right, #FF2C00 ${
                   (currentTime / duration) * 100
                 }%, #e5e7eb ${(currentTime / duration) * 100}%)`,
@@ -506,7 +533,11 @@ export const PodCast = () => {
               <span>{formatTime(duration)}</span>
             </div>
 
-            <div className="bg-[#FF2C00] w-full py-6 flex text-lg justify-center items-center gap-6 rounded-b-3xl">
+            {/* <div className="bg-[#FF2C00] w-full py-6 flex text-lg justify-center items-center gap-6 rounded-b-3xl"> */}
+            <div
+              style={{ background: "linear-gradient(#ce440e, #772302)" }}
+              className="p-10 flex text-lg justify-center items-center gap-6 rounded-b-3xl"
+            >
               <button
                 id="prev-page"
                 class="group transition-all duration-300"
@@ -784,10 +815,13 @@ export const PodCast = () => {
                     </li>
                   ) : (
                     sections.map((s, i) => {
-                       const label = (lang !== "en" ? s?.[`section_name_${lang}`]?.trim() : s.section_name)
-           || s?.chapter_name?.trim() 
-           || s?.title?.trim() 
-           || `Chapter ${i + 1}`;
+                      const label =
+                        (lang !== "en"
+                          ? s?.[`section_name_${lang}`]?.trim()
+                          : s.section_name) ||
+                        s?.chapter_name?.trim() ||
+                        s?.title?.trim() ||
+                        `Chapter ${i + 1}`;
                       return (
                         <li
                           key={s.section_id ?? s.id ?? i}
