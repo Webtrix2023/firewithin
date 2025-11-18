@@ -5,7 +5,7 @@ import axios from "axios";
 import { CiPlay1, CiPause1 } from "react-icons/ci";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import Navbar2 from "./Navbar2";
-import { API_URL } from "../config";
+import { API_URL, APP_URL } from "../config";
 import {
   useFloating,
   offset,
@@ -160,7 +160,7 @@ export const PodCast = () => {
           const chapter = data.currentChapterDetails;
 
           // console.log(chapter)
-          if (chapter.section_name) setChapterName(chapter.section_name);
+          if (chapter.section_name) setChapterName(lang !== "en" ? chapter?.[`section_name_${lang}`]?.trim() : chapter.section_name);
           if (chapter.section_id != null)
             await setCurrentSection(Number(chapter.section_id));
           if (chapter.section_index != null)
@@ -196,7 +196,7 @@ export const PodCast = () => {
             const generatedFileName = `1@${chapter.section_id}@${data.firstAudiofile[0].lesson_id}@${data.firstAudiofile[0].file_name}`;
 
             //                     setAudioSrc(`${API_URL}audio.php?file=${generatedFileName}`); // use it immediately
-            setAudioSrc(`${API_URL}audio.php?file=${generatedFileName}`); // use it immediately
+            setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`); // use it immediately
 
             console.log("Generated filename:", generatedFileName);
           }
@@ -401,7 +401,7 @@ export const PodCast = () => {
     try {
       const chapter = prevChapter;
 
-      if (chapter.section_name) setChapterName(chapter.section_name);
+      if (chapter.section_name) setChapterName(lang !== "en" ? chapter?.[`section_name_${lang}`]?.trim() : chapter.section_name);
       if (chapter.section_id != null)
         setCurrentSection(Number(chapter.section_id));
       if (chapter.section_index != null)
@@ -416,7 +416,7 @@ export const PodCast = () => {
   const handleNext = async () => {
     try {
       const chapter = nextChapter;
-      if (chapter.section_name) setChapterName(chapter.section_name);
+      if (chapter.section_name) setChapterName(lang !== "en" ? chapter?.[`section_name_${lang}`]?.trim() : chapter.section_name);
       if (chapter.section_id != null)
         setCurrentSection(Number(chapter.section_id));
       if (chapter.section_index != null)
@@ -435,13 +435,19 @@ export const PodCast = () => {
     await updateAutoPage(sectionId);
     await getCurrentPageDetails();
     setIsPlaying(false);
-    const label =
-      section.section_name ||
-      section.chapter_name ||
-      section.title ||
-      `Chapter ${i + 1}`;
-    setChapterNumber(i + 1);
-    setChapterName(label);
+    // const label =
+    //   section.section_name ||
+    //   section.chapter_name ||
+    //   section.title ||
+    //   `Chapter ${i + 1}`;
+    // setChapterNumber(i + 1);
+    // setChapterName(label);
+     const label = (lang !== "en" ? section?.[`section_name_${lang}`]?.trim() : section.section_name)
+           || section?.chapter_name?.trim() 
+           || section?.title?.trim() 
+           || `Chapter ${i + 1}`;
+            setChapterName(label);
+
   };
   const setLangUpdate = async (lang) => {
     await updatePodcastLang(lang);
@@ -455,7 +461,7 @@ export const PodCast = () => {
       <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
 
       {/* Main wrapper */}
-      <div className="flex-1 flex items-center justify-center bg-[#626971] relative ">
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-gray-500 to-gray-300  relative ">
         {/* Player Card */}
         <div className="max-h-[400px] h-[70vh] w-[95%] sm:w-4/5 md:w-2/3 lg:w-1/2 rounded-3xl flex flex-col justify-between bg-[#000000] shadow-xl">
           {/* Top Section */}
@@ -464,12 +470,12 @@ export const PodCast = () => {
               <img
                 src={podcast_img}
                 className="w-20 sm:w-28 md:w-32 lg:w-40"
-                alt="Podcast"
+                alt={t("podcast_upper")}
               />
             </div>
             <div className="text-center sm:text-left">
               <h4 className="text-[#FF2C00] text-lg sm:text-xl md:text-4xl font-extrabold">
-                PODCAST
+                {t("podcast_upper")}
               </h4>
               <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight break-words">
                 {chapterName}
@@ -721,7 +727,7 @@ export const PodCast = () => {
                           korean (한국인)
                         </button>
                       </li>
-                      <li>
+                      {/* <li>
                         <button
                           onClick={() => {
                             setLangUpdate("zh");
@@ -730,7 +736,7 @@ export const PodCast = () => {
                         >
                           Chinese (中国人)
                         </button>
-                      </li>
+                      </li> */}
                     </ul>
                   </div>
                 )}
@@ -778,11 +784,10 @@ export const PodCast = () => {
                     </li>
                   ) : (
                     sections.map((s, i) => {
-                      const label =
-                        s.section_name ||
-                        s.chapter_name ||
-                        s.title ||
-                        `Chapter ${i + 1}`;
+                       const label = (lang !== "en" ? s?.[`section_name_${lang}`]?.trim() : s.section_name)
+           || s?.chapter_name?.trim() 
+           || s?.title?.trim() 
+           || `Chapter ${i + 1}`;
                       return (
                         <li
                           key={s.section_id ?? s.id ?? i}

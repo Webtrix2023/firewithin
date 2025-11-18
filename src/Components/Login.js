@@ -72,8 +72,7 @@ const Login = () => {
           <header className="flex items-center justify-center pt-3">
             <div className="flex flex-col items-center">
               {/* swap with your logo asset */}
-              <img src="/logo.svg" alt="Logo" className="h-8 w-auto" />
-              <span className="mt-1 text-[10px] uppercase tracking-widest text-gray-500">
+              <span className="text-lg uppercase tracking-widest text-white">
                 {t("app_name")}
               </span>
             </div>
@@ -178,7 +177,7 @@ const Login = () => {
             </div>
           </main>
           {/* Bottom: tiny footer link */}
-          <footer className="flex items-center justify-center pb-3">
+          {/* <footer className="flex items-center justify-center pb-3">
             <Link
               to="/"
               className="text-[11px] text-gray-500 hover:text-gray-700 underline"
@@ -186,7 +185,8 @@ const Login = () => {
               © {new Date().getFullYear()} {t("fire_within")} ·{" "}
               {t("back_to_website")}
             </Link>
-          </footer>
+          </footer> */}
+          <Footer></Footer>
         </div>
         {/* DESKTOP LAYOUT (unchanged look) */}
         <div className="hidden md:flex min-h-screen flex-col justify-between">
@@ -305,6 +305,7 @@ const Login = () => {
                       {t("Click_here_to_register")}
                     </Link>
                   </p>
+                  <p className="pt-2 text-gray-500 text-sm text-center mt-6 md:ml-8"><a href="/">{t("back_to_website")}</a></p>
                 </form>
               </div>
             </div>

@@ -86,7 +86,7 @@ export const Text2 = () => {
                     setPageContent(pageContent || "");
 
                 }
-                if (item.chapter_name != null) setChapterName(item.chapter_name);
+                if (item.chapter_name != null) setChapterName(lang !== "en" ? item?.[`section_name_${lang}`]?.trim() : item.section_name);
                 if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
                 if (item.section_id != null) setCurrentSection(Number(item.section_id));
                 if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
@@ -139,7 +139,7 @@ export const Text2 = () => {
                     const { chapterName, pageContent } = splitContent(item.introduction);
                     setPageContent(pageContent || "");
                 }
-                if (item.chapter_name != null) setChapterName(item.chapter_name);
+                if (item.chapter_name != null) setChapterName(lang !== "en" ? item?.[`section_name_${lang}`]?.trim() : item.section_name);
 
                 if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
                 if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
@@ -160,7 +160,8 @@ export const Text2 = () => {
         try {
             const res = await api.post("/currentPageDetails", { ttpe: "listen" });
             const data = res.data.data;
-            if (data.currentChapterDetails.section_name) setChapterName(data.currentChapterDetails.section_name)
+            
+            if (data.currentChapterDetails.section_name) setChapterName(lang !== "en" ? data.currentChapterDetails?.[`section_name_${lang}`]?.trim() : data.currentChapterDetails.section_name)
             if (res.data.flag === "S" && data?.bookpage?.[0]) {
                 const item = data.bookpage[0];
                 console.log(item);
@@ -212,7 +213,8 @@ export const Text2 = () => {
                     //const { chapterName, pageContent } = splitContent(item.introduction);
                     setPageContent(item.introduction || "");
                 }
-                if (item.section_name != null) setChapterName(item.section_name);
+                
+                if (item.section_name != null) setChapterName(lang !== "en" ? item?.[`section_name_${lang}`]?.trim() : item.section_name);
 
         if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
         if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
@@ -286,12 +288,15 @@ export const Text2 = () => {
         setLessonIndex(0);
 
         loadPage({ sectionId, index: 0, type: "section", saveProgress: true });
-
-        const label =
-            section.section_name ||
-            section.chapter_name ||
-            section.title ||
-            `Chapter ${i + 1}`;
+         const label = (lang !== "en" ? section?.[`section_name_${lang}`]?.trim() : section.section_name)
+           || section?.chapter_name?.trim() 
+           || section?.title?.trim() 
+           || `Chapter ${i + 1}`;
+        // const label =
+        //     section.section_name ||
+        //     section.chapter_name ||
+        //     section.title ||
+        //     `Chapter ${i + 1}`;
         setChapterName(label);
     };
 
@@ -457,7 +462,7 @@ export const Text2 = () => {
                 <div className="absolute bottom-4 right-4 sm:static sm:self-end flex flex-col items-center gap-3 m-4 sm:m-10">
                     <div className="flex space-x-2">
                         <button
-                            className="flex items-center text-white p-4 sm:p-5 bg-blue-600 rounded-full cursor-pointer hover:bg-blue-700"
+                            className="flex items-center text-white p-4 sm:p-5 bg-red-600 rounded-full cursor-pointer hover:bg-red-700"
                             onClick={() =>
                                 getPageDetails({
                                     type: "prev",
@@ -471,7 +476,7 @@ export const Text2 = () => {
                         </button>
 
                         <button
-                            className="flex items-center text-white p-4 sm:p-5 bg-blue-600 cursor-pointer rounded-full hover:bg-blue-700"
+                            className="flex items-center text-white p-4 sm:p-5 bg-red-600 cursor-pointer rounded-full hover:bg-red-700"
                             onClick={() =>
                                 getPageDetails({
                                     type: "next",
@@ -548,7 +553,10 @@ export const Text2 = () => {
                                     <li className="border-b border-b-gray-200 p-3">{t("loading")}</li>
                                 ) : (
                                     sections.map((s, i) => {
-                                        const label = s.section_name || s.chapter_name || s.title || `Chapter ${i + 1}`;
+                                        const label = (lang !== "en" ? s?.[`section_name_${lang}`]?.trim() : s.section_name)
+           || s?.chapter_name?.trim() 
+           || s?.title?.trim() 
+           || `Chapter ${i + 1}`;
                                         return (
                                             <li
                                                 key={s.section_id ?? s.id ?? i}

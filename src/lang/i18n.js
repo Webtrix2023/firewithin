@@ -1,6 +1,6 @@
 const translations = {
   en: {
-    app_name: "The Fire Within",
+    app_name: "THE FIRE WITHIN",
     login: "Login",
     chapter:"CHAPTER",
     chapters: "Chapters",

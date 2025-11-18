@@ -21,7 +21,7 @@ const ForgotPassword = () => {
   const location = useLocation();
   const page = (location.state && location.state.page) ? location.state.page : '';
   const backPath = page ? `/${page}` : '/';
-  const backLabel = page || '$t{(login)}';
+  const backLabel = page || `${t("login")}`;
 
   const handleChange = (e) =>
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -62,8 +62,7 @@ const ForgotPassword = () => {
         {/* Top brand */}
         <header className="flex items-center justify-center pt-3">
           <div className="flex flex-col items-center">
-            <img src="/logo.svg" alt="Logo" className="h-8 w-auto" />
-            <span className="mt-1 text-[10px] uppercase tracking-widest text-gray-500">
+            <span className="mt-1 text-lg uppercase tracking-widest text-gray-500">
               {t("app_name")}
             </span>
           </div>
@@ -114,20 +113,17 @@ const ForgotPassword = () => {
                   {loading ? `${t("verifying")}` : `${t("verify")}`}
                 </button>
 
-                <Link to={backPath} className="text-xs text-gray-500 hover:underline">
-                  Back to {backLabel}
-                </Link>
-              </div>
+                <Link to={backPath} className="text-sm text-gray-500 hover:underline">
+                    {t("back_to")} {backLabel}
+                  </Link>
+                </div>
+                <p className="pt-2 text-gray-500 text-sm text-center mt-6 md:ml-8"><a href="/">{t("back_to_website")}</a></p>
             </form>
           </div>
         </main>
 
         {/* Tiny sticky footer link */}
-        <footer className="flex items-center justify-center pb-3">
-          <Link to="/" className="text-[11px] text-gray-500 hover:text-gray-700 underline">
-            © {new Date().getFullYear()}{t("fire_within")} · {t("back_to_website")}
-          </Link>
-        </footer>
+        <Footer></Footer>
       </section>
 
       {/* DESKTOP: two-column hero with background */}
@@ -193,9 +189,10 @@ const ForgotPassword = () => {
                   </button>
 
                   <Link to={backPath} className="text-sm text-gray-500 hover:underline">
-                    {t("back_to")}{backLabel}
+                    {t("back_to")} {backLabel}
                   </Link>
                 </div>
+                <p className="pt-2 text-gray-500 text-sm text-center mt-6 md:ml-8"><a href="/">{t("back_to_website")}</a></p>
               </form>
             </div>
           </div>
