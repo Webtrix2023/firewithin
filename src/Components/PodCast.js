@@ -481,9 +481,9 @@ export const PodCast = () => {
       {/* Main wrapper */}
       {/* <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-gray-500 to-gray-300  relative "> */}
       <div
-        className="flex flex-1 justify-center relative overflow-hidden"
+        className="flex items-center justify-center flex-1 justify-center relative"
         style={{
-          backgroundImage: `linear-gradient(rgba(128,128,128,0.5), rgba(200,200,200,0.5)), url(${BG})`,
+          backgroundImage: `url(${BG})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

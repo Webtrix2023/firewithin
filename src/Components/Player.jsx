@@ -355,15 +355,15 @@ const Player = () => {
       {/* Main Div */}
       {/* <div className="flex flex-1 bg-gradient-to-b from-gray-500 to-gray-300 justify-center relative overflow-hidden"> */}
       <div
-        className="flex flex-1 justify-center relative overflow-hidden"
+        className="flex items-center justify-center flex-1 justify-center relative"
         style={{
-          backgroundImage: `linear-gradient(rgba(128,128,128,0.5), rgba(200,200,200,0.5)), url(${BG})`,
+          backgroundImage: `url(${BG})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="w-full max-w-[90%] mt-20 h-fit sm:max-w-[80%] md:max-w-[65%] rounded-[5vw] overflow-hidden shadow-lg">
+        <div className="w-full max-w-[90%] h-fit sm:max-w-[80%] md:max-w-[65%] rounded-[5vw] overflow-hidden shadow-lg">
           {/* White Section */}
           <div className="bg-white p-6 sm:p-10 md:p-16">
             <h2 className="text-gray-500 font-normal text-base sm:text-lg md:text-xl mb-4">
