@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate, useLocation } from "react-router-dom";
 import { API_URL } from "../config";
@@ -15,7 +15,15 @@ import {
   shift,
   autoUpdate,
 } from "@floating-ui/react";
-import { useLanguage } from "../LanguageContext"; // ✅ make sure this path matches your hook location
+import {
+  Languages,
+  FileHeadphone,
+  BookCopy,
+  Podcast,
+  CircleUserRound,
+  CircleArrowLeft,
+} from "lucide-react";
+import { useLanguage } from "../LanguageContext";
 import axios from "axios";
 
 const Navbar2 = (params) => {
@@ -23,6 +31,10 @@ const Navbar2 = (params) => {
   const location = useLocation();
   const [displayMenu, setDisplayMenu] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
+
+  // Refs for click outside detection
+  const profileMenuRef = useRef(null);
+  const langMenuRef = useRef(null);
 
   // ✅ useLanguage hook (replaces local state)
   const { t, lang, changeLanguage } = useLanguage();
@@ -38,11 +50,35 @@ const Navbar2 = (params) => {
     return autoUpdate(refs.reference.current, refs.floating.current, update);
   }, [refs.reference, refs.floating, update]);
 
+  // Close menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check if click is outside profile menu
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target)
+      ) {
+        setDisplayMenu(false);
+      }
+      // Check if click is outside language menu
+      if (langMenuRef.current && !langMenuRef.current.contains(event.target)) {
+        setShowLangMenu(false);
+      }
+    };
+
+    // Add event listener
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login", { replace: true });
+    navigate("/", { replace: true }); // goes back to landing page
   };
-
   // Page checks
   const CurrPage = location.pathname;
   const isMusicPage = CurrPage === "/book/listen";
@@ -77,6 +113,18 @@ const Navbar2 = (params) => {
     }
   };
 
+  // Toggle language menu and close profile menu
+  const toggleLangMenu = () => {
+    setShowLangMenu((prev) => !prev);
+    setDisplayMenu(false); // Close profile menu when opening language menu
+  };
+
+  // Toggle profile menu and close language menu
+  const toggleProfileMenu = () => {
+    setDisplayMenu((prev) => !prev);
+    setShowLangMenu(false); // Close language menu when opening profile menu
+  };
+
   return (
     <nav className="w-full bg-gradient-to-r from-gray-300 to-white shadow sticky top-0 z-10">
       <div className="mx-auto flex flex-wrap items-center justify-between px-3 py-2.5 md:py-4">
@@ -109,14 +157,11 @@ const Navbar2 = (params) => {
             >
               {/* <img
                 className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={`${API_URL}/images/sites/read-small.svg`}
-                alt={t("Read")}
-              /> */}
-              <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7"
                 src={readRed}
                 alt={t("read")}
-              />
+              /> */}
+              {/* Book Icon in Red */}
+              <BookCopy className="w-5 md:w-6 lg:w-7 text-red-500" />
             </button>
           ) : isTextPage ? (
             <button
@@ -127,110 +172,124 @@ const Navbar2 = (params) => {
             >
               {/* <img
                 className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={`${API_URL}/images/sites/`}
-                alt={t("LISTEN")}
-              /> */}
-              <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7"
                 src={ListenRed}
                 alt={t("listen")}
-              />
+              /> */}
+              <FileHeadphone className="w-5 md:w-6 lg:w-7 text-red-500" />
             </button>
           ) : null}
-          
-          {isPodcast ? (<>
-            <button
-              aria-label="Switch to Text"
-              title={t("read")}
-              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-              onClick={() => navigate("/book/read")}
-            >
-              {/* <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={`${API_URL}/images/sites/read-small.svg`}
-                alt={t("Read")}
-              /> */}
-              <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={readRed}
-                alt={t("read")}
-              />
-            </button>
-            <button
-              aria-label="Switch to Music"
-              title={t("listen")}
-              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-              onClick={() => navigate("/book/listen")}
-            >
-              {/* <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={`${API_URL}/images/sites/`}
-                alt={t("LISTEN")}
-              /> */}
-              <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={ListenRed}
-                alt={t("listen")}
-              />
-            </button></>
+
+          {isPodcast ? (
+            <>
+              <button
+                aria-label="Switch to Text"
+                title={t("read")}
+                className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+                onClick={() => navigate("/book/read")}
+              >
+                {/* <img
+                  className="w-4 sm:w-5 md:w-6 lg:w-7"
+                  src={readRed}
+                  alt={t("read")}
+                /> */}
+                <BookCopy className="w-5 md:w-6 lg:w-7 text-red-500" />
+              </button>
+              <button
+                aria-label="Switch to Music"
+                title={t("listen")}
+                className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+                onClick={() => navigate("/book/listen")}
+              >
+                {/* <img
+                  className="w-4 sm:w-5 md:w-6 lg:w-7"
+                  src={ListenRed}
+                  alt={t("listen")}
+                /> */}
+                <FileHeadphone className="w-5 md:w-6 lg:w-7 text-red-500" />
+              </button>
+            </>
           ) : null}
+
           {/* Podcast */}
-          {(!idDashboard && !isPodcast)&& (
-          <button
-            aria-label="Podcast"
-            title={t("podcast")}
-            className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-            onClick={() => navigate("/book/podcasts")}
-          >
-            <img
-              className="w-4 sm:w-5 md:w-6 lg:w-7"
-              src={podcast_img}
-              alt={t("podcast")}
-            />
-          </button>
+          {!idDashboard && !isPodcast && (
+            <button
+              aria-label="Podcast"
+              title={t("podcast")}
+              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+              onClick={() => navigate("/book/podcasts")}
+            >
+              {/* <img
+                className="w-4 sm:w-5 md:w-6 lg:w-7"
+                src={podcast_img}
+                alt={t("podcast")}
+              /> */}
+              <Podcast className="w-5 md:w-6 lg:w-7 text-red-500" />
+            </button>
           )}
           {/* 🌐 Language Selector */}
-          <button
-            ref={refs.setReference}
-            aria-label="Select Language"
-            title={t("select_language")}
-            className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-            onClick={() => setShowLangMenu((prev) => !prev)}
-          >
-            <img
-              className="w-4 sm:w-5 md:w-6 lg:w-7 inline"
-              src={langv}
-              alt={t("lang")}
-            />
-            <span className="ml-1 text-lg uppercase hidden sm:inline">
-              {lang}
-            </span>
-          </button>
-
-          {showLangMenu && (
-            <div
-              ref={refs.setFloating}
-              style={floatingStyles}
-              className="bg-white border border-gray-200 rounded-md shadow-lg w-44 sm:w-48 z-1000"
+          <div ref={langMenuRef} className="relative">
+            <button
+              ref={refs.setReference}
+              aria-label="Select Language"
+              title={t("select_language")}
+              //className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+              className="p-1.5 md:p-2 rounded-full hover:text-red-700 flex items-center gap-1 transition-transform hover:scale-105"
+              //onClick={() => setShowLangMenu((prev) => !prev)}
+              onClick={toggleLangMenu}
             >
-              <ul className="py-2 text-sm text-gray-700">
-                <li>
-                  <button
-                    onClick={() => handleLanguageChange("en")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    English
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => handleLanguageChange("ko")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    Korean (한국인)
-                  </button>
-                </li>
-                {/* <li>
+              {/* <img
+                className="w-4 sm:w-5 md:w-6 lg:w-7 inline"
+                src={langv}
+                alt={t("lang")}
+              /> */}
+              <Languages className="w-5 md:w-6 lg:w-7 text-red-500" />
+              <span className="ml-1 text-lg uppercase hidden sm:inline">
+                {lang}
+              </span>
+
+              {/* ▼ Arrow */}
+              <svg
+                className={`w-3 h-3 transition-transform ${
+                  showLangMenu ? "rotate-180" : "rotate-0"
+                }`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {showLangMenu && (
+              <div
+                ref={refs.setFloating}
+                style={floatingStyles}
+                // className="bg-white border border-gray-200 rounded-md shadow-lg w-44 sm:w-48 z-1000"
+                className="absolute right-0 top-full mt-4 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50"
+              >
+                <ul className="py-2 text-sm text-gray-700">
+                  <li>
+                    <button
+                      onClick={() => handleLanguageChange("en")}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      English
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleLanguageChange("ko")}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Korean (한국인)
+                    </button>
+                  </li>
+                  {/* <li>
                   <button
                     onClick={() => handleLanguageChange("zh")}
                     className="block w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -238,61 +297,82 @@ const Navbar2 = (params) => {
                     Chinese (中国人)
                   </button>
                 </li> */}
-              </ul>
-            </div>
-          )}
+                </ul>
+              </div>
+            )}
+          </div>
 
-          {/* Profile */}
-          <button
-            aria-label="Profile"
-            title={t("profile")}
-            className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-            onClick={() => setDisplayMenu(!displayMenu)}
-          >
-            <CgProfile className="text-lg sm:text-xl md:text-2xl lg:text-3xl" />
-          </button>
+          {/* 👤 Profile */}
+          <div ref={profileMenuRef} className="relative">
+            <button
+              aria-label="Profile"
+              title={t("profile")}
+              className="p-1.5 md:p-2 rounded-full hover:text-red-700 flex items-center gap-1 transition-transform hover:scale-105"
+              //onClick={() => setDisplayMenu(!displayMenu)}
+              onClick={toggleProfileMenu}
+            >
+              <CircleUserRound className="w-6 md:w-7 lg:w-8 text-red-500" />
+
+              {/* ▼ Arrow */}
+              <svg
+                className={`w-3 h-3 transition-transform ${
+                  displayMenu ? "rotate-180" : "rotate-0"
+                }`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {displayMenu && (
+              <div className="absolute right-0 top-full mt-4 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50">
+                <ul className="py-2 text-sm text-gray-700">
+                  <li>
+                    <button
+                      onClick={() => navigate("/account")}
+                      className="px-4 py-2 text-left hover:bg-gray-100 text-gray-700 text-sm sm:text-base"
+                    >
+                      {t("my_account")}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handleLogout}
+                      className="px-4 py-2 text-left hover:bg-gray-100 text-gray-700 text-sm sm:text-base"
+                    >
+                      {t("logout")}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
 
           {/* Back */}
           {!idDashboard && (
-          <button
-            aria-label="Back to dashboard"
-            title={t("back_to_dashboard")}
-            className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-            onClick={() => {
-              if (CurrPage === HomePage) navigate(-1);
-              else navigate("/dashboard");
-            }}
-          >
-           
-            {/* <img
-              className="w-4 sm:w-5 md:w-6 lg:w-7"
-              src={`${API_URL}/images/sites/back.svg`}
-              alt={t("back_to_dashboard")}
-            /> */}
-            <img
-              className="w-4 sm:w-5 md:w-6 lg:w-7"
-              src={backRed}
-              alt={t("back_to_dashboard")}
-            />
-          </button>
-          )}
-          {/* Profile Dropdown */}
-          {displayMenu && (
-            <div className="absolute right-0 top-full mt-4 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50">
-              <button
-                onClick={() => navigate("/account")}
-                className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base"
-              >
-                {t("my_account")}
-              </button>
-              <hr />
-              <button
-                onClick={handleLogout}
-                className="px-3 sm:px-4 py-2 text-left hover:bg-gray-100 text-gray-500 text-sm sm:text-base"
-              >
-                {t("logout")}
-              </button>
-            </div>
+            <button
+              aria-label="Back to dashboard"
+              title={t("back_to_dashboard")}
+              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+              onClick={() => {
+                if (CurrPage === HomePage) navigate(-1);
+                else navigate("/dashboard");
+              }}
+            >
+              {/* <img
+                className="w-4 sm:w-5 md:w-6 lg:w-7"
+                src={backRed}
+                alt={t("back_to_dashboard")}
+              /> */}
+              <CircleArrowLeft className="w-5 md:w-6 lg:w-7 text-red-500" />
+            </button>
           )}
         </div>
       </div>

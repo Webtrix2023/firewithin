@@ -1,55 +1,59 @@
-import React, { useState } from 'react';
-import { FiMail } from 'react-icons/fi';
+import React, { useState } from "react";
+import { FiMail } from "react-icons/fi";
 import Footer from "./Footer";
-import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
-import { api, ensureCsrf } from '../api';
-import { toast } from 'react-toastify';
+import { api, ensureCsrf } from "../api";
+import { toast } from "react-toastify";
 import { useLanguage } from "../LanguageContext";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const { t, lang, changeLanguage } = useLanguage();
-  
-  const [formData, setFormData] = useState({ email: '' });
+
+  const [formData, setFormData] = useState({ email: "" });
   const [focused, setFocused] = useState({ email: false });
   const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState('');
-  const [error, setError] = useState('');
+  const [msg, setMsg] = useState("");
+  const [error, setError] = useState("");
 
   // Safe fallback for back link
   const location = useLocation();
-  const page = (location.state && location.state.page) ? location.state.page : '';
-  const backPath = page ? `/${page}` : '/';
+  const page = location.state && location.state.page ? location.state.page : "";
+  const backPath = page ? `/${page}` : "/";
   const backLabel = page || `${t("login")}`;
 
   const handleChange = (e) =>
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMsg('');
-    setError('');
+    setMsg("");
+    setError("");
     setLoading(true);
-     try {
-        //setMsg('If this email exists, a reset link has been sent.');
+    try {
+      //setMsg('If this email exists, a reset link has been sent.');
 
-        const body = new URLSearchParams();
-        body.append("email", formData.email);
+      const body = new URLSearchParams();
+      body.append("email", formData.email);
 
-        const {data:res} = await api.post("/sentVfCode", body, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-        });
+      const { data: res } = await api.post("/sentVfCode", body, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+      });
 
-      if (res.flag === 'S') {
-        toast.success('A reset link has been sent.');
-        navigate('/login');
+      if (res.flag === "S") {
+        toast.success("A reset link has been sent.");
+        navigate("/login");
       } else {
-        toast.error('A reset link has been sent.');
-        setError(res.msg || 'Failed to send verification code');
+        toast.error("A reset link has been sent.");
+        setError(res.msg || "Failed to send verification code");
       }
     } catch (err) {
-      setError(err?.response?.data?.error || err?.message || 'Something went wrong');
+      setError(
+        err?.response?.data?.error || err?.message || "Something went wrong"
+      );
     } finally {
       setLoading(false);
     }
@@ -88,16 +92,20 @@ const ForgotPassword = () => {
                   {t("email")} <span className="text-red-500">*</span>
                 </label>
                 <div className="flex items-center gap-2">
-                  <FiMail className={`text-xl ${focused.email ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <FiMail
+                    className={`text-xl ${
+                      focused.email ? "text-gray-600" : "text-gray-400"
+                    }`}
+                  />
                   <input
                     type="email"
                     name="email"
                     placeholder={t("enter_email")}
-                    className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
                     value={formData.email}
                     onChange={handleChange}
-                    onFocus={() => setFocused(p => ({ ...p, email: true }))}
-                    onBlur={() => setFocused(p => ({ ...p, email: false }))}
+                    onFocus={() => setFocused((p) => ({ ...p, email: true }))}
+                    onBlur={() => setFocused((p) => ({ ...p, email: false }))}
                     required
                   />
                 </div>
@@ -108,16 +116,25 @@ const ForgotPassword = () => {
                   type="submit"
                   disabled={loading}
                   className={`w-full bg-black text-white px-6 py-3 rounded-full transition
-                    ${loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-800'}`}
+                    ${
+                      loading
+                        ? "opacity-60 cursor-not-allowed"
+                        : "hover:bg-gray-800"
+                    }`}
                 >
                   {loading ? `${t("verifying")}` : `${t("verify")}`}
                 </button>
 
-                <Link to={backPath} className="text-sm text-gray-500 hover:underline">
-                    {t("back_to")} {backLabel}
-                  </Link>
-                </div>
-                <p className="pt-2 text-gray-500 text-sm text-center mt-6 md:ml-8"><a href="/">{t("back_to_website")}</a></p>
+                <Link
+                  to={backPath}
+                  className="text-sm text-gray-500 hover:underline"
+                >
+                  {t("back_to")} {backLabel}
+                </Link>
+              </div>
+              <p className="pt-2 text-gray-500 text-sm text-center mt-6 md:ml-8">
+                <a href="/">{t("back_to_website")}</a>
+              </p>
             </form>
           </div>
         </main>
@@ -162,16 +179,20 @@ const ForgotPassword = () => {
                     {t("email")} <span className="text-red-500">*</span>
                   </label>
                   <div className="flex items-center space-x-3">
-                    <FiMail className={`text-2xl ${focused.email ? 'text-blue-600' : 'text-gray-400'}`} />
+                    <FiMail
+                      className={`text-2xl ${
+                        focused.email ? "text-gray-600" : "text-gray-400"
+                      }`}
+                    />
                     <input
                       type="email"
                       name="email"
                       placeholder={t("enter_email")}
-                      className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3.5 rounded-full outline-none text-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3.5 rounded-full outline-none text-md focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
                       value={formData.email}
                       onChange={handleChange}
-                      onFocus={() => setFocused(p => ({ ...p, email: true }))}
-                      onBlur={() => setFocused(p => ({ ...p, email: false }))}
+                      onFocus={() => setFocused((p) => ({ ...p, email: true }))}
+                      onBlur={() => setFocused((p) => ({ ...p, email: false }))}
                       required
                     />
                   </div>
@@ -183,16 +204,25 @@ const ForgotPassword = () => {
                     type="submit"
                     disabled={loading}
                     className={`bg-black text-white font-inter px-7 py-3 rounded-full transition
-                      ${loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-800'}`}
+                      ${
+                        loading
+                          ? "opacity-60 cursor-not-allowed"
+                          : "hover:bg-gray-800"
+                      }`}
                   >
                     {loading ? `${t("verifying")}` : `${t("verify")}`}
                   </button>
 
-                  <Link to={backPath} className="text-sm text-gray-500 hover:underline">
+                  <Link
+                    to={backPath}
+                    className="text-sm text-gray-500 hover:underline"
+                  >
                     {t("back_to")} {backLabel}
                   </Link>
                 </div>
-                <p className="pt-2 text-gray-500 text-sm text-center mt-6 md:ml-8"><a href="/">{t("back_to_website")}</a></p>
+                <p className="pt-2 text-gray-500 text-sm text-center mt-6 md:ml-8">
+                  <a href="/">{t("back_to_website")}</a>
+                </p>
               </form>
             </div>
           </div>

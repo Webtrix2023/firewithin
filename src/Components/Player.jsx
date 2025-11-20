@@ -566,11 +566,17 @@ const Player = () => {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex flex-col h-full">
-            <h2 className="text-xl font-light border-b p-5 bg-red-500 text-white">
+            {/* <h2 className="text-xl font-light border-b p-5 bg-red-500 text-white">
               {t("chapters")}
             </h2>
             <h2 className="text-xl font-light border-b p-5 text-gray-500">
               {t("contents")}
+            </h2> */}
+            <h2 className="text-xl font-light border-b p-5 bg-red-500 text-white">
+              {t("chapters")}
+              <span className="text-sm ml-2 opacity-80 font-normal">
+                {t("contents")}
+              </span>
             </h2>
             <div className="flex-1 overflow-y-auto">
               <ul className="text-gray-500 font-semibold text-md sm:text-base">

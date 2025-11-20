@@ -14,17 +14,17 @@ export const Text = () => {
   const [pageContent, setPageContent] = useState("");
   let debounceTimer;
   const safeHtml = useMemo(
-
-    () => DOMPurify.sanitize(pageContent, {
-      ADD_ATTR: ["target", "rel"], // allow opening links in new tab safely
-    }),
+    () =>
+      DOMPurify.sanitize(pageContent, {
+        ADD_ATTR: ["target", "rel"], // allow opening links in new tab safely
+      }),
     [pageContent]
   );
 
   const [chapterName, setChapterName] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [sections, setSections] = useState([]);
-  const [lessonIndex, setLessonIndex] = useState(0);    // number, not string
+  const [lessonIndex, setLessonIndex] = useState(0); // number, not string
   const [currentSection, setCurrentSection] = useState(0);
 
   // UI state (layout/placements unchanged)
@@ -36,6 +36,9 @@ export const Text = () => {
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [customerDetails, setCustomerDetails] = useState([]);
 
+  const activeChapterRef = useRef(null);
+  const sectionListRef = useRef(null);
+
   // refs for outside click on font menu
   const fontBtnRef = useRef(null);
   const fontMenuRef = useRef(null);
@@ -44,13 +47,13 @@ export const Text = () => {
     const temp = document.createElement("div");
     temp.innerHTML = html;
 
-        return {
-            pageContent: temp.innerHTML,  // take everything as-is
-        };
-    }
+    return {
+      pageContent: temp.innerHTML, // take everything as-is
+    };
+  }
   // --- API Helpers ---
 
- const loadPage = async ({
+  const loadPage = async ({
     sectionId = currentSection,
     index = lessonIndex,
     type = "current",
@@ -65,7 +68,9 @@ export const Text = () => {
       body.append("course_id", "1");
       body.append("lesson_index", String(index));
       body.append("ttpe", "listen");
-      {/*Endpoint changed from pageDetails to getpageDetails */ }
+      {
+        /*Endpoint changed from pageDetails to getpageDetails */
+      }
       const { data } = await api.post("/getpageDetails", body, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
@@ -80,18 +85,23 @@ export const Text = () => {
         if (item.introduction) {
           const { pageContent } = splitContent(item.introduction);
           setPageContent(pageContent || "");
-
         }
-        if (item.chapter_name != null) setChapterName(lang !== "en" ? item?.[`section_name_${lang}`]?.trim() : item.section_name);
+        if (item.chapter_name != null)
+          setChapterName(
+            lang !== "en"
+              ? item?.[`section_name_${lang}`]?.trim()
+              : item.section_name
+          );
         if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
         if (item.section_id != null) setCurrentSection(Number(item.section_id));
-        if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
+        if (item.lesson_index != null)
+          setLessonIndex(Number(item.lesson_index));
 
         // ✅ only update autopage on navigation
         if (saveProgress && item.lesson_id) updateAutoPage(item.lesson_id);
       }
       if (data.flag === "F") {
-        console.log("Errot occured")
+        console.log("Errot occured");
         toast.error(data.msg);
       }
     } catch (e) {
@@ -99,33 +109,35 @@ export const Text = () => {
     }
   };
 
-    const updateAutoPage = async (page) => {
-        try {
-            await axios.get(`${API_URL}autopageSet/${page}`);
-        } catch (err) {
-            console.error(err);
-        }
-    };
+  const updateAutoPage = async (page) => {
+    try {
+      await axios.get(`${API_URL}autopageSet/${page}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    // ✅ Variant that takes opts object (kept intact, but aligned)
-    const getPageDetails = async (opts = {}) => {
-        const payload = {
-            type: opts.type,
-            section_id: String(currentSection),
-            course_id: 1,
-            lesson_index: String(lessonIndex),
-            ttpe: "listen",
-            ...opts,
-        };
-        {/*Endpoint changed from pageDetails to getpageDetails */ }
-        try {
-            const res = await axios.post(`${API_URL}getpageDetails`, payload, {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-                    Accept: "*/*",
-                },
-                withCredentials: true,
-            });
+  // ✅ Variant that takes opts object (kept intact, but aligned)
+  const getPageDetails = async (opts = {}) => {
+    const payload = {
+      type: opts.type,
+      section_id: String(currentSection),
+      course_id: 1,
+      lesson_index: String(lessonIndex),
+      ttpe: "listen",
+      ...opts,
+    };
+    {
+      /*Endpoint changed from pageDetails to getpageDetails */
+    }
+    try {
+      const res = await axios.post(`${API_URL}getpageDetails`, payload, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          Accept: "*/*",
+        },
+        withCredentials: true,
+      });
 
       const data = res.data;
 
@@ -136,10 +148,16 @@ export const Text = () => {
           const { chapterName, pageContent } = splitContent(item.introduction);
           setPageContent(pageContent || "");
         }
-        if (item.chapter_name != null) setChapterName(lang !== "en" ? item?.[`section_name_${lang}`]?.trim() : item.section_name);
+        if (item.chapter_name != null)
+          setChapterName(
+            lang !== "en"
+              ? item?.[`section_name_${lang}`]?.trim()
+              : item.section_name
+          );
 
         if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
-        if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
+        if (item.lesson_index != null)
+          setLessonIndex(Number(item.lesson_index));
 
         // ✅ safe: only when explicitly called for navigation
         if (item.lesson_id) updateAutoPage(item.lesson_id);
@@ -157,7 +175,7 @@ export const Text = () => {
     try {
       const res = await api.post("/currentPageDetails", { ttpe: "listen" });
       const data = res.data.data;
-      
+
       if (res.data.flag === "S" && data?.bookpage?.[0]) {
         const item = data.bookpage[0];
         console.log(item);
@@ -169,16 +187,17 @@ export const Text = () => {
 
         if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
         if (item.section_id != null) setCurrentSection(Number(item.section_id));
-        if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
+        if (item.lesson_index != null)
+          setLessonIndex(Number(item.lesson_index));
 
         setSections(
           Array.isArray(data.bookSectionDetails) ? data.bookSectionDetails : []
         );
-//customer_details
+        //customer_details
         setCustomerDetails(res.data?.customer_details?.[0]);
         console.log("mode");
         console.log(data?.customer_details);
-        setTheme(data?.customer_details?.[0]?.mode || 'light');
+        setTheme(data?.customer_details?.[0]?.mode || "light");
         //setFontSize(data?.customer_details?.[0]?.selected_font || 1.05);
         setFontSize(Number(data?.customer_details?.[0]?.selected_font) || 1.05);
       }
@@ -189,36 +208,41 @@ export const Text = () => {
 
   const getLessonByPageNumber = async (pageNumber) => {
     try {
-
-        // setLessonIndex(pageNumber);
-        // setPageNumber(pageNumber);
-        // loadPage({ index: pageNumber, type: "prev", saveProgress: true });
+      // setLessonIndex(pageNumber);
+      // setPageNumber(pageNumber);
+      // loadPage({ index: pageNumber, type: "prev", saveProgress: true });
 
       const formData = new URLSearchParams();
       formData.append("page_number", pageNumber);
       formData.append("course_id", 1);
 
-            const res = await axios.post(
-                `${API_URL}get_lession_by_pageNo`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-                        Accept: "*/*",
-                    },
-                    withCredentials: true,
-                }
-            );
-            const item = res.data;
-            if (item.introduction !== "") {
-                if (item.introduction) {
-                    //const { chapterName, pageContent } = splitContent(item.introduction);
-                    setPageContent(item.introduction || "");
-                }
-                if (item.section_name != null) setChapterName(lang !== "en" ? item?.[`section_name_${lang}`]?.trim() : item.section_name);
+      const res = await axios.post(
+        `${API_URL}get_lession_by_pageNo`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            Accept: "*/*",
+          },
+          withCredentials: true,
+        }
+      );
+      const item = res.data;
+      if (item.introduction !== "") {
+        if (item.introduction) {
+          //const { chapterName, pageContent } = splitContent(item.introduction);
+          setPageContent(item.introduction || "");
+        }
+        if (item.section_name != null)
+          setChapterName(
+            lang !== "en"
+              ? item?.[`section_name_${lang}`]?.trim()
+              : item.section_name
+          );
 
         if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
-        if (item.lesson_index != null) setLessonIndex(Number(item.lesson_index));
+        if (item.lesson_index != null)
+          setLessonIndex(Number(item.lesson_index));
 
         // ✅ safe: only when explicitly called for navigation
         if (item.lesson_id) updateAutoPage(item.lesson_id);
@@ -257,24 +281,26 @@ export const Text = () => {
     //   section.title ||
     //   `Chapter ${i + 1}`;
     // setChapterName(label);
-    const label = (lang !== "en" ? section?.[`section_name_${lang}`]?.trim() : section.section_name)
-           || section?.chapter_name?.trim() 
-           || section?.title?.trim() 
-           || `Chapter ${i + 1}`;
-            setChapterName(label);
-
+    const label =
+      (lang !== "en"
+        ? section?.[`section_name_${lang}`]?.trim()
+        : section.section_name) ||
+      section?.chapter_name?.trim() ||
+      section?.title?.trim() ||
+      `Chapter ${i + 1}`;
+    setChapterName(label);
   };
 
-    // --- Initial load ---
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                await axios.get(`${API_URL}automodeSet/read`);
-                getCurrentPageDetails();
-            } catch (error) {
-                console.error("Error in useEffect:", error);
-            }
-        };
+  // --- Initial load ---
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await axios.get(`${API_URL}automodeSet/read`);
+        getCurrentPageDetails();
+      } catch (error) {
+        console.error("Error in useEffect:", error);
+      }
+    };
 
     fetchData();
   }, []);
@@ -313,94 +339,88 @@ export const Text = () => {
       document.removeEventListener("keydown", onKey);
     };
   }, [showFontMenu]);
+  // Auto-scroll active chapter when slider opens
+  useEffect(() => {
+    if (isSliderOpen && activeChapterRef.current && sectionListRef.current) {
+      const list = sectionListRef.current;
+      const itemTop = activeChapterRef.current.offsetTop;
+      list.scrollTo({ top: itemTop, behavior: "smooth" });
+    }
+  }, [isSliderOpen, currentSection]);
 
-    // Theme classes (no layout/color placement changes)
-    const themeClasses = {
-        light: "bg-[#ffffff] text-[#333c4e]",
-        sepia: "bg-[#f4ecd8] text-[#2b2a27]",
-        dark: "bg-[#111] text-[#f1f1f1]",
-    };
-    // Requested: light text color should be white
-    const contentColor = {
-        light: "text-[#111]",   // changed as requested
-        sepia: "text-[#2b2a27]",
-        dark: "text-[#e9e9e9]",
-    };
-    const mutedColor = {
-        light: "text-neutral-600", // adjust for white text on light bg
-        sepia: "text-[#6b5e48]",
-        dark: "text-neutral-400",
-    };
+  // Theme classes (no layout/color placement changes)
+  const themeClasses = {
+    light: "bg-[#ffffff] text-[#333c4e]",
+    sepia: "bg-[#f4ecd8] text-[#2b2a27]",
+    dark: "bg-[#111] text-[#f1f1f1]",
+  };
+  // Requested: light text color should be white
+  const contentColor = {
+    light: "text-[#111]", // changed as requested
+    sepia: "text-[#2b2a27]",
+    dark: "text-[#e9e9e9]",
+  };
+  const mutedColor = {
+    light: "text-neutral-600", // adjust for white text on light bg
+    sepia: "text-[#6b5e48]",
+    dark: "text-neutral-400",
+  };
 
-    const increaseFont = async () => {
-      const size = Math.min(fontSize + 0.1, 1.8)
-      setFontSize((s) => size);
-       const payload = {
-            size: size
-        };
-      const res = await axios.post(
-                `${API_URL}updateFontSize`,payload,
-                {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-                        Accept: "*/*",
-                    },
-                    withCredentials: true,
-                }
-            );
-            const data = res.data;
-            if(data.flag === "F"){
-              toast.error(data.msg);
-            }
-
+  const increaseFont = async () => {
+    const size = Math.min(fontSize + 0.1, 1.8);
+    setFontSize((s) => size);
+    const payload = {
+      size: size,
     };
-    const decreaseFont = async () => {
-        const size = Math.max(fontSize - 0.1, 0.9);
-        setFontSize((s) => size);
-        const payload = {
-            size: size
-        };
-      const res = await axios.post(
-                `${API_URL}updateFontSize`,payload,
-                {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-                        Accept: "*/*",
-                    },
-                    withCredentials: true,
-                }
-            );
-            const data = res.data;
-            if(data.flag === "F"){
-              toast.error(data.msg);
-            }
+    const res = await axios.post(`${API_URL}updateFontSize`, payload, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        Accept: "*/*",
+      },
+      withCredentials: true,
+    });
+    const data = res.data;
+    if (data.flag === "F") {
+      toast.error(data.msg);
+    }
+  };
+  const decreaseFont = async () => {
+    const size = Math.max(fontSize - 0.1, 0.9);
+    setFontSize((s) => size);
+    const payload = {
+      size: size,
     };
-    const updateDefaultTheme = async () => {
-      const nextTheme =
-    theme === "dark" ? "light" :
-    theme === "light" ? "sepia" :
-    "dark";
-  setTheme(nextTheme);
-       const payload = {
-            theme: nextTheme
-        };
-      const res = await axios.post(
-                `${API_URL}updateTheme`,payload,
-                {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-                        Accept: "*/*",
-                    },
-                    withCredentials: true,
-                }
-            );
-            const data = res.data;
-            if(data.flag === "F"){
-              toast.error(data.msg);
-            }
-
+    const res = await axios.post(`${API_URL}updateFontSize`, payload, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        Accept: "*/*",
+      },
+      withCredentials: true,
+    });
+    const data = res.data;
+    if (data.flag === "F") {
+      toast.error(data.msg);
+    }
+  };
+  const updateDefaultTheme = async () => {
+    const nextTheme =
+      theme === "dark" ? "light" : theme === "light" ? "sepia" : "dark";
+    setTheme(nextTheme);
+    const payload = {
+      theme: nextTheme,
     };
-    
+    const res = await axios.post(`${API_URL}updateTheme`, payload, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        Accept: "*/*",
+      },
+      withCredentials: true,
+    });
+    const data = res.data;
+    if (data.flag === "F") {
+      toast.error(data.msg);
+    }
+  };
 
   /** ------------------- UI ------------------- **/
   return (
@@ -410,7 +430,6 @@ export const Text = () => {
       {/* Navbar */}
       <div className={navbarVisible ? "block" : "hidden"}>
         <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
-
       </div>
 
       {/* Main reading surface */}
@@ -418,7 +437,8 @@ export const Text = () => {
         {/* Top bar */}
         <div
           className={`pointer-events-none absolute inset-x-0 top-0 z-30 px-3 sm:px-6 pt-[env(safe-area-inset-top)]
-            transition-opacity duration-300 ${controlsVisible ? "opacity-100" : "opacity-0"
+            transition-opacity duration-300 ${
+              controlsVisible ? "opacity-100" : "opacity-0"
             }`}
         >
           <div className="pointer-events-auto mx-auto max-w-[72ch] flex items-center justify-between rounded-b-xl bg-black/10 backdrop-blur-sm px-3 py-2 sm:px-4 sm:py-3">
@@ -524,7 +544,8 @@ export const Text = () => {
         {/* Bottom navigation */}
         <div
           className={`pointer-events-none absolute inset-x-0 bottom-0 z-30 px-3 sm:px-6 pb-[env(safe-area-inset-bottom)]
-            transition-opacity duration-300 ${controlsVisible ? "opacity-100" : "opacity-0"
+            transition-opacity duration-300 ${
+              controlsVisible ? "opacity-100" : "opacity-0"
             }`}
         >
           <div className="pointer-events-auto mx-auto max-w-[72ch] flex items-center justify-between rounded-t-xl bg-black/10 backdrop-blur-sm px-2 py-2 sm:px-3 sm:py-2">
@@ -567,30 +588,30 @@ export const Text = () => {
                 {pageNumber}
               </span>
                */}
-               <input
-                            type="number"
-                            value={pageNumber}
-                            onChange={(e) => {
-                              const value = Number(e.target.value);
-                              setPageNumber(value);
+              <input
+                type="number"
+                value={pageNumber}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setPageNumber(value);
 
-                              // Clear old timer
-                              clearTimeout(debounceTimer);
+                  // Clear old timer
+                  clearTimeout(debounceTimer);
 
-                              // Set new timer (e.g. 500ms delay)
-                              debounceTimer = setTimeout(() => {
-                                if (value > 0 && value <= 388) {
-                                  getLessonByPageNumber(value);
-                                } else if (value > 388) {
-                                  alert("Page limit exceeded");
-                                }
-                              }, 500);
-                            }}
-                            className="w-8 sm:w-8 py-1 pl-2 sm:py-2 rounded-full text-center border-gray-300 focus:outline-none  
-    [&::-webkit-outer-spin-button]:appearance-none 
-    [&::-webkit-inner-spin-button]:appearance-none 
+                  // Set new timer (e.g. 500ms delay)
+                  debounceTimer = setTimeout(() => {
+                    if (value > 0 && value <= 388) {
+                      getLessonByPageNumber(value);
+                    } else if (value > 388) {
+                      alert("Page limit exceeded");
+                    }
+                  }, 500);
+                }}
+                className="w-8 sm:w-8 py-1 pl-2 sm:py-2 rounded-full text-center border-gray-300 focus:outline-none
+    [&::-webkit-outer-spin-button]:appearance-none
+    [&::-webkit-inner-spin-button]:appearance-none
     [appearance:textfield]"
-                        />
+              />
               <span>of</span>
               <span>325</span>
             </div>
@@ -600,16 +621,23 @@ export const Text = () => {
         {/* Slider Button */}
         <button
           aria-label={isSliderOpen ? "Close chapters" : "Open chapters"}
-          onClick={(e) => { e.stopPropagation(); setIsSliderOpen(!isSliderOpen); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsSliderOpen(!isSliderOpen);
+          }}
           className={`fixed top-1/2 -translate-y-1/2 z-40 text-red-600 bg-white border border-neutral-200 pl-2 py-5 rounded-l-full shadow-lg transition-all duration-300
                 ${isSliderOpen ? "right-[85vw] sm:right-96" : "right-0"}`}
         >
-          {isSliderOpen ? <FaAngleRight size={28} /> : <FaAngleLeft size={28} />}
+          {isSliderOpen ? (
+            <FaAngleRight size={28} />
+          ) : (
+            <FaAngleLeft size={28} />
+          )}
         </button>
-        
+
         {/* Right Sidebar (Slide-in Drawer) */}
         <div
-          className={`absolute right-0 top-0 h-full z-40 transform transition-transform duration-300 ease-in-out 
+          className={`absolute right-0 top-0 h-full z-40 transform transition-transform duration-300 ease-in-out
       bg-white border-l border-neutral-200 w-[85%] sm:w-96
       ${isSliderOpen ? "translate-x-0" : "translate-x-full"}`}
           role="dialog"
@@ -617,22 +645,44 @@ export const Text = () => {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex flex-col h-full">
-            <h2 className="text-xl font-light border-b p-5 bg-red-500 text-white">{t("chapters")}</h2>
-            <h2 className="text-xl font-light border-b p-5 text-gray-500">{t("contents")}</h2>
-            <div className="flex-1 overflow-y-auto">
+            {/* <h2 className="text-xl font-light border-b p-5 bg-red-500 text-white">{t("chapters")}</h2>
+            <h2 className="text-xl font-light border-b p-5 text-gray-500">{t("contents")}</h2> */}
+            <h2 className="text-xl font-light border-b p-5 bg-red-500 text-white">
+              {t("chapters")}
+              <span className="text-sm ml-2 opacity-80 font-normal">
+                {t("contents")}
+              </span>
+            </h2>
+            <div className="flex-1 overflow-y-auto" ref={sectionListRef}>
               <ul className="text-gray-500 font-semibold text-md sm:text-base">
                 {sections.length === 0 ? (
-                  <li className="border-b border-b-gray-200 p-3">{t("loading")}</li>
+                  <li className="border-b border-b-gray-200 p-3">
+                    {t("loading")}
+                  </li>
                 ) : (
                   sections.map((s, i) => {
-                    const label = (lang !== "en" ? s?.[`section_name_${lang}`]?.trim() : s.section_name)
-           || s?.chapter_name?.trim() 
-           || s?.title?.trim() 
-           || `Chapter ${i + 1}`;
+                    const label =
+                      (lang !== "en"
+                        ? s?.[`section_name_${lang}`]?.trim()
+                        : s.section_name) ||
+                      s?.chapter_name?.trim() ||
+                      s?.title?.trim() ||
+                      `Chapter ${i + 1}`;
                     return (
                       <li
                         key={s.section_id ?? s.id ?? i}
-                        className="border-b border-b-gray-200 p-3 hover:bg-neutral-50 cursor-pointer"
+                        className={`border-b border-b-gray-200 p-3 cursor-pointer
+    ${
+      Number(s.section_id) === Number(currentSection)
+        ? "bg-red-100 text-red-700 font-bold"
+        : "hover:bg-neutral-50"
+    }
+  `}
+                        ref={
+                          Number(s.section_id) === Number(currentSection)
+                            ? activeChapterRef
+                            : null
+                        }
                         onClick={(e) => {
                           e.stopPropagation();
                           openSection(s, i);
@@ -651,4 +701,3 @@ export const Text = () => {
     </div>
   );
 };
-

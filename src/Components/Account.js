@@ -5,7 +5,7 @@ import { CgProfile } from "react-icons/cg";
 import Navbar2 from "./Navbar2";
 import { toast } from "react-toastify";
 import { useLanguage } from "../LanguageContext";
-
+import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 const Account = () => {
   const navigate = useNavigate();
   const { t, lang, changeLanguage } = useLanguage();
@@ -19,6 +19,7 @@ const Account = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [serverMsg, setServerMsg] = useState({ type: "", text: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -26,7 +27,8 @@ const Account = () => {
   const validate = () => {
     let newErrors = {};
 
-    if (!formData.old_password) newErrors.old_password = "Old password is required";
+    if (!formData.old_password)
+      newErrors.old_password = "Old password is required";
 
     if (!formData.new_password) {
       newErrors.new_password = "New password is required";
@@ -70,8 +72,15 @@ const Account = () => {
       });
 
       if (res.flag === "S") {
-        setServerMsg({ type: "success", text: "Password changed successfully!" });
-        setFormData({ old_password: "", new_password: "", verify_password: "" });
+        setServerMsg({
+          type: "success",
+          text: "Password changed successfully!",
+        });
+        setFormData({
+          old_password: "",
+          new_password: "",
+          verify_password: "",
+        });
         toast.success("Password changed successfully!");
         setTimeout(() => navigate("/dashboard"), 3000);
       } else {
@@ -93,8 +102,12 @@ const Account = () => {
       {/* Form Section */}
       <div className="flex flex-1 items-center justify-center px-4 py-10">
         <div className="w-full md:w-[40vw] bg-white rounded-2xl shadow-lg px-10 md:px-28 py-10 md:py-20">
-          <h2 className="text-lg font-medium text-gray-500 mb-1">{t("welcome")}</h2>
-          <h1 className="text-2xl font-normal text-blue-600 mb-12">{t("change_password")}</h1>
+          <h2 className="text-lg font-medium text-gray-500 mb-1">
+            {t("welcome")}
+          </h2>
+          <h1 className="text-2xl font-normal text-blue-600 mb-12">
+            {t("change_password")}
+          </h1>
 
           {/* Server or success messages */}
           {serverMsg.text && (
@@ -111,40 +124,63 @@ const Account = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Old Password */}
-            <div>
-              <label className="block text-sm font-medium text-slate-500 mb-2 ml-4">
+            <div >
+              <label className="block text-sm font-medium text-slate-500 mb-2 ml-4 ">
                 {t("old_password")} <span className="text-red-500">*</span>
               </label>
               <input
-                type="password"
+                //type="password"
+                type={showPassword ? "text" : "password"}
                 name="old_password"
                 placeholder={t("enter_old_password")}
-                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
                 value={formData.old_password}
                 onChange={handleChange}
                 required
               />
+              {/* Eye Button */}
+              {/* <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 text-gray-500"
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button> */}
               {errors.old_password && (
-                <p className="text-red-500 text-xs mt-1 ml-4">{errors.old_password}</p>
+                <p className="text-red-500 text-xs mt-1 ml-4">
+                  {errors.old_password}
+                </p>
               )}
             </div>
 
             {/* New Password */}
-            <div>
-              <label className="block text-sm font-medium text-slate-500 mb-2 ml-4">
-               {t("new_password")}<span className="text-red-500">*</span>
+            <div >
+              <label className="block text-sm font-medium text-slate-500 mb-2 ml-4 ">
+                {t("new_password")}
+                <span className="text-red-500">*</span>
               </label>
               <input
-                type="password"
+                // type="password"
+                type={showPassword ? "text" : "password"}
                 name="new_password"
                 placeholder={t("new_password")}
-                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
                 value={formData.new_password}
                 onChange={handleChange}
                 required
               />
+              {/* Eye Button */}
+              {/* <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 text-gray-500"
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button> */}
               {errors.new_password && (
-                <p className="text-red-500 text-xs mt-1 ml-4">{errors.new_password}</p>
+                <p className="text-red-500 text-xs mt-1 ml-4">
+                  {errors.new_password}
+                </p>
               )}
             </div>
 
@@ -154,16 +190,27 @@ const Account = () => {
                 {t("verify_password")} <span className="text-red-500">*</span>
               </label>
               <input
-                type="password"
+                //type="password"
+                type={showPassword ? "text" : "password"}
                 name="verify_password"
                 placeholder={t("verify_password")}
-                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
                 value={formData.verify_password}
                 onChange={handleChange}
                 required
               />
+              {/* Eye Button */}
+              {/* <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 text-gray-500"
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button> */}
               {errors.verify_password && (
-                <p className="text-red-500 text-xs mt-1 ml-4">{errors.verify_password}</p>
+                <p className="text-red-500 text-xs mt-1 ml-4">
+                  {errors.verify_password}
+                </p>
               )}
             </div>
 
