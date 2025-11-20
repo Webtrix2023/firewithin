@@ -1449,6 +1449,7 @@ import { toast } from "react-toastify";
 import podcast_img from "../assets/podcast-red.svg";
 import { useLanguage } from "../LanguageContext";
 import BG from "../assets/BG.jpg";
+import { AudioLines, Disc2Icon, Disc3 } from "lucide-react";
 
 export const PodCast = () => {
   const { t, lang, changeLanguage } = useLanguage();
@@ -1849,29 +1850,37 @@ export const PodCast = () => {
                 sections.map((section, index) => {
                   const label = getSectionLabel(section, index);
                   const isActive =
-                    currentSection === (section.section_id ?? section.id);
+                    currentSection === (index+1);
 
                   return (
                     <div
                       key={section.section_id ?? section.id ?? index}
                       className={`flex items-center p-4 rounded-lg cursor-pointer transition-all ${
                         isActive
-                          ? "bg-red-600 text-white"
+                          ? "bg-gray-800 text-white"
                           : "text-gray-300 hover:bg-gray-800"
                       }`}
                       onClick={() => openSection(section, index)}
                     >
                       <div
-                        className={`w-8 h-8 flex items-center justify-center rounded-full mr-4 ${
-                          isActive ? "bg-white text-red-600" : "bg-gray-700"
+                        className={`w-12 h-12 flex items-center justify-center rounded-full mr-4 ${
+                          isActive ? "bg-gray-700 text-red-600" : "bg-gray-600"
                         }`}
                       >
-                        <span className="text-sm font-medium">{index + 1}</span>
+                        { (currentSection === (index+1)) ? (
+                        <span className="text-sm font-medium audio-line">
+                          {/* <AudioLines size={30}/> */}
+                          <AudioEqualizer></AudioEqualizer>
+                          </span>
+                        ):(<span className="text-sm font-medium"><Disc3 size={30}/></span>)}
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-lg">{label}</p>
                         <p className="text-sm opacity-75 mt-1">
                           Chapter {index + 1}
+                        </p>
+                        <p className="font-medium text-lg">{label}</p>
+                        <p className="text-sm opacity-75 mt-1 line-clamp-2">
+                          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
                         </p>
                       </div>
                     </div>
@@ -2043,3 +2052,13 @@ export const PodCast = () => {
     </div>
   );
 };
+export default function AudioEqualizer() {
+  return (
+    <div className="flex items-end gap-1 h-6">
+      <div className="w-[2px] bg-white animate-[bar_0.8s_ease-in-out_infinite]"></div>
+      <div className="w-[2px] bg-white animate-[bar_0.9s_ease-in-out_infinite]"></div>
+      <div className="w-[2px] bg-white animate-[bar_1.0s_ease-in-out_infinite]"></div>
+      <div className="w-[2px] bg-white animate-[bar_0.7s_ease-in-out_infinite]"></div>
+    </div>
+  );
+}
