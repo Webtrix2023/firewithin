@@ -348,8 +348,6 @@ import { api } from "../api";
 import { useLanguage } from "../LanguageContext";
 
 const Login = ({ openRegister, openForgot }) => {
-  // openRegister: function to switch to register modal
-  // openForgot: function to handle forgot password
   const { t } = useLanguage();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -401,8 +399,10 @@ const Login = ({ openRegister, openForgot }) => {
   };
 
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6">
-      <h2 className="text-2xl font-semibold mb-4 text-center">{t("login")}</h2>
+    <div className="w-full max-w-md bg-white rounded-2xl  opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]">
+      <h2 className="text-2xl font-semibold mb-4 text-center">
+        {t("app_name")}
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-3">
         {error && (
@@ -473,7 +473,7 @@ const Login = ({ openRegister, openForgot }) => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-black text-white px-6 py-3 rounded-full transition ${
+            className={`w-full bg-black text-white px-6 py-3 rounded-full transition  ${
               loading ? "opacity-60 cursor-not-allowed" : "hover:bg-gray-800"
             }`}
           >
@@ -484,7 +484,7 @@ const Login = ({ openRegister, openForgot }) => {
           <button
             type="button"
             onClick={openForgot}
-            className="text-xs text-gray-500 hover:underline mt-1"
+            className="text-xs text-gray-500 hover:underline mt-1 "
           >
             {t("forgot_password")}
           </button>

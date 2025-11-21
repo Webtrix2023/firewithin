@@ -6,6 +6,7 @@ import Navbar2 from "./Navbar2";
 import { toast } from "react-toastify";
 import { useLanguage } from "../LanguageContext";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import BG from "../assets/BG.jpg";
 const Account = () => {
   const navigate = useNavigate();
   const { t, lang, changeLanguage } = useLanguage();
@@ -95,12 +96,18 @@ const Account = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div
+      className="flex flex-col min-h-screen bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${BG})` }}
+    >
       {/* Navbar */}
       <Navbar2></Navbar2>
 
       {/* Form Section */}
-      <div className="flex flex-1 items-center justify-center px-4 py-10">
+      <div
+        className="flex flex-1 items-center justify-center px-4 py-10
+       opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]"
+      >
         <div className="w-full md:w-[40vw] bg-white rounded-2xl shadow-lg px-10 md:px-28 py-10 md:py-20">
           <h2 className="text-lg font-medium text-gray-500 mb-1">
             {t("welcome")}
@@ -124,7 +131,7 @@ const Account = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Old Password */}
-            <div >
+            <div>
               <label className="block text-sm font-medium text-slate-500 mb-2 ml-4 ">
                 {t("old_password")} <span className="text-red-500">*</span>
               </label>
@@ -154,7 +161,7 @@ const Account = () => {
             </div>
 
             {/* New Password */}
-            <div >
+            <div>
               <label className="block text-sm font-medium text-slate-500 mb-2 ml-4 ">
                 {t("new_password")}
                 <span className="text-red-500">*</span>

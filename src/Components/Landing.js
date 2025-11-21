@@ -1,197 +1,81 @@
-// // // import React from 'react';
-// // // import { Link } from 'react-router-dom';
-// // // import { useLanguage } from "../LanguageContext";
+// // // // // // import React from 'react';
+// // // // // // import { Link } from 'react-router-dom';
+// // // // // // import { useLanguage } from "../LanguageContext";
 
-// // // const Landing = () => {
-// // //   const { t, lang, changeLanguage } = useLanguage();
-// // //   return (
-// // //     <section className="relative overflow-hidden">
-// // //       {/* Background (fills the section) */}
-// // //       <div className="absolute inset-0 hero-bg bg-cover bg-center" />
-// // //       {/* Subtle gradient overlay for legibility without making it “too black” */}
-// // //       <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-transparent md:from-black/20 md:via-black/10" />
+// // // // // // const Landing = () => {
+// // // // // //   const { t, lang, changeLanguage } = useLanguage();
+// // // // // //   return (
+// // // // // //     <section className="relative overflow-hidden">
+// // // // // //       {/* Background (fills the section) */}
+// // // // // //       <div className="absolute inset-0 hero-bg bg-cover bg-center" />
+// // // // // //       {/* Subtle gradient overlay for legibility without making it “too black” */}
+// // // // // //       <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-transparent md:from-black/20 md:via-black/10" />
 
-// // //       {/* Content: subtract a compact header if you use one (h-12 mobile / h-14 desktop) */}
-// // //       <div
-// // //         className="
-// // //           relative text-white
-// // //           min-h-[calc(100svh-3rem)] md:min-h-[calc(100svh-3.5rem)]
-// // //           flex items-center
-// // //         "
-// // //       >
-// // //         <div className="w-full px-5 sm:px-8">
-// // //           <div className="max-w-[52rem] mx-auto md:mx-0 md:ml-20">
-// // //             <h2
-// // //                 className="font-light leading-[1.08] mb-5 text-[clamp(3rem,7.2vw,6.25rem)]">
-// // //                 <span className="md:block">{t("discover")} </span>
-// // //                 {/* <span className="md:block">Discover a </span>
-// // //                 <span className="md:block">world of digital </span>
-// // //                 <span className="md:block">content</span> */}
-// // //                 </h2>
+// // // // // //       {/* Content: subtract a compact header if you use one (h-12 mobile / h-14 desktop) */}
+// // // // // //       <div
+// // // // // //         className="
+// // // // // //           relative text-white
+// // // // // //           min-h-[calc(100svh-3rem)] md:min-h-[calc(100svh-3.5rem)]
+// // // // // //           flex items-center
+// // // // // //         "
+// // // // // //       >
+// // // // // //         <div className="w-full px-5 sm:px-8">
+// // // // // //           <div className="max-w-[52rem] mx-auto md:mx-0 md:ml-20">
+// // // // // //             <h2
+// // // // // //                 className="font-light leading-[1.08] mb-5 text-[clamp(3rem,7.2vw,6.25rem)]">
+// // // // // //                 <span className="md:block">{t("discover")} </span>
+// // // // // //                 {/* <span className="md:block">Discover a </span>
+// // // // // //                 <span className="md:block">world of digital </span>
+// // // // // //                 <span className="md:block">content</span> */}
+// // // // // //                 </h2>
 
-// // //             <Link to="/signup" className="inline-block mt-6">
-// // //               <span
-// // //                 className="
-// // //                   bg-white text-black rounded-full transition hover:bg-white/90
-// // //                   px-6 md:px-7 py-2.5 md:py-3
-// // //                   text-[clamp(1rem,2vw,1.1rem)]     /* modest size */
-// // //                 "
-// // //               >
-// // //                 {t("register_now")}
-// // //               </span>
-// // //             </Link>
-// // //           </div>
-// // //         </div>
-// // //       </div>
-// // //     </section>
-// // //   );
-// // // };
+// // // // // //             <Link to="/signup" className="inline-block mt-6">
+// // // // // //               <span
+// // // // // //                 className="
+// // // // // //                   bg-white text-black rounded-full transition hover:bg-white/90
+// // // // // //                   px-6 md:px-7 py-2.5 md:py-3
+// // // // // //                   text-[clamp(1rem,2vw,1.1rem)]     /* modest size */
+// // // // // //                 "
+// // // // // //               >
+// // // // // //                 {t("register_now")}
+// // // // // //               </span>
+// // // // // //             </Link>
+// // // // // //           </div>
+// // // // // //         </div>
+// // // // // //       </div>
+// // // // // //     </section>
+// // // // // //   );
+// // // // // // };
 
-// // // export default Landing;
-
-// // import React, { useState } from "react";
-// // import { useLanguage } from "../LanguageContext";
-// // import Henry from "../assets/Henry.jpg"; // Background image
-
-// // const Landing = () => {
-// //   const { t } = useLanguage();
-// //   const [showModal, setShowModal] = useState(false);
-// //   const [modalType, setModalType] = useState(null); // "login" or "register"
-
-// //   const openModal = (type) => {
-// //     setModalType(type);
-// //     setShowModal(true);
-// //   };
-
-// //   const closeModal = () => {
-// //     setShowModal(false);
-// //     setModalType(null);
-// //   };
-
-// //   return (
-// //     <section className="relative w-screen h-screen overflow-hidden">
-// //       {/* Background Image */}
-// //       <div
-// //         className="absolute inset-0 bg-cover bg-center"
-// //         style={{ backgroundImage: `url(${Henry})` }}
-// //       />
-// //       {/* Gradient Overlay */}
-// //       <div className="absolute inset-0 bg-black/30" />
-
-// //       {/* Centered Content */}
-// //       <div className="relative z-10 flex flex-col items-center justify-center h-full text-white px-5 text-center">
-// //         <h1 className="text-[clamp(2rem,5vw,5rem)] font-bold mb-8">
-// //           {t("welcome")}
-// //         </h1>
-// //         <div className="flex gap-4">
-// //           <button
-// //             onClick={() => openModal("login")}
-// //             className="bg-white text-black px-6 py-3 rounded-full hover:bg-white/90 transition"
-// //           >
-// //             {t("login")}
-// //           </button>
-// //           <button
-// //             onClick={() => openModal("register")}
-// //             className="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition"
-// //           >
-// //             {t("register_now")}
-// //           </button>
-// //         </div>
-// //       </div>
-
-// //       {/* Popup Modal */}
-// //       {showModal && (
-// //         <div
-// //           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-// //           onClick={closeModal} // close if background clicked
-// //         >
-// //           <div
-// //             className="bg-white rounded-xl w-11/12 max-w-md p-6 relative"
-// //             onClick={(e) => e.stopPropagation()} // prevent closing when modal clicked
-// //           >
-// //             <button
-// //               onClick={closeModal}
-// //               className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 font-bold"
-// //             >
-// //               &times;
-// //             </button>
-
-// //             {modalType === "login" && (
-// //               <div>
-// //                 <h2 className="text-2xl font-semibold mb-4">{t("login")}</h2>
-// //                 {/* Replace below with your actual Login form */}
-// //                 <form className="flex flex-col gap-3">
-// //                   <input
-// //                     type="email"
-// //                     placeholder={t("email")}
-// //                     className="border p-2 rounded"
-// //                   />
-// //                   <input
-// //                     type="password"
-// //                     placeholder={t("password")}
-// //                     className="border p-2 rounded"
-// //                   />
-// //                   <button className="bg-black text-white py-2 rounded mt-2">
-// //                     {t("login")}
-// //                   </button>
-// //                 </form>
-// //               </div>
-// //             )}
-
-// //             {modalType === "register" && (
-// //               <div>
-// //                 <h2 className="text-2xl font-semibold mb-4">
-// //                   {t("register_now")}
-// //                 </h2>
-// //                 {/* Replace below with your actual Register form */}
-// //                 <form className="flex flex-col gap-3">
-// //                   <input
-// //                     type="text"
-// //                     placeholder={t("username")}
-// //                     className="border p-2 rounded"
-// //                   />
-// //                   <input
-// //                     type="email"
-// //                     placeholder={t("email")}
-// //                     className="border p-2 rounded"
-// //                   />
-// //                   <input
-// //                     type="password"
-// //                     placeholder={t("password")}
-// //                     className="border p-2 rounded"
-// //                   />
-// //                   <button className="bg-red-600 text-white py-2 rounded mt-2">
-// //                     {t("register_now")}
-// //                   </button>
-// //                 </form>
-// //               </div>
-// //             )}
-// //           </div>
-// //         </div>
-// //       )}
-// //     </section>
-// //   );
-// // };
-
-// // export default Landing;
+// // // // // // export default Landing;
 
 // import React, { useState } from "react";
 // import { useLanguage } from "../LanguageContext";
 // import { useNavigate } from "react-router-dom";
-// import Henry from "../assets/Henry.jpg"; // Background image
+// import Henry from "../assets/Henry.jpg";
 // import Login from "./Login";
 // import Register from "./Register";
+// import ForgotPassword from "./ForgotPassword";
+
+// import {
+//   useFloating,
+//   offset,
+//   flip,
+//   shift,
+//   autoUpdate,
+//   FloatingPortal,
+// } from "@floating-ui/react";
+// import langv from "../assets/lang.png";
 
 // const Landing = () => {
-//   const { t } = useLanguage();
+//   const { t, lang, changeLanguage } = useLanguage();
 //   const navigate = useNavigate();
 
-//   // State for modal
 //   const [showModal, setShowModal] = useState(false);
-//   const [modalType, setModalType] = useState(null); // "login" or "register"
+//   const [modalType, setModalType] = useState(null);
 
-//   // Handlers
 //   const openModal = (type) => {
+//     setShowLangMenu(false);
 //     setModalType(type);
 //     setShowModal(true);
 //   };
@@ -201,10 +85,34 @@
 //     setModalType(null);
 //   };
 
-//   // Navigate to forgot password page
-//   const openForgot = () => {
-//     setShowModal(false); // close any open modal
-//     navigate("/forgot-password");
+//   // Language floating menu — same as navbar
+//   const [showLangMenu, setShowLangMenu] = useState(false);
+
+//   const { refs, floatingStyles } = useFloating({
+//     placement: "bottom-end",
+//     middleware: [offset(8), flip(), shift()],
+//     whileElementsMounted: autoUpdate,
+//   });
+
+//   React.useEffect(() => {
+//     const handleClick = (e) => {
+//       if (
+//         showLangMenu &&
+//         !refs.reference.current?.contains(e.target) &&
+//         !refs.floating.current?.contains(e.target)
+//       ) {
+//         setShowLangMenu(false);
+//       }
+//     };
+
+//     document.addEventListener("click", handleClick);
+//     return () => document.removeEventListener("click", handleClick);
+//   }, [showLangMenu, refs]);
+
+//   const handleLanguageChange = (newLang) => {
+//     changeLanguage(newLang);
+//     localStorage.setItem("preferredLang", newLang);
+//     setShowLangMenu(false);
 //   };
 
 //   return (
@@ -214,39 +122,100 @@
 //         className="absolute inset-0 bg-cover bg-center"
 //         style={{ backgroundImage: `url(${Henry})` }}
 //       />
-//       {/* Gradient Overlay */}
 //       <div className="absolute inset-0 bg-black/30" />
 
-//       {/* Centered Content */}
-//       <div className="relative z-10 flex flex-col items-center justify-center h-full text-white px-5 text-center">
-//         <h1 className="text-[clamp(2rem,5vw,5rem)] font-bold mb-8">
-//           {t("welcome")}
-//         </h1>
-//         <div className="flex gap-4">
-//           <button
-//             onClick={() => openModal("login")}
-//             className="bg-white text-black px-6 py-3 rounded-full hover:bg-white/90 transition"
-//           >
-//             {t("login")}
-//           </button>
-//           <button
-//             onClick={() => openModal("register")}
-//             className="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition"
-//           >
-//             {t("register_now")}
-//           </button>
+//       {/* === LANGUAGE SELECTOR TOP RIGHT === */}
+//       <div className="absolute top-4 right-6 z-50">
+//         <button
+//           ref={refs.setReference}
+//           onClick={() => setShowLangMenu((prev) => !prev)}
+//           className="p-2 rounded-full bg-white/90 shadow hover:scale-105 transition"
+//         >
+//           <img src={langv} alt="language" className="w-6 inline" />
+//           <span className="ml-1 text-sm uppercase text-red-600 hidden sm:inline">
+//             {lang}
+//           </span>
+//         </button>
+
+//         {showLangMenu && (
+//           <FloatingPortal>
+//             <div
+//               ref={refs.setFloating}
+//               style={floatingStyles}
+//               className="bg-white border border-gray-200 rounded-md shadow-lg w-40 z-[9999]"
+//             >
+//               <ul className="py-2 text-sm text-gray-700">
+//                 <li>
+//                   <button
+//                     onClick={() => handleLanguageChange("en")}
+//                     className="w-full text-left px-4 py-2 hover:bg-gray-100"
+//                   >
+//                     English
+//                   </button>
+//                 </li>
+//                 <li>
+//                   <button
+//                     onClick={() => handleLanguageChange("ko")}
+//                     className="w-full text-left px-4 py-2 hover:bg-gray-100"
+//                   >
+//                     Korean (한국인)
+//                   </button>
+//                 </li>
+//               </ul>
+//             </div>
+//           </FloatingPortal>
+//         )}
+//       </div>
+//       {/* === Right side content === */}
+//       <div
+//         className="
+//   absolute inset-0 flex flex-col md:flex-row
+//   items-center md:items-center justify-center md:justify-end
+//   px-6 md:px-16
+// "
+//       >
+//         <div
+//           className="relative text-center md:text-left text-white
+//     md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10"
+//         >
+//           {/* Title */}
+//           <h2 className="text-3xl sm:text-4xl font-bold mb-4 leading-snug ">
+//             {t("title")}
+//           </h2>
+
+//           {/* Description */}
+//           <p className="text-gray-200 text-base sm:text-lg leading-relaxed mb-8">
+//             {t("description")}
+//           </p>
+
+//           {/* Buttons */}
+//           <div className="flex gap-4 justify-center md:justify-start">
+//             <button
+//               onClick={() => openModal("login")}
+//               className="bg-white text-black px-6 py-3 rounded-full hover:bg-white/90 transition"
+//             >
+//               {t("login")}
+//             </button>
+
+//             <button
+//               onClick={() => openModal("register")}
+//               className="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition"
+//             >
+//               {t("register_now")}
+//             </button>
+//           </div>
 //         </div>
 //       </div>
 
-//       {/* Popup Modal */}
+//       {/* === Modal Popup === */}
 //       {showModal && (
 //         <div
 //           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-//           onClick={closeModal} // close if background clicked
+//           onClick={closeModal}
 //         >
 //           <div
 //             className="bg-white rounded-xl w-11/12 max-w-md p-6 relative"
-//             onClick={(e) => e.stopPropagation()} // prevent closing when modal clicked
+//             onClick={(e) => e.stopPropagation()}
 //           >
 //             <button
 //               onClick={closeModal}
@@ -255,18 +224,22 @@
 //               &times;
 //             </button>
 
-//             {/* Render Login or Register */}
 //             {modalType === "login" && (
 //               <Login
 //                 openRegister={() => openModal("register")}
-//                 openForgot={openForgot}
+//                 openForgot={() => openModal("forgot")}
 //               />
 //             )}
+
 //             {modalType === "register" && (
 //               <Register
 //                 openLogin={() => openModal("login")}
-//                 openForgot={openForgot}
+//                 openForgot={() => openModal("forgot")}
 //               />
+//             )}
+
+//             {modalType === "forgot" && (
+//               <ForgotPassword isModal openLogin={() => openModal("login")} />
 //             )}
 //           </div>
 //         </div>
@@ -276,23 +249,34 @@
 // };
 
 // export default Landing;
+
 import React, { useState } from "react";
 import { useLanguage } from "../LanguageContext";
 import { useNavigate } from "react-router-dom";
-import Henry from "../assets/Henry.jpg"; // Background image
+import Henry from "../assets/Henry.jpg";
 import Login from "./Login";
 import Register from "./Register";
+import ForgotPassword from "./ForgotPassword";
+
+import {
+  useFloating,
+  offset,
+  flip,
+  shift,
+  autoUpdate,
+  FloatingPortal,
+} from "@floating-ui/react";
+import langv from "../assets/lang.png";
 
 const Landing = () => {
-  const { t } = useLanguage();
+  const { t, lang, changeLanguage } = useLanguage();
   const navigate = useNavigate();
 
-  // State for modal
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(null); // "login" or "register"
+  const [modalType, setModalType] = useState(null);
 
-  // Handlers
   const openModal = (type) => {
+    setShowLangMenu(false);
     setModalType(type);
     setShowModal(true);
   };
@@ -302,53 +286,159 @@ const Landing = () => {
     setModalType(null);
   };
 
-  // Navigate to forgot password page
-  const openForgot = () => {
-    setShowModal(false); // close any open modal
-    navigate("/forgot-password");
+  // Language floating menu — same as navbar
+  const [showLangMenu, setShowLangMenu] = useState(false);
+
+  const { refs, floatingStyles } = useFloating({
+    placement: "bottom-end",
+    middleware: [offset(8), flip(), shift()],
+    whileElementsMounted: autoUpdate,
+  });
+
+  React.useEffect(() => {
+    const handleClick = (e) => {
+      if (
+        showLangMenu &&
+        !refs.reference.current?.contains(e.target) &&
+        !refs.floating.current?.contains(e.target)
+      ) {
+        setShowLangMenu(false);
+      }
+    };
+
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, [showLangMenu, refs]);
+
+  const handleLanguageChange = (newLang) => {
+    changeLanguage(newLang);
+    localStorage.setItem("preferredLang", newLang);
+    setShowLangMenu(false);
   };
 
   return (
-    <section className="relative w-screen h-screen overflow-hidden">
+    <section className="relative w-screen h-screen overflow-hidden ">
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${Henry})` }}
       />
-      {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-black/30" />
 
-      {/* Right-aligned Content */}
-      <div className="relative z-10 flex flex-col items-end justify-center h-full text-white pr-10 text-right">
-        {/* Changed: items-end + pr-10 + text-right to move content to right */}
-        <h1 className="text-[clamp(2rem,5vw,5rem)] font-bold mb-8">
-          {t("welcome")}
-        </h1>
-        <div className="flex gap-4">
-          <button
-            onClick={() => openModal("login")}
-            className="bg-white text-black px-6 py-3 rounded-full hover:bg-white/90 transition"
+      {/* === LANGUAGE SELECTOR TOP RIGHT === */}
+      <div className="absolute top-4 right-6 z-50">
+        <button
+          ref={refs.setReference}
+          onClick={() => setShowLangMenu((prev) => !prev)}
+          className="p-2 pl-3 pr-3 rounded-full bg-white/90 shadow hover:scale-105 transition flex items-center gap-2"
+        >
+          {/* ICON */}
+          <img src={langv} alt="language" className="w-6" />
+
+          {/* LANG TEXT */}
+          <span className="text-sm uppercase text-red-600 hidden sm:inline">
+            {lang}
+          </span>
+
+          {/* ARROW AT RIGHT */}
+          <svg
+            className={`w-3 h-3 ml-auto transition-transform ${
+              showLangMenu ? "rotate-180" : "rotate-0"
+            }`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
           >
-            {t("login")}
-          </button>
-          <button
-            onClick={() => openModal("register")}
-            className="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition"
-          >
-            {t("register_now")}
-          </button>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+
+        {showLangMenu && (
+          <FloatingPortal>
+            <div
+              ref={refs.setFloating}
+              style={floatingStyles}
+              className="bg-white border border-gray-200 rounded-md shadow-lg w-40 z-[9999]"
+            >
+              <ul className="py-2 text-sm text-gray-700">
+                <li>
+                  <button
+                    onClick={() => handleLanguageChange("en")}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    English
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => handleLanguageChange("ko")}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Korean (한국인)
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </FloatingPortal>
+        )}
+      </div>
+      {/* === Right side content === */}
+      <div
+        className="
+  absolute inset-0 flex flex-col md:flex-row 
+  items-center md:items-center justify-center md:justify-end
+  px-6 md:px-16
+"
+      >
+        <div
+          className="relative text-center md:text-left text-white 
+    md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10"
+        >
+          {/* Title */}
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 leading-snug opacity-0 translate-y-4 animate-[fadeUp_2s_ease-out_forwards] ">
+            {t("title")}
+          </h2>
+
+          {/* Description */}
+          <p className="text-gray-200 text-base sm:text-lg leading-relaxed mb-8 opacity-0 translate-y-4 animate-[fadeUp_2.5s_ease-out_forwards]">
+            {t("description")}
+          </p>
+
+          {/* Buttons */}
+          <div className="flex gap-4 justify-center md:justify-start">
+            <button
+              onClick={() => openModal("login")}
+              className="bg-white text-black px-6 py-3 rounded-full hover:bg-white/90 transition
+              opacity-0 animate-[fadeIn_4s_ease-out_forwards]"
+            >
+              {t("login")}
+            </button>
+
+            <button
+              onClick={() => openModal("register")}
+              className="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition
+                opacity-0 animate-[fadeIn_5s_ease-out_forwards]"
+            >
+              {t("register_now")}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Popup Modal */}
+      {/* === Modal Popup === */}
       {showModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={closeModal} // close if background clicked
+          onClick={closeModal}
         >
           <div
             className="bg-white rounded-xl w-11/12 max-w-md p-6 relative"
-            onClick={(e) => e.stopPropagation()} // prevent closing when modal clicked
+            onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={closeModal}
@@ -357,18 +447,22 @@ const Landing = () => {
               &times;
             </button>
 
-            {/* Render Login or Register */}
             {modalType === "login" && (
               <Login
                 openRegister={() => openModal("register")}
-                openForgot={openForgot}
+                openForgot={() => openModal("forgot")}
               />
             )}
+
             {modalType === "register" && (
               <Register
                 openLogin={() => openModal("login")}
-                openForgot={openForgot}
+                openForgot={() => openModal("forgot")}
               />
+            )}
+
+            {modalType === "forgot" && (
+              <ForgotPassword isModal openLogin={() => openModal("login")} />
             )}
           </div>
         </div>

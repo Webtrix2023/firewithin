@@ -21,7 +21,7 @@ import {
   BookCopy,
   Podcast,
   CircleUserRound,
-  CircleArrowLeft,
+  Undo2,
 } from "lucide-react";
 import { useLanguage } from "../LanguageContext";
 import axios from "axios";
@@ -161,7 +161,7 @@ const Navbar2 = (params) => {
                 alt={t("read")}
               /> */}
               {/* Book Icon in Red */}
-              <BookCopy className="w-5 md:w-6 lg:w-7 text-red-500" />
+              <BookCopy className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
             </button>
           ) : isTextPage ? (
             <button
@@ -175,7 +175,7 @@ const Navbar2 = (params) => {
                 src={ListenRed}
                 alt={t("listen")}
               /> */}
-              <FileHeadphone className="w-5 md:w-6 lg:w-7 text-red-500" />
+              <FileHeadphone className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
             </button>
           ) : null}
 
@@ -192,7 +192,7 @@ const Navbar2 = (params) => {
                   src={readRed}
                   alt={t("read")}
                 /> */}
-                <BookCopy className="w-5 md:w-6 lg:w-7 text-red-500" />
+                <BookCopy className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
               </button>
               <button
                 aria-label="Switch to Music"
@@ -223,7 +223,7 @@ const Navbar2 = (params) => {
                 src={podcast_img}
                 alt={t("podcast")}
               /> */}
-              <Podcast className="w-5 md:w-6 lg:w-7 text-red-500" />
+              <Podcast className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
             </button>
           )}
           {/* 🌐 Language Selector */}
@@ -232,24 +232,17 @@ const Navbar2 = (params) => {
               ref={refs.setReference}
               aria-label="Select Language"
               title={t("select_language")}
-              //className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-              className="p-1.5 md:p-2 rounded-full hover:text-red-700 flex items-center gap-1 transition-transform hover:scale-105"
-              //onClick={() => setShowLangMenu((prev) => !prev)}
+              className="p-1.5 md:p-2 rounded-full hover:text-red-700 flex items-center gap-0 transition-transform hover:scale-105"
               onClick={toggleLangMenu}
             >
-              {/* <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7 inline"
-                src={langv}
-                alt={t("lang")}
-              /> */}
-              <Languages className="w-5 md:w-6 lg:w-7 text-red-500" />
-              <span className="ml-1 text-lg uppercase hidden sm:inline">
+              <Languages className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500 inline" />
+
+              <span className="text-lg uppercase hidden sm:inline ml-[-3px]">
                 {lang}
               </span>
 
-              {/* ▼ Arrow */}
               <svg
-                className={`w-3 h-3 transition-transform ${
+                className={`w-3 h-3 transition-transform ml-[-1px] ${
                   showLangMenu ? "rotate-180" : "rotate-0"
                 }`}
                 fill="none"
@@ -269,14 +262,14 @@ const Navbar2 = (params) => {
               <div
                 ref={refs.setFloating}
                 style={floatingStyles}
-                // className="bg-white border border-gray-200 rounded-md shadow-lg w-44 sm:w-48 z-1000"
-                className="absolute right-0 top-full mt-4 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50"
+                className="w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50 border border-gray-200"
+                //className="absolute right-0 top-full mt-4 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50"
               >
                 <ul className="py-2 text-sm text-gray-700">
                   <li>
                     <button
                       onClick={() => handleLanguageChange("en")}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
                     >
                       English
                     </button>
@@ -284,7 +277,7 @@ const Navbar2 = (params) => {
                   <li>
                     <button
                       onClick={() => handleLanguageChange("ko")}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
                     >
                       Korean (한국인)
                     </button>
@@ -292,7 +285,7 @@ const Navbar2 = (params) => {
                   {/* <li>
                   <button
                     onClick={() => handleLanguageChange("zh")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
                   >
                     Chinese (中国人)
                   </button>
@@ -311,7 +304,7 @@ const Navbar2 = (params) => {
               //onClick={() => setDisplayMenu(!displayMenu)}
               onClick={toggleProfileMenu}
             >
-              <CircleUserRound className="w-6 md:w-7 lg:w-8 text-red-500" />
+              <CircleUserRound className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
 
               {/* ▼ Arrow */}
               <svg
@@ -337,7 +330,7 @@ const Navbar2 = (params) => {
                   <li>
                     <button
                       onClick={() => navigate("/account")}
-                      className="px-4 py-2 text-left hover:bg-gray-100 text-gray-700 text-sm sm:text-base"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
                     >
                       {t("my_account")}
                     </button>
@@ -345,7 +338,7 @@ const Navbar2 = (params) => {
                   <li>
                     <button
                       onClick={handleLogout}
-                      className="px-4 py-2 text-left hover:bg-gray-100 text-gray-700 text-sm sm:text-base"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
                     >
                       {t("logout")}
                     </button>
@@ -371,7 +364,7 @@ const Navbar2 = (params) => {
                 src={backRed}
                 alt={t("back_to_dashboard")}
               /> */}
-              <CircleArrowLeft className="w-5 md:w-6 lg:w-7 text-red-500" />
+              <Undo2 className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
             </button>
           )}
         </div>
