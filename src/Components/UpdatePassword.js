@@ -6,7 +6,6 @@ import Navbar2 from "./Navbar2";
 import { useLanguage } from "../LanguageContext";
 
 export const UpdatePassword = () => {
-  
   const { t, lang, changeLanguage } = useLanguage();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -38,7 +37,8 @@ export const UpdatePassword = () => {
     } else if (formData.newPassword.length < 8) {
       newErrors.newPassword = '${t("Password_characters")}';
     } else if (!/[A-Z]/.test(formData.newPassword)) {
-      newErrors.newPassword = '${t("password_must_include_an_uppercase_letter")}';
+      newErrors.newPassword =
+        '${t("password_must_include_an_uppercase_letter")}';
     } else if (!/[0-9]/.test(formData.newPassword)) {
       newErrors.newPassword = '${t("password_must_include_a_number")}';
     } else if (!/[!@#$%^&*]/.test(formData.newPassword)) {
@@ -73,12 +73,14 @@ export const UpdatePassword = () => {
       body.append("code", vfcode);
       body.append("customerID", customerID);
 
-      const {data:res} = await API.post("/updatePassword", body, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      const { data: res } = await API.post("/updatePassword", body, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
       });
 
-      console.log('res : ',res);
-      
+      console.log("res : ", res);
+
       if (res.flag === "S") {
         setSuccessMsg(res.msg);
         setTimeout(() => {
@@ -126,13 +128,13 @@ export const UpdatePassword = () => {
             {/* New Password */}
             <div>
               <label className="block text-sm font-medium text-slate-500 mb-2 ml-4">
-               {t("new_password")} <span className="text-red-500">*</span>
+                {t("new_password")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="password"
                 name="newPassword"
-                placeholder={t("new_password")} 
-                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                placeholder={t("new_password")}
+                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
                 value={formData.newPassword}
                 onChange={handleChange}
                 required
@@ -147,13 +149,14 @@ export const UpdatePassword = () => {
             {/* Confirm Password */}
             <div>
               <label className="block text-sm font-medium text-slate-500 mb-2 ml-4">
-                {t("verify_password")}<span className="text-red-500">*</span>
+                {t("verify_password")}
+                <span className="text-red-500">*</span>
               </label>
               <input
                 type="password"
                 name="confirmPassword"
                 placeholder={t("verify_password")}
-                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full placeholder:text-gray-300 shadow-sm border border-slate-200 px-4 py-3 rounded-full outline-none text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required

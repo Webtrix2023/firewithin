@@ -1,0 +1,285 @@
+/* FlipPage.css - Enhanced reading experience styles */
+
+/* Reader content styling */
+.reader-html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography enhancements */
+.reader-html p {
+  margin-bottom: 1.2em;
+  line-height: inherit;
+}
+
+.reader-html h1,
+.reader-html h2,
+.reader-html h3,
+.reader-html h4,
+.reader-html h5,
+.reader-html h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.reader-html h1 {
+  font-size: 2em;
+}
+
+.reader-html h2 {
+  font-size: 1.6em;
+}
+
+.reader-html h3 {
+  font-size: 1.3em;
+}
+
+/* Lists */
+.reader-html ul,
+.reader-html ol {
+  margin-bottom: 1.2em;
+  padding-left: 2em;
+}
+
+.reader-html li {
+  margin-bottom: 0.5em;
+}
+
+/* Links */
+.reader-html a {
+  color: #dc2626;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.reader-html a:hover {
+  color: #991b1b;
+}
+
+/* Blockquotes */
+.reader-html blockquote {
+  margin: 1.5em 0;
+  padding-left: 1.5em;
+  border-left: 4px solid #dc2626;
+  font-style: italic;
+  color: #6b7280;
+}
+
+/* Code blocks */
+.reader-html code {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+}
+
+.reader-html pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 1em;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.reader-html pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Images */
+.reader-html img {
+  max-width: 100%;
+  height: auto;
+  margin: 1.5em auto;
+  display: block;
+  border-radius: 8px;
+}
+
+/* Tables */
+.reader-html table {
+  width: 100%;
+  margin: 1.5em 0;
+  border-collapse: collapse;
+}
+
+.reader-html th,
+.reader-html td {
+  padding: 0.75em;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.reader-html th {
+  font-weight: 600;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Horizontal rules */
+.reader-html hr {
+  margin: 2em 0;
+  border: none;
+  border-top: 2px solid #e5e7eb;
+}
+
+/* Page transition animation */
+.page-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark theme adjustments */
+.dark .reader-html a {
+  color: #f87171;
+}
+
+.dark .reader-html a:hover {
+  color: #fca5a5;
+}
+
+.dark .reader-html blockquote {
+  color: #9ca3af;
+  border-left-color: #f87171;
+}
+
+.dark .reader-html code {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .reader-html pre {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .reader-html th,
+.dark .reader-html td {
+  border-bottom-color: #374151;
+}
+
+.dark .reader-html th {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark .reader-html hr {
+  border-top-color: #374151;
+}
+
+/* Sepia theme adjustments */
+.sepia .reader-html a {
+  color: #b91c1c;
+}
+
+.sepia .reader-html a:hover {
+  color: #7f1d1d;
+}
+
+.sepia .reader-html blockquote {
+  color: #6b5e48;
+  border-left-color: #b91c1c;
+}
+
+.sepia .reader-html code {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.sepia .reader-html pre {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.sepia .reader-html th,
+.sepia .reader-html td {
+  border-bottom-color: #d4c5a9;
+}
+
+.sepia .reader-html th {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.sepia .reader-html hr {
+  border-top-color: #d4c5a9;
+}
+
+/* Smooth scrolling */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+.reader-html ::selection {
+  background-color: #fecaca;
+  color: #111;
+}
+
+.dark .reader-html ::selection {
+  background-color: #991b1b;
+  color: #fff;
+}
+
+.sepia .reader-html ::selection {
+  background-color: #f9e4b7;
+  color: #2b2a27;
+}
+
+/* Focus styles for accessibility */
+.reader-html a:focus,
+button:focus {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .reader-html h1 {
+    font-size: 1.75em;
+  }
+
+  .reader-html h2 {
+    font-size: 1.5em;
+  }
+
+  .reader-html h3 {
+    font-size: 1.25em;
+  }
+
+  .reader-html blockquote {
+    padding-left: 1em;
+    border-left-width: 3px;
+  }
+
+  .reader-html pre {
+    padding: 0.75em;
+  }
+}
+
+/* Print styles */
+@media print {
+  .reader-html {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  .reader-html a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .reader-html a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+}

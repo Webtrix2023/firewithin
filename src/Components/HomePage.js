@@ -23,7 +23,8 @@ const HomePage = () => {
       {/* Navbar */}
       <Navbar2 />
    <div
-        className="relative flex flex-col md:flex-row items-center md:items-center justify-center md:justify-end min-h-screen w-full px-6 md:px-16 py-12 bg-[#1e2c33] bg-cover bg-center transition-all duration-500"
+        className="relative flex flex-col md:flex-row items-center md:items-center justify-center md:justify-end min-h-screen w-full px-6 md:px-16 py-12 bg-[#1e2c33] bg-cover bg-center transition-all duration-500
+         opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]"
         style={{
           backgroundImage: isDesktop ? `url(${Henry})` : "none",
         }}

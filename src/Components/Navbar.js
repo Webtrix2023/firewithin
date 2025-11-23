@@ -1,5 +1,5 @@
-import React,{useState} from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useLanguage } from "../LanguageContext";
 import {
   useFloating,
@@ -10,7 +10,7 @@ import {
   FloatingPortal,
 } from "@floating-ui/react";
 import langv from "../assets/lang.png";
-import { api } from '../api';
+import { api } from "../api";
 
 const Navbar = () => {
   const { t, lang, changeLanguage } = useLanguage();
@@ -35,7 +35,9 @@ const Navbar = () => {
       const body = new URLSearchParams();
       body.append("lang", newLang);
       await api.post("/updateLanguage", body, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
         withCredentials: true,
       });
     } catch (err) {
@@ -49,7 +51,7 @@ const Navbar = () => {
         {/* Left: Title | Right: Actions (Lang + Login) */}
         <div className="flex items-center py-3 md:py-5">
           <h1 className="font-semibold tracking-wide text-base sm:text-lg md:text-2xl lg:text-3xl">
-            {t('app_name')}
+            {t("app_name")}
           </h1>
 
           {/* RIGHT ACTIONS — push to right on all screens */}
@@ -64,7 +66,11 @@ const Navbar = () => {
               className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
               onClick={() => setShowLangMenu((prev) => !prev)}
             >
-              <img className="w-5 sm:w-6 md:w-7 inline" src={langv} alt={t("lang")} />
+              <img
+                className="w-5 sm:w-6 md:w-7 inline"
+                src={langv}
+                alt={t("lang")}
+              />
               {/* keep code small on phones, show label from sm+ */}
               <span className="ml-1 text-sm sm:text-base uppercase text-red-600 hidden sm:inline">
                 {lang}
@@ -72,7 +78,7 @@ const Navbar = () => {
             </button>
 
             {/* Login */}
-            <Link
+            {/* <Link
               to="/login"
               className="inline-flex items-center rounded-full bg-black text-white
                          px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-3
@@ -81,7 +87,7 @@ const Navbar = () => {
                          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30"
             >
               {t("login")}
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
