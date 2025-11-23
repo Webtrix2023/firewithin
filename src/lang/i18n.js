@@ -4,6 +4,7 @@ const translations = {
     login: "Login",
     chapter:"CHAPTER",
     chapters: "Chapters",
+    audioBook:"Audio Book",
     register_now: "Register Now",
     discover: "Discover a world of digital content",
     name: "Name",
@@ -68,7 +69,7 @@ const translations = {
 
 
     // Description content
-    title: "The Fire Within",
+    title: "THE FIRE WITHIN",
     description: `is an autobiography by industrialist Henry M. Rowan, chronicling his remarkable journey
       from a young engineer to the founder of Inductotherm Industries, Inc. The book traces his
       life from small-town America through World War II flight school and into his entrepreneurial
@@ -84,6 +85,7 @@ const translations = {
 login: "로그인",
 chapter: "챕터",
 chapters: "챕터 목록",
+audioBook:"오디오북",
 register_now: "신규 가입하기",
 discover: "디지털 콘텐츠의 세계를 발견하십시오.",
 name: "이름",

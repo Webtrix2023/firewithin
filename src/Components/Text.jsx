@@ -23,6 +23,7 @@ export const Text = () => {
 
   const [chapterName, setChapterName] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumberDisplay, setPageNumbeDisplay] = useState(1);
   const [sections, setSections] = useState([]);
   const [lessonIndex, setLessonIndex] = useState(0); // number, not string
   const [currentSection, setCurrentSection] = useState(0);
@@ -58,7 +59,7 @@ export const Text = () => {
     index = lessonIndex,
     type = "current",
     saveProgress = false, // ✅ true only for next/prev/section
-  } = {}) => {
+    } = {}) => {
     console.log("Loading page →", { sectionId, index, type });
 
     try {
@@ -71,7 +72,7 @@ export const Text = () => {
       {
         /*Endpoint changed from pageDetails to getpageDetails */
       }
-      const { data } = await api.post("/getpageDetails", body, {
+      const { data } = await api.post("/pageDetails", body, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
           Accept: "*/*",
@@ -111,6 +112,9 @@ export const Text = () => {
 
   const updateAutoPage = async (page) => {
     try {
+      //setPageNumber(page);
+      const pagenp = page-1;
+      setPageNumbeDisplay(pagenp == 0 ? 1 : pagenp);
       await axios.get(`${API_URL}autopageSet/${page}`);
     } catch (err) {
       console.error(err);
@@ -127,11 +131,8 @@ export const Text = () => {
       ttpe: "listen",
       ...opts,
     };
-    {
-      /*Endpoint changed from pageDetails to getpageDetails */
-    }
     try {
-      const res = await axios.post(`${API_URL}getpageDetails`, payload, {
+      const res = await axios.post(`${API_URL}pageDetails`, payload, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
           Accept: "*/*",
@@ -200,6 +201,8 @@ export const Text = () => {
         setTheme(data?.customer_details?.[0]?.mode || "light");
         //setFontSize(data?.customer_details?.[0]?.selected_font || 1.05);
         setFontSize(Number(data?.customer_details?.[0]?.selected_font) || 1.05);
+        setPageNumber(Number(item.lesson_id));
+        setPageNumbeDisplay(Number(item.lesson_id) === 0 ? 1 : (Number(item.lesson_id)-1));
       }
     } catch (err) {
       console.error(err);
@@ -208,10 +211,6 @@ export const Text = () => {
 
   const getLessonByPageNumber = async (pageNumber) => {
     try {
-      // setLessonIndex(pageNumber);
-      // setPageNumber(pageNumber);
-      // loadPage({ index: pageNumber, type: "prev", saveProgress: true });
-
       const formData = new URLSearchParams();
       formData.append("page_number", pageNumber);
       formData.append("course_id", 1);
@@ -253,20 +252,6 @@ export const Text = () => {
   };
 
   // --- Navigation handlers ---
-  const handleNext = (e) => {
-    e.stopPropagation();
-    const nextIndex = lessonIndex + 1;
-    setLessonIndex(nextIndex);
-    loadPage({ index: nextIndex, type: "next", saveProgress: true });
-  };
-
-  const handlePrev = (e) => {
-    e.stopPropagation();
-    const prevIndex = Math.max(lessonIndex - 1, 0);
-    setLessonIndex(prevIndex);
-    loadPage({ index: prevIndex, type: "prev", saveProgress: true });
-  };
-
   const openSection = (section, i) => {
     const sectionId = section.section_id ?? section.id ?? section.sectionId;
     setIsSliderOpen(false);
@@ -436,12 +421,12 @@ export const Text = () => {
       <main className="relative flex-1 overflow-hidden">
         {/* Top bar */}
         <div
-          className={`pointer-events-none absolute inset-x-0 top-0 z-30 px-3 sm:px-6 pt-[env(safe-area-inset-top)]
+          className={`pointer-events-none absolute inset-x-0 top-0 z-10 px-3 sm:px-6 pt-[env(safe-area-inset-top)]
             transition-opacity duration-300 ${
               controlsVisible ? "opacity-100" : "opacity-0"
             }`}
         >
-          <div className="pointer-events-auto mx-auto max-w-[72ch] flex items-center justify-between rounded-b-xl bg-black/10 backdrop-blur-sm px-3 py-2 sm:px-4 sm:py-3">
+          <div className="pointer-events-auto mx-auto max-w-[100ch] flex items-center justify-between rounded-b-xl bg-black/10 backdrop-blur-sm px-3 py-2 sm:px-4 sm:py-3">
             <div className="text-xs sm:text-sm font-medium truncate">
               {chapterName}
             </div>
@@ -518,7 +503,7 @@ export const Text = () => {
           className="relative h-full w-full overflow-y-auto pt-[50px] px-3 sm:px-4 md:px-6 pb-20 sm:pb-24 scroll-smooth"
           onClick={handleReadingAreaTap}
         >
-          <div className="mx-auto max-w-[72ch]">
+          <div className="mx-auto max-w-[100ch]">
             {/* Chapter title */}
             {/* <h1
               className={`text-center mb-6 sm:mb-8 font-light ${contentColor[theme]
@@ -543,12 +528,12 @@ export const Text = () => {
 
         {/* Bottom navigation */}
         <div
-          className={`pointer-events-none absolute inset-x-0 bottom-0 z-30 px-3 sm:px-6 pb-[env(safe-area-inset-bottom)]
+          className={`pointer-events-none absolute inset-x-0 bottom-0 z-11 px-3 sm:px-6 pb-[env(safe-area-inset-bottom)]
             transition-opacity duration-300 ${
               controlsVisible ? "opacity-100" : "opacity-0"
             }`}
         >
-          <div className="pointer-events-auto mx-auto max-w-[72ch] flex items-center justify-between rounded-t-xl bg-black/10 backdrop-blur-sm px-2 py-2 sm:px-3 sm:py-2">
+          <div className="pointer-events-auto mx-auto max-w-[100ch] flex items-center justify-between rounded-t-xl bg-black/10 backdrop-blur-sm px-2 py-2 sm:px-3 sm:py-2">
             <div className="flex items-center gap-2">
               <button
                 aria-label="Previous page"
@@ -590,7 +575,7 @@ export const Text = () => {
                */}
               <input
                 type="number"
-                value={pageNumber}
+                value={pageNumberDisplay}
                 onChange={(e) => {
                   const value = Number(e.target.value);
                   setPageNumber(value);

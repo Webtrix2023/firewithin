@@ -22,6 +22,7 @@ import {
   Podcast,
   CircleUserRound,
   Undo2,
+  BookOpenCheck,
 } from "lucide-react";
 import { useLanguage } from "../LanguageContext";
 import axios from "axios";
@@ -31,7 +32,14 @@ const Navbar2 = (params) => {
   const location = useLocation();
   const [displayMenu, setDisplayMenu] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
-
+  const {
+  refs: profileRefs,
+  floatingStyles: profileFloatingStyles,
+  update: updateProfile,
+} = useFloating({
+  placement: "bottom-end",
+  middleware: [offset(8), flip(), shift()],
+});
   // Refs for click outside detection
   const profileMenuRef = useRef(null);
   const langMenuRef = useRef(null);
@@ -44,6 +52,14 @@ const Navbar2 = (params) => {
     placement: "bottom-end",
     middleware: [offset(8), flip(), shift()],
   });
+  useEffect(() => {
+  if (!profileRefs.reference.current || !profileRefs.floating.current) return;
+  return autoUpdate(
+    profileRefs.reference.current,
+    profileRefs.floating.current,
+    updateProfile
+  );
+}, [profileRefs.reference, profileRefs.floating, updateProfile]);
 
   useEffect(() => {
     if (!refs.reference.current || !refs.floating.current) return;
@@ -126,7 +142,7 @@ const Navbar2 = (params) => {
   };
 
   return (
-    <nav className="w-full bg-gradient-to-r from-gray-300 to-white shadow sticky top-0 z-10">
+    <nav className="w-full bg-gradient-to-r from-gray-300 to-white shadow sticky top-0">
       <div className="mx-auto flex flex-wrap items-center justify-between px-3 py-2.5 md:py-4">
         {/* Left: Title */}
         <div className="leading-tight mb-2 md:mb-0 flex-1 min-w-[180px] md:pl-10">
@@ -144,88 +160,51 @@ const Navbar2 = (params) => {
               : " "}
           </p>
         </div>
-
         {/* Right: Icons + Language */}
         <div className="flex items-center gap-2 sm:gap-3 md:gap-5 lg:gap-6 text-red-500 relative">
           {/* Listen / Read Toggle */}
-          {isMusicPage ? (
+          {!idDashboard && (<>
             <button
               aria-label="Switch to Text"
               title={t("read")}
-              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+              className="p-1.5 md:p-2 rounded-full transition-transform hover:scale-105"
               onClick={() => navigate("/book/read")}
             >
-              {/* <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={readRed}
-                alt={t("read")}
-              /> */}
               {/* Book Icon in Red */}
-              <BookCopy className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
+              <BookOpenCheck
+                className={`
+                  w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
+                  hover:text-red-800
+                  ${isTextPage ? "text-red-800" : "text-stone-500"}
+                `}
+              />
             </button>
-          ) : isTextPage ? (
             <button
               aria-label="Switch to Music"
               title={t("listen")}
               className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
               onClick={() => navigate("/book/listen")}
             >
-              {/* <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={ListenRed}
-                alt={t("listen")}
-              /> */}
-              <FileHeadphone className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
+              <FileHeadphone className={`
+                  w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
+                  hover:text-red-800
+                  ${isMusicPage ? "text-red-800" : "text-stone-500"}
+                `} />
             </button>
-          ) : null}
-
-          {isPodcast ? (
-            <>
-              <button
-                aria-label="Switch to Text"
-                title={t("read")}
-                className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-                onClick={() => navigate("/book/read")}
-              >
-                {/* <img
-                  className="w-4 sm:w-5 md:w-6 lg:w-7"
-                  src={readRed}
-                  alt={t("read")}
-                /> */}
-                <BookCopy className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
-              </button>
-              <button
-                aria-label="Switch to Music"
-                title={t("listen")}
-                className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-                onClick={() => navigate("/book/listen")}
-              >
-                {/* <img
-                  className="w-4 sm:w-5 md:w-6 lg:w-7"
-                  src={ListenRed}
-                  alt={t("listen")}
-                /> */}
-                <FileHeadphone className="w-5 md:w-6 lg:w-7 text-red-500" />
-              </button>
-            </>
-          ) : null}
-
-          {/* Podcast */}
-          {!idDashboard && !isPodcast && (
             <button
               aria-label="Podcast"
               title={t("podcast")}
               className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
               onClick={() => navigate("/book/podcasts")}
             >
-              {/* <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={podcast_img}
-                alt={t("podcast")}
-              /> */}
-              <Podcast className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
+              <Podcast className={`
+                  w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
+                  hover:text-red-800
+                  ${isPodcast ? "text-red-800" : "text-stone-500"}
+                `} />
             </button>
-          )}
+            </>)}
+          {/* Podcast */}
           {/* 🌐 Language Selector */}
           <div ref={langMenuRef} className="relative">
             <button
@@ -235,14 +214,15 @@ const Navbar2 = (params) => {
               className="p-1.5 md:p-2 rounded-full hover:text-red-700 flex items-center gap-0 transition-transform hover:scale-105"
               onClick={toggleLangMenu}
             >
-              <Languages className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500 inline" />
+              <Languages className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
+                 text-stone-500 hover:text-red-800 inline" />
 
-              <span className="text-lg uppercase hidden sm:inline ml-[-3px]">
+              <span className="text-md text-stone-500 hover:text-red-800 uppercase hidden sm:inline ml-[3px]">
                 {lang}
               </span>
 
               <svg
-                className={`w-3 h-3 transition-transform ml-[-1px] ${
+                className={`w-3 h-3 text-stone-500 hover:text-red-800 transition-transform ml-[2px] ${
                   showLangMenu ? "rotate-180" : "rotate-0"
                 }`}
                 fill="none"
@@ -257,13 +237,11 @@ const Navbar2 = (params) => {
                 />
               </svg>
             </button>
-
             {showLangMenu && (
               <div
                 ref={refs.setFloating}
                 style={floatingStyles}
-                className="w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50 border border-gray-200"
-                //className="absolute right-0 top-full mt-4 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50"
+                className="w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-[100] border border-gray-200"
               >
                 <ul className="py-2 text-sm text-gray-700">
                   <li>
@@ -297,18 +275,26 @@ const Navbar2 = (params) => {
 
           {/* 👤 Profile */}
           <div ref={profileMenuRef} className="relative">
-            <button
+            {/* <button
               aria-label="Profile"
               title={t("profile")}
               className="p-1.5 md:p-2 rounded-full hover:text-red-700 flex items-center gap-1 transition-transform hover:scale-105"
               //onClick={() => setDisplayMenu(!displayMenu)}
               onClick={toggleProfileMenu}
-            >
-              <CircleUserRound className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
+            > */}
+            <button
+                ref={profileRefs.setReference}
+                onClick={toggleProfileMenu}
+                aria-label="Profile"
+                title={t("profile")}
+                className="p-1.5 md:p-2 pl-0 rounded-full hover:text-red-700 flex items-center gap-1 transition-transform hover:scale-105"
+              >
+              <CircleUserRound className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
+                 text-stone-500 hover:text-red-800" />
 
               {/* ▼ Arrow */}
               <svg
-                className={`w-3 h-3 transition-transform ${
+                className={`w-3 h-3 text-stone-500 hover:text-red-800 transition-transform ${
                   displayMenu ? "rotate-180" : "rotate-0"
                 }`}
                 fill="none"
@@ -324,8 +310,8 @@ const Navbar2 = (params) => {
               </svg>
             </button>
 
-            {displayMenu && (
-              <div className="absolute right-0 top-full mt-4 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-50">
+            {/* {displayMenu && (
+              <div className="absolute right-0 top-full mt-4 w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-100">
                 <ul className="py-2 text-sm text-gray-700">
                   <li>
                     <button
@@ -345,27 +331,54 @@ const Navbar2 = (params) => {
                   </li>
                 </ul>
               </div>
-            )}
+            )} */}
+            {displayMenu && (
+  <div
+    ref={profileRefs.setFloating}
+    style={profileFloatingStyles}
+    className="w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-[100] border border-gray-200"
+  >
+    <ul className="py-2 text-sm text-gray-700">
+      <li>
+        <button
+          onClick={() => navigate("/account")}
+          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
+        >
+          {t("my_account")}
+        </button>
+      </li>
+      <li>
+        <button
+          onClick={handleLogout}
+          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
+        >
+          {t("logout")}
+        </button>
+      </li>
+    </ul>
+  </div>
+)}
+
           </div>
 
           {/* Back */}
-          {!idDashboard && (
-            <button
-              aria-label="Back to dashboard"
-              title={t("back_to_dashboard")}
-              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-              onClick={() => {
-                if (CurrPage === HomePage) navigate(-1);
-                else navigate("/dashboard");
-              }}
-            >
-              {/* <img
-                className="w-4 sm:w-5 md:w-6 lg:w-7"
-                src={backRed}
-                alt={t("back_to_dashboard")}
-              /> */}
-              <Undo2 className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
-            </button>
+          {!idDashboard && (<></>
+            // <button
+            //   aria-label="Back to dashboard"
+            //   title={t("back_to_dashboard")}
+            //   className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+            //   onClick={() => {
+            //     if (CurrPage === HomePage) navigate(-1);
+            //     else navigate("/dashboard");
+            //   }}
+            // >
+            //   {/* <img
+            //     className="w-4 sm:w-5 md:w-6 lg:w-7"
+            //     src={backRed}
+            //     alt={t("back_to_dashboard")}
+            //   /> */}
+            //   <Undo2 className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 text-red-500" />
+            // </button>
           )}
         </div>
       </div>

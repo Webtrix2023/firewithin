@@ -6,12 +6,13 @@ import { CiPlay1, CiPause1 } from "react-icons/ci";
 import Navbar2 from "./Navbar2";
 import { API_URL, APP_URL } from "../config";
 import { toast } from "react-toastify";
-import Listen from "../assets/ListenRed.png";
+import podcast_img from "../assets/podcast-red.svg";
 import { useLanguage } from "../LanguageContext";
 import BG from "../assets/BG.jpg";
 import { AudioLines, Disc2Icon, Disc3 } from "lucide-react";
-export const Player = () => {
-  // Audio Equalizer Component
+
+export const PodCast = () => {
+  // ADD THIS ENTIRE COMPONENT
   const AudioEqualizer = ({ isPlaying }) => {
     return (
       <div className="flex items-center justify-center gap-0.5 h-6">
@@ -38,7 +39,6 @@ export const Player = () => {
       </div>
     );
   };
-
   const { t, lang, changeLanguage } = useLanguage();
   const [audioSrc, setAudioSrc] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -57,84 +57,13 @@ export const Player = () => {
   const intervalRef = useRef(null);
   const [audioLang, setAudioLang] = useState(lang);
   const [resumeTime, setResumeTime] = useState(0);
-  const [isSliderOpen, setIsSliderOpen] = useState(false);
-  
-const chapterRefs = useRef([]);
 
-  useEffect(() => {
-  let isMounted = true; // ✅ prevent async callbacks after unmount
-
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(`${API_URL}automodeSet/listen`);
-      const savedTime = res.data?.time || 0;
-
-      await getCurrentPageDetails();
-
-      // ✅ wait until soundRef is created
-      if (!soundRef.current) return;
-
-      soundRef.current.once("load", () => {
-        if (!isMounted || !soundRef.current) return; // ✅ safe check
-
-        const duration = soundRef.current.duration();
-        setDuration(duration);
-
-        soundRef.current.seek(savedTime);
-        setCurrentTime(savedTime);
-
-        // ❌ REMOVE auto-play/pause
-        // soundRef.current.play();
-        // soundRef.current.pause();
-      });
-    } catch (error) {
-      console.error("Error in useEffect:", error);
-    }
-  };
-
-  fetchData();
-
-  return () => {
-    // ✅ mark as unmounted
-    isMounted = false;
-
-    // ✅ stop interval FIRST
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-
-    // ✅ now safely destroy audio
-    if (soundRef.current) {
-      soundRef.current.stop();
-      soundRef.current.unload();
-      soundRef.current = null;
-    }
-
-    console.log("✅ Player destroyed");
-  };
-}, []);
-   useEffect(() => {
-  if (
-    chapterRefs.current &&
-    chapterRefs.current[currentSection - 1]
-  ) {
-    chapterRefs.current[currentSection - 1].scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
-  }
-}, [sections, currentSection]);
-
-  // Setup Howler when src changes
   useEffect(() => {
     if (!audioSrc) return;
 
-   if (soundRef.current) {
-    soundRef.current.stop();
-    soundRef.current.unload();
-    soundRef.current = null;
-  }
+    if (soundRef.current) {
+      soundRef.current.unload();
+    }
     setIsPlaying(false);
 
     const sound = new Howl({
@@ -171,6 +100,7 @@ const chapterRefs = useRef([]);
       if (soundRef.current) {
         soundRef.current.seek(resumeTime > 0 ? resumeTime : 0);
       }
+      //sound.seek(resumeTime > 0 ? resumeTime : 0);
     }, 10);
 
     return () => {
@@ -183,7 +113,26 @@ const chapterRefs = useRef([]);
 
   const updateAutoPage = async (page) => {
     try {
-      await axios.get(`${API_URL}autoChapterSet/${page}`);
+      await axios.get(`${API_URL}autoPodcastSet/${page}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updatePodcastLang = async (lang) => {
+    try {
+      const body = new URLSearchParams();
+      body.append("lang", lang);
+      const res = await api.post("/updatePodcastLang", body, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        withCredentials: true,
+      });
+      const { flag, data } = res.data;
+      if (flag === "F" && data) {
+        toast.error(res.msg);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -192,7 +141,7 @@ const chapterRefs = useRef([]);
   const getCurrentPageDetails = async () => {
     try {
       const body = new URLSearchParams();
-      body.append("type", "read");
+      body.append("type", "podcast");
       body.append("lang", audioLang);
       const res = await api.post("/currentPageDetails", body, {
         headers: {
@@ -202,11 +151,11 @@ const chapterRefs = useRef([]);
       });
       const { flag, data } = res.data;
       if (flag === "S" && data) {
-        console.log("API Response:", data);
+        console.log("API Response:", data); // Debug log
 
         if (data.currentChapterDetails) {
           const chapter = data.currentChapterDetails;
-          console.log("Current Chapter:", chapter);
+          console.log("Current Chapter:", chapter); // Debug log
 
           // Fix for chapter name - check all possible fields
           const chapterNameText =
@@ -229,7 +178,7 @@ const chapterRefs = useRef([]);
             setFileId(data.file_id);
 
             let timedata = {};
-            const rawTime = data?.customer_details?.[0]?.audio_time;
+            const rawTime = data?.customer_details?.[0]?.podcast_time;
 
             if (rawTime && rawTime.trim() !== "") {
               try {
@@ -244,7 +193,7 @@ const chapterRefs = useRef([]);
               setResumeTime(timedata[audioDetails[0]?.lesson_id] || 0);
             }
 
-            const generatedFileName = `1@${chapter.section_id}@${data.file_id}@The_Fire_Within_Chapter_${chapter.section_id}_R1.mp3`;
+            const generatedFileName = `1@${chapter.section_id}@${data.firstAudiofile[0].lesson_id}@${data.firstAudiofile[0].file_name}`;
             setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`);
           }
         }
@@ -252,6 +201,8 @@ const chapterRefs = useRef([]);
         if (data.nextChapterDetails) setNextChapter(data.nextChapterDetails);
         if (data.prevChapterDetails) setPrevChapter(data.prevChapterDetails);
 
+        // Debug sections data
+        console.log("Sections data:", data.bookSectionDetails);
         setSections(
           Array.isArray(data.bookSectionDetails) ? data.bookSectionDetails : []
         );
@@ -261,12 +212,56 @@ const chapterRefs = useRef([]);
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${API_URL}automodeSet/podcast`);
+        const savedTime = res.data?.time || 0;
+        await getCurrentPageDetails();
+
+        if (soundRef.current) {
+          soundRef.current.once("load", () => {
+            soundRef.current.seek(savedTime);
+            setCurrentTime(savedTime);
+
+            soundRef.current.play();
+            setIsPlaying(false);
+            if (soundRef.current) {
+              soundRef.current.pause(); // FIX 1
+            }
+
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current); // FIX 2
+            }
+
+            intervalRef.current = setInterval(() => {
+              const current = soundRef.current.seek();
+              setCurrentTime(current);
+
+              if (Math.floor(current) % 5 === 0) {
+                saveCurrentTime(current);
+              }
+            }, 1000);
+          });
+        }
+      } catch (error) {
+        console.error("Error in useEffect:", error);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
   const saveCurrentTime = async (time) => {
     try {
       const body = new URLSearchParams();
       body.append("time", time);
       const res = await api.post(
-        `${API_URL}updateAutoTimeSet/${lesson_id}`,
+        `${API_URL}updateAutoPodTime/${lesson_id}`,
         body,
         {
           headers: {
@@ -299,17 +294,7 @@ const chapterRefs = useRef([]);
     }
     setIsPlaying(!isPlaying);
   };
-  const play = () =>{
-     soundRef.current.play();
-      intervalRef.current = setInterval(() => {
-        const current = soundRef.current.seek();
-        setCurrentTime(current);
 
-        if (Math.floor(current) % 5 === 0) {
-          saveCurrentTime(current);
-        }
-      }, 1000);
-  }
   const handleSeek = (e) => {
     if (!soundRef.current) return;
     const progress = (e.target.value / 100) * duration;
@@ -335,9 +320,8 @@ const chapterRefs = useRef([]);
       .padStart(2, "0");
     return `${minutes}:${seconds}`;
   };
-
   const handlePrev = async () => {
-    setIsPlaying(false);
+    setIsPlaying(false); // FIX ADDED
 
     try {
       const chapter = prevChapter;
@@ -363,7 +347,7 @@ const chapterRefs = useRef([]);
   };
 
   const handleNext = async () => {
-    setIsPlaying(false);
+    setIsPlaying(false); // FIX ADDED
 
     try {
       const chapter = nextChapter;
@@ -377,10 +361,8 @@ const chapterRefs = useRef([]);
       console.error("Error fetching page details:", err);
     }
   };
-
   const openSection = async (section, i) => {
-    setIsPlaying(false);
-    setIsSliderOpen(false);
+    setIsPlaying(false); // FIX ADDED
 
     const sectionId = section.section_id ?? section.id ?? section.sectionId;
     setCurrentSection(Number(sectionId));
@@ -391,6 +373,12 @@ const chapterRefs = useRef([]);
 
     if (soundRef.current) soundRef.current.pause();
     if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+
+  const setLangUpdate = async (newLang) => {
+    await updatePodcastLang(newLang);
+    setAudioLang(newLang);
+    await getCurrentPageDetails();
   };
 
   // Helper function to get section label
@@ -405,10 +393,8 @@ const chapterRefs = useRef([]);
   };
 
   return (
-    <div
-      className="h-screen flex flex-col bg-black overflow-hidden 
-     opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]"
-    >
+    // <div className="h-screen flex flex-col bg-black">
+    <div className="h-screen flex flex-col bg-black bg-opacity-70 overflow-hidden ">
       {/* Navbar */}
       <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
 
@@ -437,7 +423,7 @@ const chapterRefs = useRef([]);
                   clipRule="evenodd"
                 />
               </svg>
-              {t("audioBook")}
+              {t("podcast")}
             </h2>
 
             <div className="space-y-2">
@@ -451,14 +437,31 @@ const chapterRefs = useRef([]);
                   const isActive = currentSection === index + 1;
 
                   return (
-                     <div
-                      ref={(el) => (chapterRefs.current[index] = el)}
+                    <div
                       key={section.section_id ?? section.id ?? index}
                       className={`flex items-center p-3 md:p-4 rounded-lg cursor-pointer transition-all ${
-                        isActive ? "bg-gray-800 text-white" : "text-gray-300 hover:bg-gray-800"
+                        isActive
+                          ? "bg-gray-800 text-white"
+                          : "text-gray-300 hover:bg-gray-800"
                       }`}
                       onClick={() => openSection(section, index)}
                     >
+                      {/* <div
+                        className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full mr-3 md:mr-4 flex-shrink-0 ${
+                          isActive ? "bg-gray-700 text-red-600" : "bg-gray-600"
+                        }`}
+                      >
+                        {isActive && isPlaying ? (
+                          <AudioEqualizer isPlaying={isPlaying} />
+                        ) : isActive ? (
+                          <AudioEqualizer isPlaying={false} />
+                        ) : (
+                          <Disc3
+                            size={24}
+                            className="md:w-7 md:h-7 "
+                          />
+                        )}
+                      </div> */}
                       <div
                         className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full mr-3 md:mr-4 flex-shrink-0 ${
                           isActive ? "bg-gray-700 text-red-600" : "bg-gray-600"
@@ -504,7 +507,7 @@ const chapterRefs = useRef([]);
       </div>
 
       {/* Fixed Bottom Player - Improved Design */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-red-900 via-red-950 via-[1%] to-black border-t border-gray-700 z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-black border-t border-gray-700 z-50">
         <div className="w-full px-3 py-3 md:px-6 md:py-4">
           {/* Progress Bar */}
           <div className="flex items-center justify-between text-xs mb-2 md:mb-3">
@@ -533,20 +536,19 @@ const chapterRefs = useRef([]);
           <div className="flex items-center justify-between gap-2 md:gap-4">
             {/* Song Info */}
             <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
-              <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+              <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg flex items-center justify-center flex-shrink-0">
                 <img
-                  src={Listen}
-                  className="w-full h-full object-cover rounded-lg"
-                  alt="Listen"
+                  src={podcast_img}
+                  className="w-14 h-14 rounded-lg shadow-lg"
+                  alt="Podcast"
                 />
               </div>
-
               <div className="min-w-0 hidden md:block">
                 <p className="text-white font-semibold text-sm md:text-base truncate">
                   {chapterName}
                 </p>
                 <p className="text-gray-400 text-xs md:text-sm">
-                  {t("listen_upper")}
+                  {t("podcast_upper")}
                 </p>
               </div>
             </div>
@@ -670,7 +672,9 @@ const chapterRefs = useRef([]);
             <div className="flex-1">
               {/* Mobile: Show track info below controls */}
               <div className="md:hidden mt-2 text-center">
-                {/* Track info can be added here if needed */}
+                {/* <p className="text-white font-semibold text-xs truncate px-4">
+                  {chapterName}
+                </p> */}
               </div>
             </div>
           </div>
@@ -679,5 +683,13 @@ const chapterRefs = useRef([]);
     </div>
   );
 };
-
-export default Player;
+export default function AudioEqualizer() {
+  return (
+    <div className="flex items-end gap-1 h-6">
+      <div className="w-[2px] bg-white animate-[bar_0.8s_ease-in-out_infinite]"></div>
+      <div className="w-[2px] bg-white animate-[bar_0.9s_ease-in-out_infinite]"></div>
+      <div className="w-[2px] bg-white animate-[bar_1.0s_ease-in-out_infinite]"></div>
+      <div className="w-[2px] bg-white animate-[bar_0.7s_ease-in-out_infinite]"></div>
+    </div>
+  );
+}
