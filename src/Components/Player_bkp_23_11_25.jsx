@@ -10,6 +10,7 @@ import Listen from "../assets/ListenRed.png";
 import { useLanguage } from "../LanguageContext";
 import BG from "../assets/BG.jpg";
 import { AudioLines, Disc2Icon, Disc3 } from "lucide-react";
+
 export const Player = () => {
   // Audio Equalizer Component
   const AudioEqualizer = ({ isPlaying }) => {
@@ -58,83 +59,14 @@ export const Player = () => {
   const [audioLang, setAudioLang] = useState(lang);
   const [resumeTime, setResumeTime] = useState(0);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
-  
-const chapterRefs = useRef([]);
-
-  useEffect(() => {
-  let isMounted = true; // ✅ prevent async callbacks after unmount
-
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(`${API_URL}automodeSet/listen`);
-      const savedTime = res.data?.time || 0;
-
-      await getCurrentPageDetails();
-
-      // ✅ wait until soundRef is created
-      if (!soundRef.current) return;
-
-      soundRef.current.once("load", () => {
-        if (!isMounted || !soundRef.current) return; // ✅ safe check
-
-        const duration = soundRef.current.duration();
-        setDuration(duration);
-
-        soundRef.current.seek(savedTime);
-        setCurrentTime(savedTime);
-
-        // ❌ REMOVE auto-play/pause
-        // soundRef.current.play();
-        // soundRef.current.pause();
-      });
-    } catch (error) {
-      console.error("Error in useEffect:", error);
-    }
-  };
-
-  fetchData();
-
-  return () => {
-    // ✅ mark as unmounted
-    isMounted = false;
-
-    // ✅ stop interval FIRST
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-
-    // ✅ now safely destroy audio
-    if (soundRef.current) {
-      soundRef.current.stop();
-      soundRef.current.unload();
-      soundRef.current = null;
-    }
-
-    console.log("✅ Player destroyed");
-  };
-}, []);
-   useEffect(() => {
-  if (
-    chapterRefs.current &&
-    chapterRefs.current[currentSection - 1]
-  ) {
-    chapterRefs.current[currentSection - 1].scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
-  }
-}, [sections, currentSection]);
 
   // Setup Howler when src changes
   useEffect(() => {
     if (!audioSrc) return;
 
-   if (soundRef.current) {
-    soundRef.current.stop();
-    soundRef.current.unload();
-    soundRef.current = null;
-  }
+    if (soundRef.current) {
+      soundRef.current.unload();
+    }
     setIsPlaying(false);
 
     const sound = new Howl({
@@ -184,6 +116,25 @@ const chapterRefs = useRef([]);
   const updateAutoPage = async (page) => {
     try {
       await axios.get(`${API_URL}autoChapterSet/${page}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updatePodcastLang = async (lang) => {
+    try {
+      const body = new URLSearchParams();
+      body.append("lang", lang);
+      const res = await api.post("/updatePodcastLang", body, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        withCredentials: true,
+      });
+      const { flag, data } = res.data;
+      if (flag === "F" && data) {
+        toast.error(res.msg);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -261,6 +212,50 @@ const chapterRefs = useRef([]);
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${API_URL}automodeSet/listen`);
+        const savedTime = res.data?.time || 0;
+        await getCurrentPageDetails();
+
+        if (soundRef.current) {
+          soundRef.current.once("load", () => {
+            soundRef.current.seek(savedTime);
+            setCurrentTime(savedTime);
+
+            soundRef.current.play();
+            setIsPlaying(false);
+            if (soundRef.current) {
+              soundRef.current.pause();
+            }
+
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current);
+            }
+
+            intervalRef.current = setInterval(() => {
+              const current = soundRef.current.seek();
+              setCurrentTime(current);
+
+              if (Math.floor(current) % 5 === 0) {
+                saveCurrentTime(current);
+              }
+            }, 1000);
+          });
+        }
+      } catch (error) {
+        console.error("Error in useEffect:", error);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
   const saveCurrentTime = async (time) => {
     try {
       const body = new URLSearchParams();
@@ -299,17 +294,7 @@ const chapterRefs = useRef([]);
     }
     setIsPlaying(!isPlaying);
   };
-  const play = () =>{
-     soundRef.current.play();
-      intervalRef.current = setInterval(() => {
-        const current = soundRef.current.seek();
-        setCurrentTime(current);
 
-        if (Math.floor(current) % 5 === 0) {
-          saveCurrentTime(current);
-        }
-      }, 1000);
-  }
   const handleSeek = (e) => {
     if (!soundRef.current) return;
     const progress = (e.target.value / 100) * duration;
@@ -393,6 +378,12 @@ const chapterRefs = useRef([]);
     if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
+  const setLangUpdate = async (newLang) => {
+    await updatePodcastLang(newLang);
+    setAudioLang(newLang);
+    await getCurrentPageDetails();
+  };
+
   // Helper function to get section label
   const getSectionLabel = (section, index) => {
     return (
@@ -451,11 +442,12 @@ const chapterRefs = useRef([]);
                   const isActive = currentSection === index + 1;
 
                   return (
-                     <div
-                      ref={(el) => (chapterRefs.current[index] = el)}
+                    <div
                       key={section.section_id ?? section.id ?? index}
                       className={`flex items-center p-3 md:p-4 rounded-lg cursor-pointer transition-all ${
-                        isActive ? "bg-gray-800 text-white" : "text-gray-300 hover:bg-gray-800"
+                        isActive
+                          ? "bg-gray-800 text-white"
+                          : "text-gray-300 hover:bg-gray-800"
                       }`}
                       onClick={() => openSection(section, index)}
                     >

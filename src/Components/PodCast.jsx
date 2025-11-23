@@ -10,9 +10,8 @@ import podcast_img from "../assets/podcast-red.svg";
 import { useLanguage } from "../LanguageContext";
 import BG from "../assets/BG.jpg";
 import { AudioLines, Disc2Icon, Disc3 } from "lucide-react";
-
 export const PodCast = () => {
-  // ADD THIS ENTIRE COMPONENT
+  // Audio Equalizer Component
   const AudioEqualizer = ({ isPlaying }) => {
     return (
       <div className="flex items-center justify-center gap-0.5 h-6">
@@ -39,6 +38,7 @@ export const PodCast = () => {
       </div>
     );
   };
+
   const { t, lang, changeLanguage } = useLanguage();
   const [audioSrc, setAudioSrc] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -57,19 +57,79 @@ export const PodCast = () => {
   const intervalRef = useRef(null);
   const [audioLang, setAudioLang] = useState(lang);
   const [resumeTime, setResumeTime] = useState(0);
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
+  const chapterRefs = useRef([]);
+  useEffect(() => {
+  let isMounted = true; // ✅ prevent async callbacks after unmount
 
+  const fetchData = async () => {
+    try {
+       const res = await axios.get(`${API_URL}automodeSet/podcast`);
+      const savedTime = res.data?.time || 0;
+
+      await getCurrentPageDetails();
+
+      // ✅ wait until soundRef is created
+      if (!soundRef.current) return;
+
+      soundRef.current.once("load", () => {
+        if (!isMounted || !soundRef.current) return; // ✅ safe check
+
+        const duration = soundRef.current.duration();
+        setDuration(duration);
+
+        soundRef.current.seek(savedTime);
+        setCurrentTime(savedTime);
+
+        // ❌ REMOVE auto-play/pause
+        // soundRef.current.play();
+        // soundRef.current.pause();
+      });
+    } catch (error) {
+      console.error("Error in useEffect:", error);
+    }
+  };
+
+  fetchData();
+
+  return () => {
+    // ✅ mark as unmounted
+    isMounted = false;
+
+    // ✅ stop interval FIRST
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    // ✅ now safely destroy audio
+    if (soundRef.current) {
+      soundRef.current.stop();
+      soundRef.current.unload();
+      soundRef.current = null;
+    }
+
+    console.log("✅ Player destroyed");
+  };
+}, []);
+  // Setup Howler when src changes
   useEffect(() => {
     if (!audioSrc) return;
 
-    if (soundRef.current) {
-      soundRef.current.unload();
-    }
+     // ✅ kill previous instance
+  if (soundRef.current) {
+    soundRef.current.stop();
+    soundRef.current.unload();
+    soundRef.current = null;
+  }
+
     setIsPlaying(false);
 
     const sound = new Howl({
       src: [audioSrc],
       html5: true,
       preload: true,
+       autoplay: false,
       onload: () => {
         const dur = sound.duration();
         if (dur > 0) {
@@ -100,7 +160,6 @@ export const PodCast = () => {
       if (soundRef.current) {
         soundRef.current.seek(resumeTime > 0 ? resumeTime : 0);
       }
-      //sound.seek(resumeTime > 0 ? resumeTime : 0);
     }, 10);
 
     return () => {
@@ -118,30 +177,21 @@ export const PodCast = () => {
       console.error(err);
     }
   };
-
-  const updatePodcastLang = async (lang) => {
-    try {
-      const body = new URLSearchParams();
-      body.append("lang", lang);
-      const res = await api.post("/updatePodcastLang", body, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-        },
-        withCredentials: true,
-      });
-      const { flag, data } = res.data;
-      if (flag === "F" && data) {
-        toast.error(res.msg);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
+  useEffect(() => {
+  if (
+    chapterRefs.current &&
+    chapterRefs.current[currentSection - 1]
+  ) {
+    chapterRefs.current[currentSection - 1].scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  }
+}, [sections, currentSection]);
   const getCurrentPageDetails = async () => {
     try {
       const body = new URLSearchParams();
-      body.append("type", "podcast");
+       body.append("type", "podcast");
       body.append("lang", audioLang);
       const res = await api.post("/currentPageDetails", body, {
         headers: {
@@ -151,11 +201,11 @@ export const PodCast = () => {
       });
       const { flag, data } = res.data;
       if (flag === "S" && data) {
-        console.log("API Response:", data); // Debug log
+        console.log("API Response:", data);
 
         if (data.currentChapterDetails) {
           const chapter = data.currentChapterDetails;
-          console.log("Current Chapter:", chapter); // Debug log
+          console.log("Current Chapter:", chapter);
 
           // Fix for chapter name - check all possible fields
           const chapterNameText =
@@ -184,7 +234,7 @@ export const PodCast = () => {
               try {
                 timedata = JSON.parse(rawTime);
               } catch (err) {
-                console.error("Invalid JSON in audio_time:", err);
+                console.error("Invalid JSON in podcast_time:", err);
                 timedata = {};
               }
             }
@@ -192,8 +242,7 @@ export const PodCast = () => {
             if (timedata[audioDetails[0]?.lesson_id] != null) {
               setResumeTime(timedata[audioDetails[0]?.lesson_id] || 0);
             }
-
-            const generatedFileName = `1@${chapter.section_id}@${data.firstAudiofile[0].lesson_id}@${data.firstAudiofile[0].file_name}`;
+             const generatedFileName = `1@${chapter.section_id}@${data.firstAudiofile[0].lesson_id}@${data.firstAudiofile[0].file_name}`;
             setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`);
           }
         }
@@ -201,8 +250,6 @@ export const PodCast = () => {
         if (data.nextChapterDetails) setNextChapter(data.nextChapterDetails);
         if (data.prevChapterDetails) setPrevChapter(data.prevChapterDetails);
 
-        // Debug sections data
-        console.log("Sections data:", data.bookSectionDetails);
         setSections(
           Array.isArray(data.bookSectionDetails) ? data.bookSectionDetails : []
         );
@@ -211,50 +258,6 @@ export const PodCast = () => {
       console.error("Error fetching page details:", err);
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(`${API_URL}automodeSet/podcast`);
-        const savedTime = res.data?.time || 0;
-        await getCurrentPageDetails();
-
-        if (soundRef.current) {
-          soundRef.current.once("load", () => {
-            soundRef.current.seek(savedTime);
-            setCurrentTime(savedTime);
-
-            soundRef.current.play();
-            setIsPlaying(false);
-            if (soundRef.current) {
-              soundRef.current.pause(); // FIX 1
-            }
-
-            if (intervalRef.current) {
-              clearInterval(intervalRef.current); // FIX 2
-            }
-
-            intervalRef.current = setInterval(() => {
-              const current = soundRef.current.seek();
-              setCurrentTime(current);
-
-              if (Math.floor(current) % 5 === 0) {
-                saveCurrentTime(current);
-              }
-            }, 1000);
-          });
-        }
-      } catch (error) {
-        console.error("Error in useEffect:", error);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
 
   const saveCurrentTime = async (time) => {
     try {
@@ -320,8 +323,9 @@ export const PodCast = () => {
       .padStart(2, "0");
     return `${minutes}:${seconds}`;
   };
+
   const handlePrev = async () => {
-    setIsPlaying(false); // FIX ADDED
+    setIsPlaying(false);
 
     try {
       const chapter = prevChapter;
@@ -347,7 +351,7 @@ export const PodCast = () => {
   };
 
   const handleNext = async () => {
-    setIsPlaying(false); // FIX ADDED
+    setIsPlaying(false);
 
     try {
       const chapter = nextChapter;
@@ -361,8 +365,10 @@ export const PodCast = () => {
       console.error("Error fetching page details:", err);
     }
   };
+
   const openSection = async (section, i) => {
-    setIsPlaying(false); // FIX ADDED
+    setIsPlaying(false);
+    setIsSliderOpen(false);
 
     const sectionId = section.section_id ?? section.id ?? section.sectionId;
     setCurrentSection(Number(sectionId));
@@ -374,13 +380,6 @@ export const PodCast = () => {
     if (soundRef.current) soundRef.current.pause();
     if (intervalRef.current) clearInterval(intervalRef.current);
   };
-
-  const setLangUpdate = async (newLang) => {
-    await updatePodcastLang(newLang);
-    setAudioLang(newLang);
-    await getCurrentPageDetails();
-  };
-
   // Helper function to get section label
   const getSectionLabel = (section, index) => {
     return (
@@ -393,8 +392,10 @@ export const PodCast = () => {
   };
 
   return (
-    // <div className="h-screen flex flex-col bg-black">
-    <div className="h-screen flex flex-col bg-black overflow-hidden ">
+    <div
+      className="h-screen flex flex-col bg-black overflow-hidden 
+     opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]"
+    >
       {/* Navbar */}
       <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
 
@@ -410,7 +411,7 @@ export const PodCast = () => {
       >
         <div className="w-full px-3 py-4 md:px-6 md:py-6">
           {/* Chapters List */}
-          <div className="bg-black bg-opacity-90 rounded-xl md:rounded-2xl p-3 md:p-6 max-w-4xl mx-auto">
+          <div className="bg-black bg-opacity-70 rounded-xl md:rounded-2xl p-3 md:p-6 max-w-4xl mx-auto">
             <h2 className="text-white text-base md:text-xl font-bold mb-3 md:mb-4 flex items-center">
               <svg
                 className="w-4 h-4 md:w-5 md:h-5 mr-2"
@@ -423,7 +424,7 @@ export const PodCast = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              {t("chapters")}
+              {t("podcast")}
             </h2>
 
             <div className="space-y-2">
@@ -438,30 +439,13 @@ export const PodCast = () => {
 
                   return (
                     <div
+                      ref={(el) => (chapterRefs.current[index] = el)}
                       key={section.section_id ?? section.id ?? index}
                       className={`flex items-center p-3 md:p-4 rounded-lg cursor-pointer transition-all ${
-                        isActive
-                          ? "bg-gray-800 text-white"
-                          : "text-gray-300 hover:bg-gray-800"
+                        isActive ? "bg-gray-800 text-white" : "text-gray-300 hover:bg-gray-800"
                       }`}
                       onClick={() => openSection(section, index)}
                     >
-                      {/* <div
-                        className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full mr-3 md:mr-4 flex-shrink-0 ${
-                          isActive ? "bg-gray-700 text-red-600" : "bg-gray-600"
-                        }`}
-                      >
-                        {isActive && isPlaying ? (
-                          <AudioEqualizer isPlaying={isPlaying} />
-                        ) : isActive ? (
-                          <AudioEqualizer isPlaying={false} />
-                        ) : (
-                          <Disc3
-                            size={24}
-                            className="md:w-7 md:h-7 "
-                          />
-                        )}
-                      </div> */}
                       <div
                         className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full mr-3 md:mr-4 flex-shrink-0 ${
                           isActive ? "bg-gray-700 text-red-600" : "bg-gray-600"
@@ -507,7 +491,7 @@ export const PodCast = () => {
       </div>
 
       {/* Fixed Bottom Player - Improved Design */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-black border-t border-gray-700 z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-red-900 via-red-950 via-[1%] to-black border-t border-gray-700 z-50">
         <div className="w-full px-3 py-3 md:px-6 md:py-4">
           {/* Progress Bar */}
           <div className="flex items-center justify-between text-xs mb-2 md:mb-3">
@@ -536,13 +520,14 @@ export const PodCast = () => {
           <div className="flex items-center justify-between gap-2 md:gap-4">
             {/* Song Info */}
             <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
-              <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg flex items-center justify-center flex-shrink-0">
-                <img
+              <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                 <img
                   src={podcast_img}
                   className="w-14 h-14 rounded-lg shadow-lg"
-                  alt="Podcast"
+                  alt={`${t("podcast")}`}
                 />
               </div>
+
               <div className="min-w-0 hidden md:block">
                 <p className="text-white font-semibold text-sm md:text-base truncate">
                   {chapterName}
@@ -667,14 +652,11 @@ export const PodCast = () => {
                 </svg>
               </button>
             </div>
-
             {/* Right side - Empty space since language selector is removed */}
             <div className="flex-1">
               {/* Mobile: Show track info below controls */}
               <div className="md:hidden mt-2 text-center">
-                {/* <p className="text-white font-semibold text-xs truncate px-4">
-                  {chapterName}
-                </p> */}
+                {/* Track info can be added here if needed */}
               </div>
             </div>
           </div>
@@ -683,13 +665,5 @@ export const PodCast = () => {
     </div>
   );
 };
-export default function AudioEqualizer() {
-  return (
-    <div className="flex items-end gap-1 h-6">
-      <div className="w-[2px] bg-white animate-[bar_0.8s_ease-in-out_infinite]"></div>
-      <div className="w-[2px] bg-white animate-[bar_0.9s_ease-in-out_infinite]"></div>
-      <div className="w-[2px] bg-white animate-[bar_1.0s_ease-in-out_infinite]"></div>
-      <div className="w-[2px] bg-white animate-[bar_0.7s_ease-in-out_infinite]"></div>
-    </div>
-  );
-}
+
+export default PodCast;

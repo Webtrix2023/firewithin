@@ -19,7 +19,7 @@ import { LanguageProvider } from "./LanguageContext";
 function ProtectedRoute({ children }) {
   const isLoggedIn = localStorage.getItem("is_logged_in");
   if (!isLoggedIn) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
   return children;
 }

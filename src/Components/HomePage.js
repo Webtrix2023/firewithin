@@ -19,16 +19,23 @@ const HomePage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   return (
-    <div className="min-h-screen flex flex-col text-white">
+    <div className="flex flex-col text-white">
       {/* Navbar */}
       <Navbar2 />
    <div
-        className="relative flex flex-col md:flex-row items-center md:items-center justify-center md:justify-end min-h-screen w-full px-6 md:px-16 py-12 bg-[#1e2c33] bg-cover bg-center transition-all duration-500
-         opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]"
-        style={{
-          backgroundImage: isDesktop ? `url(${Henry})` : "none",
-        }}
-      >
+  className="
+    relative flex flex-col md:flex-row 
+    items-center justify-center md:justify-end
+    min-h-[calc(100dvh-85px)] w-full
+    px-6 md:px-16 py-12
+    bg-[#1e2c33] bg-cover bg-center
+    transition-all duration-500
+    opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]
+  "
+  style={{
+    backgroundImage: isDesktop ? `url(${Henry})` : "none",
+  }}
+>
   {/* Mobile Image (top center) */}
   <div className="block md:hidden mb-6">
     <img
@@ -40,11 +47,9 @@ const HomePage = () => {
 
   {/* Right side content */}
   <div className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10">
-    <h2 className="text-3xl sm:text-4xl font-bold mb-4 leading-snug">{t("title")}</h2>
-
-    <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-8">{t("description")}
+    <h2 className="text-4xl font-light mb-4 leading-snug">{t("title")}</h2>
+    <p className="text-gray-300 text-base text-justify sm:text-lg leading-relaxed mb-8">{t("description")}
     </p>
-
     {/* Buttons */}
     <div className="flex flex-wrap justify-center md:justify-start gap-10 sm:gap-14 text-center">
       {/* LISTEN */}
