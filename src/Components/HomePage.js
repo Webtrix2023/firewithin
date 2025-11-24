@@ -28,11 +28,10 @@ const HomePage = () => {
         className="
     relative flex flex-col md:flex-row 
     items-center justify-center md:justify-end
-    min-h-[calc(100dvh-85px)] w-full
+    min-h-screen w-full
     px-6 md:px-16 py-12
-    bg-[#1e2c33] bg-cover bg-center
+    bg-cover bg-center bg-no-repeat
     transition-all duration-500
-    opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]
   "
         style={{
           backgroundImage: isDesktop ? `url(${Henry})` : `url(${BG})`,
@@ -48,7 +47,7 @@ const HomePage = () => {
         </div>
 
         {/* Right side content */}
-        <div className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10">
+        <div className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10  opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]">
           <h2 className="text-4xl font-light mb-4 leading-snug">
             {t("title")}
           </h2>

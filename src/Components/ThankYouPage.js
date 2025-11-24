@@ -1,12 +1,12 @@
 import React from "react";
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useLanguage } from "../LanguageContext";
 
-const ThankYouPage = () => {
+const ThankYouPage = ({ openLogin }) => {
   const { t, lang, changeLanguage } = useLanguage();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <div className="min-h-[100svh] flex flex-col">
       {/* Navbar */}
@@ -33,7 +33,15 @@ const ThankYouPage = () => {
               {t("thank_you_for_registering")}
             </h1>
             <p className="text-base sm:text-xl md:text-2xl font-light text-gray-200 leading-relaxed">
-              {t("email_for_login_credentials")}<button onClick={()=>{navigate('/login');}}>{t("click_here_to_login")}</button>
+              {t("email_for_login_credentials")}{" "}
+              <button
+                type="button"
+                onClick={openLogin} // switch modal back to login
+                className=" text-blue-400 hover:underline "
+              >
+                {t("click_here_to_login")}
+              </button>
+              {/* <button onClick={()=>{navigate('/login');}}>{t("click_here_to_login")}</button> */}
             </p>
           </div>
         </div>

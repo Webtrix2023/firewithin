@@ -58,83 +58,80 @@ export const Player = () => {
   const [audioLang, setAudioLang] = useState(lang);
   const [resumeTime, setResumeTime] = useState(0);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
-  
-const chapterRefs = useRef([]);
+
+  const chapterRefs = useRef([]);
 
   useEffect(() => {
-  let isMounted = true; // ✅ prevent async callbacks after unmount
+    let isMounted = true; // ✅ prevent async callbacks after unmount
 
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(`${API_URL}automodeSet/listen`);
-      const savedTime = res.data?.time || 0;
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${API_URL}automodeSet/listen`);
+        const savedTime = res.data?.time || 0;
 
-      await getCurrentPageDetails();
+        await getCurrentPageDetails();
 
-      // ✅ wait until soundRef is created
-      if (!soundRef.current) return;
+        // ✅ wait until soundRef is created
+        if (!soundRef.current) return;
 
-      soundRef.current.once("load", () => {
-        if (!isMounted || !soundRef.current) return; // ✅ safe check
+        soundRef.current.once("load", () => {
+          if (!isMounted || !soundRef.current) return; // ✅ safe check
 
-        const duration = soundRef.current.duration();
-        setDuration(duration);
+          const duration = soundRef.current.duration();
+          setDuration(duration);
 
-        soundRef.current.seek(savedTime);
-        setCurrentTime(savedTime);
+          soundRef.current.seek(savedTime);
+          setCurrentTime(savedTime);
 
-        // ❌ REMOVE auto-play/pause
-        // soundRef.current.play();
-        // soundRef.current.pause();
+          // ❌ REMOVE auto-play/pause
+          // soundRef.current.play();
+          // soundRef.current.pause();
+        });
+      } catch (error) {
+        console.error("Error in useEffect:", error);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      // ✅ mark as unmounted
+      isMounted = false;
+
+      // ✅ stop interval FIRST
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+
+      // ✅ now safely destroy audio
+      if (soundRef.current) {
+        soundRef.current.stop();
+        soundRef.current.unload();
+        soundRef.current = null;
+      }
+
+      console.log("✅ Player destroyed");
+    };
+  }, []);
+  useEffect(() => {
+    if (chapterRefs.current && chapterRefs.current[currentSection - 1]) {
+      chapterRefs.current[currentSection - 1].scrollIntoView({
+        behavior: "smooth",
+        block: "center",
       });
-    } catch (error) {
-      console.error("Error in useEffect:", error);
     }
-  };
-
-  fetchData();
-
-  return () => {
-    // ✅ mark as unmounted
-    isMounted = false;
-
-    // ✅ stop interval FIRST
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-
-    // ✅ now safely destroy audio
-    if (soundRef.current) {
-      soundRef.current.stop();
-      soundRef.current.unload();
-      soundRef.current = null;
-    }
-
-    console.log("✅ Player destroyed");
-  };
-}, []);
-   useEffect(() => {
-  if (
-    chapterRefs.current &&
-    chapterRefs.current[currentSection - 1]
-  ) {
-    chapterRefs.current[currentSection - 1].scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
-  }
-}, [sections, currentSection]);
+  }, [sections, currentSection]);
 
   // Setup Howler when src changes
   useEffect(() => {
     if (!audioSrc) return;
 
-   if (soundRef.current) {
-    soundRef.current.stop();
-    soundRef.current.unload();
-    soundRef.current = null;
-  }
+    if (soundRef.current) {
+      soundRef.current.stop();
+      soundRef.current.unload();
+      soundRef.current = null;
+    }
     setIsPlaying(false);
 
     const sound = new Howl({
@@ -299,17 +296,17 @@ const chapterRefs = useRef([]);
     }
     setIsPlaying(!isPlaying);
   };
-  const play = () =>{
-     soundRef.current.play();
-      intervalRef.current = setInterval(() => {
-        const current = soundRef.current.seek();
-        setCurrentTime(current);
+  const play = () => {
+    soundRef.current.play();
+    intervalRef.current = setInterval(() => {
+      const current = soundRef.current.seek();
+      setCurrentTime(current);
 
-        if (Math.floor(current) % 5 === 0) {
-          saveCurrentTime(current);
-        }
-      }, 1000);
-  }
+      if (Math.floor(current) % 5 === 0) {
+        saveCurrentTime(current);
+      }
+    }, 1000);
+  };
   const handleSeek = (e) => {
     if (!soundRef.current) return;
     const progress = (e.target.value / 100) * duration;
@@ -405,16 +402,13 @@ const chapterRefs = useRef([]);
   };
 
   return (
-    <div
-      className="h-screen flex flex-col bg-black overflow-hidden 
-     opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]"
-    >
+    <div className="h-screen flex flex-col bg-black overflow-hidden relative ">
       {/* Navbar */}
       <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
 
       {/* Main Content Area - Scrollable Chapters */}
       <div
-        className="flex-1 overflow-y-auto pb-32 md:pb-40"
+        className="flex-1 overflow-y-autopb-36 sm:pb-40 md:pb-44"
         style={{
           backgroundImage: `url(${BG})`,
           backgroundSize: "cover",
@@ -424,7 +418,7 @@ const chapterRefs = useRef([]);
       >
         <div className="w-full px-3 py-4 md:px-6 md:py-6">
           {/* Chapters List */}
-          <div className="bg-black bg-opacity-70 rounded-xl md:rounded-2xl p-3 md:p-6 max-w-4xl mx-auto">
+          <div className="bg-black bg-opacity-70 rounded-xl md:rounded-2xl p-3 md:p-6 max-w-4xl mx-auto  opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]">
             <h2 className="text-white text-base md:text-xl font-bold mb-3 md:mb-4 flex items-center">
               <svg
                 className="w-4 h-4 md:w-5 md:h-5 mr-2"
@@ -451,11 +445,13 @@ const chapterRefs = useRef([]);
                   const isActive = currentSection === index + 1;
 
                   return (
-                     <div
+                    <div
                       ref={(el) => (chapterRefs.current[index] = el)}
                       key={section.section_id ?? section.id ?? index}
                       className={`flex items-center p-3 md:p-4 rounded-lg cursor-pointer transition-all ${
-                        isActive ? "bg-gray-800 text-white" : "text-gray-300 hover:bg-gray-800"
+                        isActive
+                          ? "bg-gray-800 text-white"
+                          : "text-gray-300 hover:bg-gray-800"
                       }`}
                       onClick={() => openSection(section, index)}
                     >
@@ -504,7 +500,7 @@ const chapterRefs = useRef([]);
       </div>
 
       {/* Fixed Bottom Player - Improved Design */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-red-900 via-red-950 via-[1%] to-black border-t border-gray-700 z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-red-900 via-red-950 via-[1%] to-black border-t border-gray-700 z-50 safe-area-inset-bottom">
         <div className="w-full px-3 py-3 md:px-6 md:py-4">
           {/* Progress Bar */}
           <div className="flex items-center justify-between text-xs mb-2 md:mb-3">

@@ -60,68 +60,68 @@ export const PodCast = () => {
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const chapterRefs = useRef([]);
   useEffect(() => {
-  let isMounted = true; // ✅ prevent async callbacks after unmount
+    let isMounted = true; // ✅ prevent async callbacks after unmount
 
-  const fetchData = async () => {
-    try {
-       const res = await axios.get(`${API_URL}automodeSet/podcast`);
-      const savedTime = res.data?.time || 0;
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${API_URL}automodeSet/podcast`);
+        const savedTime = res.data?.time || 0;
 
-      await getCurrentPageDetails();
+        await getCurrentPageDetails();
 
-      // ✅ wait until soundRef is created
-      if (!soundRef.current) return;
+        // ✅ wait until soundRef is created
+        if (!soundRef.current) return;
 
-      soundRef.current.once("load", () => {
-        if (!isMounted || !soundRef.current) return; // ✅ safe check
+        soundRef.current.once("load", () => {
+          if (!isMounted || !soundRef.current) return; // ✅ safe check
 
-        const duration = soundRef.current.duration();
-        setDuration(duration);
+          const duration = soundRef.current.duration();
+          setDuration(duration);
 
-        soundRef.current.seek(savedTime);
-        setCurrentTime(savedTime);
+          soundRef.current.seek(savedTime);
+          setCurrentTime(savedTime);
 
-        // ❌ REMOVE auto-play/pause
-        // soundRef.current.play();
-        // soundRef.current.pause();
-      });
-    } catch (error) {
-      console.error("Error in useEffect:", error);
-    }
-  };
+          // ❌ REMOVE auto-play/pause
+          // soundRef.current.play();
+          // soundRef.current.pause();
+        });
+      } catch (error) {
+        console.error("Error in useEffect:", error);
+      }
+    };
 
-  fetchData();
+    fetchData();
 
-  return () => {
-    // ✅ mark as unmounted
-    isMounted = false;
+    return () => {
+      // ✅ mark as unmounted
+      isMounted = false;
 
-    // ✅ stop interval FIRST
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
+      // ✅ stop interval FIRST
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
 
-    // ✅ now safely destroy audio
+      // ✅ now safely destroy audio
+      if (soundRef.current) {
+        soundRef.current.stop();
+        soundRef.current.unload();
+        soundRef.current = null;
+      }
+
+      console.log("✅ Player destroyed");
+    };
+  }, []);
+  // Setup Howler when src changes
+  useEffect(() => {
+    if (!audioSrc) return;
+
+    // ✅ kill previous instance
     if (soundRef.current) {
       soundRef.current.stop();
       soundRef.current.unload();
       soundRef.current = null;
     }
-
-    console.log("✅ Player destroyed");
-  };
-}, []);
-  // Setup Howler when src changes
-  useEffect(() => {
-    if (!audioSrc) return;
-
-     // ✅ kill previous instance
-  if (soundRef.current) {
-    soundRef.current.stop();
-    soundRef.current.unload();
-    soundRef.current = null;
-  }
 
     setIsPlaying(false);
 
@@ -129,7 +129,7 @@ export const PodCast = () => {
       src: [audioSrc],
       html5: true,
       preload: true,
-       autoplay: false,
+      autoplay: false,
       onload: () => {
         const dur = sound.duration();
         if (dur > 0) {
@@ -178,20 +178,17 @@ export const PodCast = () => {
     }
   };
   useEffect(() => {
-  if (
-    chapterRefs.current &&
-    chapterRefs.current[currentSection - 1]
-  ) {
-    chapterRefs.current[currentSection - 1].scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
-  }
-}, [sections, currentSection]);
+    if (chapterRefs.current && chapterRefs.current[currentSection - 1]) {
+      chapterRefs.current[currentSection - 1].scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [sections, currentSection]);
   const getCurrentPageDetails = async () => {
     try {
       const body = new URLSearchParams();
-       body.append("type", "podcast");
+      body.append("type", "podcast");
       body.append("lang", audioLang);
       const res = await api.post("/currentPageDetails", body, {
         headers: {
@@ -242,7 +239,7 @@ export const PodCast = () => {
             if (timedata[audioDetails[0]?.lesson_id] != null) {
               setResumeTime(timedata[audioDetails[0]?.lesson_id] || 0);
             }
-             const generatedFileName = `1@${chapter.section_id}@${data.firstAudiofile[0].lesson_id}@${data.firstAudiofile[0].file_name}`;
+            const generatedFileName = `1@${chapter.section_id}@${data.firstAudiofile[0].lesson_id}@${data.firstAudiofile[0].file_name}`;
             setAudioSrc(`${APP_URL}audio.php?file=${generatedFileName}`);
           }
         }
@@ -393,15 +390,16 @@ export const PodCast = () => {
 
   return (
     <div
-      className="h-screen flex flex-col bg-black overflow-hidden 
-     opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]"
+      // className="h-screen flex flex-col bg-black overflow-hidden"
+      className="h-screen flex flex-col bg-black overflow-hidden relative"
     >
       {/* Navbar */}
       <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
 
       {/* Main Content Area - Scrollable Chapters */}
       <div
-        className="flex-1 overflow-y-auto pb-32 md:pb-40"
+        // className="flex-1 overflow-y-auto pb-32 md:pb-40"
+        className="flex-1 overflow-y-auto pb-36 sm:pb-40 md:pb-44"
         style={{
           backgroundImage: `url(${BG})`,
           backgroundSize: "cover",
@@ -411,7 +409,7 @@ export const PodCast = () => {
       >
         <div className="w-full px-3 py-4 md:px-6 md:py-6">
           {/* Chapters List */}
-          <div className="bg-black bg-opacity-70 rounded-xl md:rounded-2xl p-3 md:p-6 max-w-4xl mx-auto">
+          <div className="bg-black bg-opacity-70 rounded-xl md:rounded-2xl p-3 md:p-6 max-w-4xl mx-auto opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]">
             <h2 className="text-white text-base md:text-xl font-bold mb-3 md:mb-4 flex items-center">
               <svg
                 className="w-4 h-4 md:w-5 md:h-5 mr-2"
@@ -442,7 +440,9 @@ export const PodCast = () => {
                       ref={(el) => (chapterRefs.current[index] = el)}
                       key={section.section_id ?? section.id ?? index}
                       className={`flex items-center p-3 md:p-4 rounded-lg cursor-pointer transition-all ${
-                        isActive ? "bg-gray-800 text-white" : "text-gray-300 hover:bg-gray-800"
+                        isActive
+                          ? "bg-gray-800 text-white"
+                          : "text-gray-300 hover:bg-gray-800"
                       }`}
                       onClick={() => openSection(section, index)}
                     >
@@ -491,7 +491,10 @@ export const PodCast = () => {
       </div>
 
       {/* Fixed Bottom Player - Improved Design */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-red-900 via-red-950 via-[1%] to-black border-t border-gray-700 z-50">
+      <div
+        //className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-red-900 via-red-950 via-[1%] to-black border-t border-gray-700 z-50"
+        className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-red-900 via-red-950 via-[1%] to-black border-t border-gray-700 z-50 safe-area-inset-bottom"
+      >
         <div className="w-full px-3 py-3 md:px-6 md:py-4">
           {/* Progress Bar */}
           <div className="flex items-center justify-between text-xs mb-2 md:mb-3">
@@ -521,7 +524,7 @@ export const PodCast = () => {
             {/* Song Info */}
             <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
               <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
-                 <img
+                <img
                   src={podcast_img}
                   className="w-14 h-14 rounded-lg shadow-lg"
                   alt={`${t("podcast")}`}
