@@ -55,7 +55,7 @@ const Login = ({ openRegister, openForgot }) => {
   };
 
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl  opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]">
+    <div className="w-full max-w-md bg-white rounded-2xl  opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]">
       <h2 className="text-2xl font-semibold mb-4 text-center">
         {t("app_name")}
       </h2>

@@ -4,7 +4,7 @@ import { useLanguage } from "../LanguageContext";
 const Footer = () => {
   const { t, lang, changeLanguage } = useLanguage();
   return (
-    <footer className="bg-black text-white">
+    <footer className="bg-black/80 text-white">
       {/* full-width; links start from the very left with page padding */}
       <div className="w-full px-4 md:px-10 py-2 md:py-3">
         <nav className="flex flex-wrap justify-start gap-x-4 gap-y-1

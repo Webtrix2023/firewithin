@@ -106,7 +106,7 @@ const Account = () => {
       {/* Form Section */}
       <div
         className="flex flex-1 items-center justify-center px-4 py-10
-       opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]"
+       opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]"
       >
         <div className="w-full md:w-[40vw] bg-white rounded-2xl shadow-lg px-10 md:px-28 py-10 md:py-20">
           <h2 className="text-lg font-medium text-gray-500 mb-1">

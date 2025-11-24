@@ -439,7 +439,7 @@ export const Text = () => {
   /** ------------------- UI ------------------- **/
   return (
     <div
-      className={`h-screen flex flex-col ${themeClasses[theme]} transition-colors duration-300  opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]`}
+      className={`h-screen flex flex-col ${themeClasses[theme]} transition-colors duration-300  opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]`}
     >
       {/* Navbar */}
       <div className={navbarVisible ? "block" : "hidden"}>

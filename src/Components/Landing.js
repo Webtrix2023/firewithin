@@ -308,7 +308,7 @@ const Landing = () => {
           px-6 md:px-16 py-12
           bg-[#1e2c33] bg-cover bg-center
           transition-all duration-500
-          opacity-0 animate-[fadeUp_1.5s_ease-out_forwards]
+         
         "
         style={{
           backgroundImage: isDesktop ? `url(${Henry})` : `url(${BG})`,
@@ -331,7 +331,7 @@ const Landing = () => {
 
             {/* ARROW AT RIGHT */}
             <svg
-              className={`w-3 h-3 ml-auto transition-transform ${
+              className={`w-3 h-3 ml-auto transition-transform text-red-600 ${
                 showLangMenu ? "rotate-180" : "rotate-0"
               }`}
               fill="none"
@@ -378,7 +378,7 @@ const Landing = () => {
         </div>
 
         {/* Mobile Image (top center) */}
-        <div className="block md:hidden mb-6">
+        <div className="block md:hidden mb-6 ">
           <img
             src={Henry_mob}
             alt={t("title")}
@@ -387,7 +387,7 @@ const Landing = () => {
         </div>
 
         {/* Right side content */}
-        <div className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10">
+        <div className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards]">
           <h2 className="text-4xl font-light mb-4 leading-snug">
             {t("title")}
           </h2>
@@ -418,7 +418,7 @@ const Landing = () => {
       {showModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={closeModal}
+          // onClick={closeModal}
         >
           <div
             className="bg-white rounded-xl w-11/12 max-w-md p-6 relative"
@@ -449,7 +449,13 @@ const Landing = () => {
               <ForgotPassword isModal openLogin={() => openModal("login")} />
             )}
             {modalType === "thank-you" && (
-              <ThankYouPage isModal openLogin={() => openModal("login")} />
+              <ThankYouPage
+                isModal
+                openLogin={() => {
+                  closeModal(); // Close the thank you modal
+                  openModal("login"); // Open login modal
+                }}
+              />
             )}
           </div>
         </div>
