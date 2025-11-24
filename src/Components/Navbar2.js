@@ -33,13 +33,13 @@ const Navbar2 = (params) => {
   const [displayMenu, setDisplayMenu] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
   const {
-  refs: profileRefs,
-  floatingStyles: profileFloatingStyles,
-  update: updateProfile,
-} = useFloating({
-  placement: "bottom-end",
-  middleware: [offset(8), flip(), shift()],
-});
+    refs: profileRefs,
+    floatingStyles: profileFloatingStyles,
+    update: updateProfile,
+  } = useFloating({
+    placement: "bottom-end",
+    middleware: [offset(8), flip(), shift()],
+  });
   // Refs for click outside detection
   const profileMenuRef = useRef(null);
   const langMenuRef = useRef(null);
@@ -53,13 +53,13 @@ const Navbar2 = (params) => {
     middleware: [offset(8), flip(), shift()],
   });
   useEffect(() => {
-  if (!profileRefs.reference.current || !profileRefs.floating.current) return;
-  return autoUpdate(
-    profileRefs.reference.current,
-    profileRefs.floating.current,
-    updateProfile
-  );
-}, [profileRefs.reference, profileRefs.floating, updateProfile]);
+    if (!profileRefs.reference.current || !profileRefs.floating.current) return;
+    return autoUpdate(
+      profileRefs.reference.current,
+      profileRefs.floating.current,
+      updateProfile
+    );
+  }, [profileRefs.reference, profileRefs.floating, updateProfile]);
 
   useEffect(() => {
     if (!refs.reference.current || !refs.floating.current) return;
@@ -163,66 +163,75 @@ const Navbar2 = (params) => {
         {/* Right: Icons + Language */}
         <div className="flex items-center gap-2 sm:gap-3 md:gap-5 lg:gap-6 text-red-500 relative">
           {/* Listen / Read Toggle */}
-          {!idDashboard && (<>
-            <button
-              aria-label="Switch to Text"
-              title={t("read")}
-              className="p-1.5 md:p-2 rounded-full transition-transform hover:scale-105"
-              onClick={() => navigate("/book/read")}
-            >
-              {/* Book Icon in Red */}
-              <BookOpenCheck
-                className={`
+          {!idDashboard && (
+            <>
+              <button
+                aria-label="Switch to Text"
+                title={t("read")}
+                className="p-1.5 md:p-2 rounded-full transition-transform hover:scale-105"
+                onClick={() => navigate("/book/read")}
+              >
+                {/* Book Icon in Red */}
+                <BookOpenCheck
+                  className={`
                   w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
                   hover:text-red-800
                   ${isTextPage ? "text-red-800" : "text-stone-500"}
                 `}
-              />
-            </button>
-            <button
-              aria-label="Switch to Music"
-              title={t("listen")}
-              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-              onClick={() => navigate("/book/listen")}
-            >
-              <FileHeadphone className={`
+                />
+              </button>
+              <button
+                aria-label="Switch to Music"
+                title={t("listen")}
+                className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+                onClick={() => navigate("/book/listen")}
+              >
+                <FileHeadphone
+                  className={`
                   w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
                   hover:text-red-800
                   ${isMusicPage ? "text-red-800" : "text-stone-500"}
-                `} />
-            </button>
-            <button
-              aria-label="Podcast"
-              title={t("podcast")}
-              className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
-              onClick={() => navigate("/book/podcasts")}
-            >
-              <Podcast className={`
+                `}
+                />
+              </button>
+              <button
+                aria-label="Podcast"
+                title={t("podcast")}
+                className="p-1.5 md:p-2 rounded-full hover:text-red-700 transition-transform hover:scale-105"
+                onClick={() => navigate("/book/podcasts")}
+              >
+                <Podcast
+                  className={`
                   w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
                   hover:text-red-800
                   ${isPodcast ? "text-red-800" : "text-stone-500"}
-                `} />
-            </button>
-            </>)}
+                `}
+                />
+              </button>
+            </>
+          )}
           {/* Podcast */}
+          {/* 🌐 Language Selector */}
           {/* 🌐 Language Selector */}
           <div ref={langMenuRef} className="relative">
             <button
               ref={refs.setReference}
               aria-label="Select Language"
               title={t("select_language")}
-              className="p-1.5 md:p-2 rounded-full hover:text-red-700 flex items-center gap-0 transition-transform hover:scale-105"
               onClick={toggleLangMenu}
+              className="
+      flex items-center gap-2 
+      px-3 py-2 rounded-full 
+      text-stone-500 hover:text-red-800 
+      transition-all hover:scale-105
+    "
             >
-              <Languages className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
-                 text-stone-500 hover:text-red-800 inline" />
+              <Languages className="w-6 h-6" />
 
-              <span className="text-md text-stone-500 hover:text-red-800 uppercase hidden sm:inline ml-[3px]">
-                {lang}
-              </span>
+              <span className="uppercase hidden sm:inline text-sm">{lang}</span>
 
               <svg
-                className={`w-3 h-3 text-stone-500 hover:text-red-800 transition-transform ml-[2px] ${
+                className={`w-3 h-3 transition-transform ${
                   showLangMenu ? "rotate-180" : "rotate-0"
                 }`}
                 fill="none"
@@ -237,37 +246,31 @@ const Navbar2 = (params) => {
                 />
               </svg>
             </button>
+
             {showLangMenu && (
               <div
                 ref={refs.setFloating}
                 style={floatingStyles}
-                className="w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-[100] border border-gray-200"
+                className="w-36 sm:w-40 bg-white shadow-lg rounded-md border border-gray-200 z-[100]"
               >
                 <ul className="py-2 text-sm text-gray-700">
                   <li>
                     <button
                       onClick={() => handleLanguageChange("en")}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
                       English
                     </button>
                   </li>
+
                   <li>
                     <button
                       onClick={() => handleLanguageChange("ko")}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
                       Korean (한국인)
                     </button>
                   </li>
-                  {/* <li>
-                  <button
-                    onClick={() => handleLanguageChange("zh")}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
-                  >
-                    Chinese (中国人)
-                  </button>
-                </li> */}
                 </ul>
               </div>
             )}
@@ -283,14 +286,16 @@ const Navbar2 = (params) => {
               onClick={toggleProfileMenu}
             > */}
             <button
-                ref={profileRefs.setReference}
-                onClick={toggleProfileMenu}
-                aria-label="Profile"
-                title={t("profile")}
-                className="p-1.5 md:p-2 pl-0 rounded-full hover:text-red-700 flex items-center gap-1 transition-transform hover:scale-105"
-              >
-              <CircleUserRound className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
-                 text-stone-500 hover:text-red-800" />
+              ref={profileRefs.setReference}
+              onClick={toggleProfileMenu}
+              aria-label="Profile"
+              title={t("profile")}
+              className="p-1.5 md:p-2 pl-0 rounded-full hover:text-red-700 flex items-center gap-1 transition-transform hover:scale-105"
+            >
+              <CircleUserRound
+                className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7
+                 text-stone-500 hover:text-red-800"
+              />
 
               {/* ▼ Arrow */}
               <svg
@@ -333,36 +338,36 @@ const Navbar2 = (params) => {
               </div>
             )} */}
             {displayMenu && (
-  <div
-    ref={profileRefs.setFloating}
-    style={profileFloatingStyles}
-    className="w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-[100] border border-gray-200"
-  >
-    <ul className="py-2 text-sm text-gray-700">
-      <li>
-        <button
-          onClick={() => navigate("/account")}
-          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
-        >
-          {t("my_account")}
-        </button>
-      </li>
-      <li>
-        <button
-          onClick={handleLogout}
-          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
-        >
-          {t("logout")}
-        </button>
-      </li>
-    </ul>
-  </div>
-)}
-
+              <div
+                ref={profileRefs.setFloating}
+                style={profileFloatingStyles}
+                className="w-36 sm:w-40 bg-white shadow-lg rounded-md flex flex-col z-[100] border border-gray-200"
+              >
+                <ul className="py-2 text-sm text-gray-700">
+                  <li>
+                    <button
+                      onClick={() => navigate("/account")}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
+                    >
+                      {t("my_account")}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm"
+                    >
+                      {t("logout")}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Back */}
-          {!idDashboard && (<></>
+          {!idDashboard && (
+            <></>
             // <button
             //   aria-label="Back to dashboard"
             //   title={t("back_to_dashboard")}

@@ -539,11 +539,13 @@ export const PodCast = () => {
               <button
                 onClick={handlePrev}
                 disabled={currentSection === 1}
-                className="text-gray-400 hover:text-white transition-colors disabled:opacity-30 "
+                className="size-14 md:size-16 flex items-center justify-center 
+               text-gray-400 hover:text-white 
+               transition-colors disabled:opacity-30"
                 title="Previous Chapter"
               >
                 <svg
-                  className="w-5 h-5 md:w-7 md:h-7"
+                  className="w-6 h-6 md:w-7 md:h-7"
                   viewBox="0 0 33 37"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -560,11 +562,12 @@ export const PodCast = () => {
 
               <button
                 onClick={() => handleSkip(-15)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="size-14 md:size-16 flex items-center justify-center 
+               text-gray-400 hover:text-white transition-colors"
                 title="Rewind 15s"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-6 h-6 md:w-7 md:h-7"
                   viewBox="0 0 48 53"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -589,7 +592,9 @@ export const PodCast = () => {
               {/* Improved Play/Pause Button */}
               <button
                 onClick={togglePlayPause}
-                className="bg-white rounded-full p-2 md:p-4 hover:scale-105 transition-transform shadow-lg"
+                className="size-16 md:size-18 flex items-center justify-center 
+               bg-white rounded-full shadow-lg 
+               hover:scale-105 transition-transform"
               >
                 {isPlaying ? (
                   <CiPause1 className="w-6 h-6 md:w-8 md:h-8 text-black" />
@@ -600,11 +605,12 @@ export const PodCast = () => {
 
               <button
                 onClick={() => handleSkip(15)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="size-14 md:size-16 flex items-center justify-center 
+               text-gray-400 hover:text-white transition-colors"
                 title="Forward 15s"
               >
                 <svg
-                  className="w-4 h-4 md:w-6 md:h-6"
+                  className="w-6 h-6 md:w-7 md:h-7"
                   viewBox="0 0 47 53"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -629,11 +635,13 @@ export const PodCast = () => {
               <button
                 onClick={handleNext}
                 disabled={currentSection === sections.length}
-                className="text-gray-400 hover:text-white transition-colors disabled:opacity-30"
+                className="size-14 md:size-16 flex items-center justify-center 
+               text-gray-400 hover:text-white 
+               transition-colors disabled:opacity-30"
                 title="Next Chapter"
               >
                 <svg
-                  className="w-5 h-5 md:w-7 md:h-7"
+                  className="w-6 h-6 md:w-7 md:h-7"
                   viewBox="0 0 33 37"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
