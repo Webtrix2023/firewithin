@@ -59,7 +59,7 @@ export const Text = () => {
     index = lessonIndex,
     type = "current",
     saveProgress = false, // ✅ true only for next/prev/section
-    } = {}) => {
+  } = {}) => {
     console.log("Loading page →", { sectionId, index, type });
 
     try {
@@ -113,7 +113,7 @@ export const Text = () => {
   const updateAutoPage = async (page) => {
     try {
       //setPageNumber(page);
-      const pagenp = page-1;
+      const pagenp = page - 1;
       setPageNumbeDisplay(pagenp == 0 ? 1 : pagenp);
       await axios.get(`${API_URL}autopageSet/${page}`);
     } catch (err) {
@@ -202,7 +202,10 @@ export const Text = () => {
         //setFontSize(data?.customer_details?.[0]?.selected_font || 1.05);
         setFontSize(Number(data?.customer_details?.[0]?.selected_font) || 1.05);
         setPageNumber(Number(item.lesson_id));
-        setPageNumbeDisplay(Number(item.lesson_id) === 0 ? 1 : (Number(item.lesson_id)-1));
+        // setPageNumbeDisplay(Number(item.lesson_id) === 0 ? 1 : (Number(item.lesson_id)-1));
+        setPageNumbeDisplay(
+          Number(item.lesson_id) === 0 ? 1 : Number(item.lesson_id) - 1
+        );
       }
     } catch (err) {
       console.error(err);
@@ -324,14 +327,35 @@ export const Text = () => {
       document.removeEventListener("keydown", onKey);
     };
   }, [showFontMenu]);
+  // // Auto-scroll active chapter when slider opens
+  // useEffect(() => {
+  //   if (isSliderOpen && activeChapterRef.current && sectionListRef.current) {
+  //     const list = sectionListRef.current;
+  //     const itemTop = activeChapterRef.current.offsetTop;
+  //     list.scrollTo({ top: itemTop, behavior: "smooth" });
+  //   }
+  // }, [isSliderOpen, currentSection]);
+
   // Auto-scroll active chapter when slider opens
   useEffect(() => {
     if (isSliderOpen && activeChapterRef.current && sectionListRef.current) {
-      const list = sectionListRef.current;
-      const itemTop = activeChapterRef.current.offsetTop;
-      list.scrollTo({ top: itemTop, behavior: "smooth" });
+      // Use requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(() => {
+        const list = sectionListRef.current;
+        const activeItem = activeChapterRef.current;
+        if (list && activeItem) {
+          // Calculate position to scroll active item to top
+          const itemTop = activeItem.offsetTop;
+          const listTop = list.offsetTop;
+          const scrollPosition = itemTop - listTop;
+          list.scrollTo({
+            top: scrollPosition,
+            behavior: "smooth",
+          });
+        }
+      });
     }
-  }, [isSliderOpen, currentSection]);
+  }, [isSliderOpen, currentSection, sections]); // Added sections to dependencies
 
   // Theme classes (no layout/color placement changes)
   const themeClasses = {
@@ -350,7 +374,12 @@ export const Text = () => {
     sepia: "text-[#6b5e48]",
     dark: "text-neutral-400",
   };
-
+  // Chapter list specific theme classes
+  const chapterListTheme = {
+    light: "bg-white text-gray-800 border-gray-200",
+    sepia: "bg-[#f4ecd8] text-[#2b2a27] border-[#d9c9a3]",
+    dark: "bg-[#1a1a1a] text-[#e9e9e9] border-[#333]",
+  };
   const increaseFont = async () => {
     const size = Math.min(fontSize + 0.1, 1.8);
     setFontSize((s) => size);
@@ -462,7 +491,12 @@ export const Text = () => {
                 {showFontMenu && (
                   <div
                     ref={fontMenuRef}
-                    className="absolute right-0 mt-2 w-44 rounded-xl bg-white text-neutral-900 shadow-lg ring-1 ring-black/5 overflow-hidden"
+                    // className="absolute right-0 mt-2 w-44 rounded-xl bg-white text-neutral-900 shadow-lg ring-1 ring-black/5 overflow-hidden"
+                    className={`absolute right-0 mt-2 w-44 rounded-xl ${
+                      theme === "dark"
+                        ? "bg-[#2d2d2d] text-white"
+                        : "bg-white text-neutral-900"
+                    } shadow-lg ring-1 ring-black/5 overflow-hidden`}
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="flex items-center justify-between px-3 py-2">
@@ -474,19 +508,34 @@ export const Text = () => {
                     <div className="flex items-center justify-between px-3 pb-3 gap-2">
                       <button
                         onClick={decreaseFont}
-                        className="px-3 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-sm"
+                        // className="px-3 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-sm"
+                        className={`px-3 py-1.5 rounded-full text-sm ${
+                          theme === "dark"
+                            ? "bg-[#3d3d3d] hover:bg-[#4d4d4d] text-white"
+                            : "bg-neutral-100 hover:bg-neutral-200"
+                        }`}
                       >
                         A–
                       </button>
                       <button
                         onClick={() => setFontSize(1.05)}
-                        className="px-3 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-sm"
+                        //className="px-3 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-sm"
+                        className={`px-3 py-1.5 rounded-full text-sm ${
+                          theme === "dark"
+                            ? "bg-[#3d3d3d] hover:bg-[#4d4d4d] text-white"
+                            : "bg-neutral-100 hover:bg-neutral-200"
+                        }`}
                       >
                         Reset
                       </button>
                       <button
                         onClick={increaseFont}
-                        className="px-3 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-sm"
+                        // className="px-3 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-sm"
+                        className={`px-3 py-1.5 rounded-full text-sm ${
+                          theme === "dark"
+                            ? "bg-[#3d3d3d] hover:bg-[#4d4d4d] text-white"
+                            : "bg-neutral-100 hover:bg-neutral-200"
+                        }`}
                       >
                         A+
                       </button>
@@ -566,7 +615,12 @@ export const Text = () => {
             </div>
 
             <div
-              className={`flex items-center gap-2 text-xs sm:text-sm ${themeClasses[theme]} bg-white text-gray-700 pr-2 rounded-full`}
+              // className={`flex items-center gap-2 text-xs sm:text-sm ${themeClasses[theme]} bg-white text-gray-700 pr-2 rounded-full`}
+              className={`flex items-center gap-2 text-xs sm:text-sm ${
+                theme === "dark"
+                  ? "bg-[#2d2d2d] text-white"
+                  : "bg-white text-gray-700"
+              } pr-2 rounded-full`}
               aria-live="polite"
             >
               {/* <span className="inline-flex  items-center justify-center bg-black text-white h-7 px-4 rounded-full text-xs sm:text-sm">
@@ -592,10 +646,21 @@ export const Text = () => {
                     }
                   }, 500);
                 }}
-                className="w-8 sm:w-8 py-1 pl-2 sm:py-2 rounded-full text-center border-gray-300 focus:outline-none
-    [&::-webkit-outer-spin-button]:appearance-none
-    [&::-webkit-inner-spin-button]:appearance-none
-    [appearance:textfield]"
+                //             className="w-8 sm:w-8 py-1 pl-2 sm:py-2 rounded-full text-center border-gray-300 focus:outline-none
+                // [&::-webkit-outer-spin-button]:appearance-none
+                // [&::-webkit-inner-spin-button]:appearance-none
+                // [appearance:textfield]"
+                className={`w-8 sm:w-8 py-1 pl-2 sm:py-2 rounded-full text-center focus:outline-none
+
+                  [&::-webkit-outer-spin-button]:appearance-none
+
+                  [&::-webkit-inner-spin-button]:appearance-none
+
+                  [appearance:textfield] ${
+                    theme === "dark"
+                      ? "bg-[#1a1a1a] border-gray-600 text-white"
+                      : "border-gray-300"
+                  }`}
               />
               <span>of</span>
               <span>325</span>
@@ -610,7 +675,14 @@ export const Text = () => {
             e.stopPropagation();
             setIsSliderOpen(!isSliderOpen);
           }}
-          className={`fixed top-1/2 -translate-y-1/2 z-40 text-red-600 bg-white border border-neutral-200 pl-2 py-5 rounded-l-full shadow-lg transition-all duration-300
+          // className={`fixed top-1/2 -translate-y-1/2 z-40 text-red-600 bg-white border border-neutral-200 pl-2 py-5 rounded-l-full shadow-lg transition-all duration-300
+          //       ${isSliderOpen ? "right-[85vw] sm:right-96" : "right-0"}`}
+          className={`fixed top-1/2 -translate-y-1/2 z-40 ${
+            theme === "dark"
+              ? "text-red-400 bg-[#2d2d2d] border-gray-700"
+              : "text-red-600 bg-white border-neutral-200"
+          } pl-2 py-5 rounded-l-full shadow-lg transition-all duration-300
+
                 ${isSliderOpen ? "right-[85vw] sm:right-96" : "right-0"}`}
         >
           {isSliderOpen ? (
@@ -623,7 +695,7 @@ export const Text = () => {
         {/* Right Sidebar (Slide-in Drawer) */}
         <div
           className={`absolute right-0 top-0 h-full z-40 transform transition-transform duration-300 ease-in-out
-      bg-white border-l border-neutral-200 w-[85%] sm:w-96
+       ${chapterListTheme[theme]} w-[85%] sm:w-96
       ${isSliderOpen ? "translate-x-0" : "translate-x-full"}`}
           role="dialog"
           aria-label="Chapters"

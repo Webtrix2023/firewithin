@@ -142,7 +142,7 @@ const Navbar2 = (params) => {
   };
 
   return (
-    <nav className="w-full bg-gradient-to-r from-gray-300 to-white shadow sticky top-0">
+    <nav className="w-full bg-gradient-to-r from-gray-300 to-white shadow sticky top-0 z-50">
       <div className="mx-auto flex flex-wrap items-center justify-between px-3 py-2.5 md:py-4">
         {/* Left: Title */}
         <div className="leading-tight mb-2 md:mb-0 flex-1 min-w-[180px] md:pl-10">
