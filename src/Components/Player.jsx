@@ -39,7 +39,7 @@ export const Player = () => {
     );
   };
 
-  const { t, lang, changeLanguage } = useLanguage();
+  const { t, lang, changeLanguage,tc } = useLanguage();
   const [audioSrc, setAudioSrc] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -408,7 +408,7 @@ export const Player = () => {
 
       {/* Main Content Area - Scrollable Chapters */}
       <div
-        className="flex-1 overflow-y-autopb-36 sm:pb-40 md:pb-44"
+        className="flex-1 overflow-y-auto pb-36 sm:pb-40 md:pb-44"
         style={{
           backgroundImage: `url(${BG})`,
           backgroundSize: "cover",
@@ -474,20 +474,13 @@ export const Player = () => {
 
                       <div className="flex-1 min-w-0">
                         <p className="text-xs md:text-sm opacity-75">
-                          Chapter {index + 1}
+                           {t("chapter")} {index + 1}
                         </p>
                         <p className="font-medium text-sm md:text-lg truncate">
                           {label}
                         </p>
                         <p className="text-xs md:text-sm opacity-75 mt-1 line-clamp-2">
-                          Lorem Ipsum is simply dummy text of the printing and
-                          typesetting industry. Lorem Ipsum has been the
-                          industry's standard dummy text ever since the 1500s,
-                          when an unknown printer took a galley of type and
-                          scrambled it to make a type specimen book. It has
-                          survived not only five centuries, but also the leap
-                          into electronic typesetting, remaining essentially
-                          unchanged.
+                           {tc(index)}
                         </p>
                       </div>
                     </div>
