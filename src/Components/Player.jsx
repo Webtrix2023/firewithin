@@ -408,7 +408,7 @@ export const Player = () => {
 
       {/* Main Content Area - Scrollable Chapters */}
       <div
-        className="flex-1 overflow-y-autopb-36 sm:pb-40 md:pb-44"
+        className="flex-1 overflow-y-auto pb-36 sm:pb-40 md:pb-44"
         style={{
           backgroundImage: `url(${BG})`,
           backgroundSize: "cover",
@@ -549,14 +549,19 @@ export const Player = () => {
 
             {/* Main Controls - Improved styling */}
             <div className="flex items-center gap-2 md:gap-6">
+              {/* PREV */}
               <button
                 onClick={handlePrev}
                 disabled={currentSection === 1}
-                className="text-gray-400 hover:text-white transition-colors disabled:opacity-30 "
+                className="
+      size-14 md:size-16 flex items-center justify-center 
+               text-gray-400 hover:text-white 
+               transition-colors disabled:opacity-30
+     "
                 title="Previous Chapter"
               >
                 <svg
-                  className="w-5 h-5 md:w-7 md:h-7"
+                  className="w-6 h-6 md:w-7 md:h-7"
                   viewBox="0 0 33 37"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -570,14 +575,15 @@ export const Player = () => {
                   />
                 </svg>
               </button>
-
+              {/* REWIND */}
               <button
                 onClick={() => handleSkip(-15)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="size-14 md:size-16 flex items-center justify-center 
+               text-gray-400 hover:text-white transition-colors"
                 title="Rewind 15s"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-6 h-6 md:w-7 md:h-7"
                   viewBox="0 0 48 53"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -599,10 +605,12 @@ export const Player = () => {
                 </svg>
               </button>
 
-              {/* Improved Play/Pause Button */}
+              {/* Play/Pause Button */}
               <button
                 onClick={togglePlayPause}
-                className="bg-white rounded-full p-2 md:p-4 hover:scale-105 transition-transform shadow-lg"
+                className="size-16 md:size-18 flex items-center justify-center 
+               bg-white rounded-full shadow-lg 
+               hover:scale-105 transition-transform"
               >
                 {isPlaying ? (
                   <CiPause1 className="w-6 h-6 md:w-8 md:h-8 text-black" />
@@ -611,13 +619,15 @@ export const Player = () => {
                 )}
               </button>
 
+              {/* FORWARD */}
               <button
                 onClick={() => handleSkip(15)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="size-14 md:size-16 flex items-center justify-center 
+               text-gray-400 hover:text-white transition-colors"
                 title="Forward 15s"
               >
                 <svg
-                  className="w-4 h-4 md:w-6 md:h-6"
+                  className="w-6 h-6 md:w-7 md:h-7"
                   viewBox="0 0 47 53"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -638,15 +648,17 @@ export const Player = () => {
                   />
                 </svg>
               </button>
-
+              {/* NEXT */}
               <button
                 onClick={handleNext}
                 disabled={currentSection === sections.length}
-                className="text-gray-400 hover:text-white transition-colors disabled:opacity-30"
+                className="size-14 md:size-16 flex items-center justify-center 
+               text-gray-400 hover:text-white 
+               transition-colors disabled:opacity-30"
                 title="Next Chapter"
               >
                 <svg
-                  className="w-5 h-5 md:w-7 md:h-7"
+                  className="w-6 h-6 md:w-7 md:h-7"
                   viewBox="0 0 33 37"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
