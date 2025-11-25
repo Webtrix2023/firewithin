@@ -228,7 +228,7 @@ const Navbar2 = (params) => {
             >
               <Languages className="w-6 h-6" />
 
-              <span className="uppercase hidden sm:inline text-sm">{lang}</span>
+              <span className="uppercase inline sm:inline text-sm">{lang}</span>
 
               <svg
                 className={`w-3 h-3 transition-transform ${

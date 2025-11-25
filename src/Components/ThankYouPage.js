@@ -36,7 +36,9 @@ const ThankYouPage = ({ openLogin }) => {
               {t("email_for_login_credentials")}{" "}
               <button
                 type="button"
-                onClick={openLogin} // switch modal back to login
+                onClick={()=>{
+                  navigate("/");
+                }} // switch modal back to login
                 className=" text-blue-400 hover:underline "
               >
                 {t("click_here_to_login")}

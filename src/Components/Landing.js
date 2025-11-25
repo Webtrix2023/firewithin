@@ -18,6 +18,7 @@ import {
 } from "@floating-ui/react";
 import langv from "../assets/lang.png";
 import ThankYouPage from "./ThankYouPage";
+import { Languages } from "lucide-react";
 
 const Landing = () => {
   const { t, lang, changeLanguage } = useLanguage();
@@ -80,19 +81,20 @@ const Landing = () => {
   isDesktop ? "overflow-hidden h-screen" : "overflow-auto"
 }`}>
       <div
-        className="
-          relative flex flex-col md:flex-row 
-          items-center justify-center md:justify-end
-          min-h-screen w-full
-          px-6 md:px-16 py-12
-          bg-[#1e2c33] bg-cover bg-center
-          transition-all duration-500
-         
-        "
-        style={{
-          backgroundImage: isDesktop ? `url(${Henry})` : `url(${BG})`,
-        }}
-      >
+  className="
+    relative flex flex-col md:flex-row 
+    items-center justify-center md:justify-end
+    w-full
+    px-6 md:px-16 py-12
+    bg-[#1e2c33] bg-cover bg-center
+    transition-all duration-500
+    min-h-screen
+    overflow-y-scroll
+  "
+  style={{
+    backgroundImage: isDesktop ? `url(${Henry})` : `url(${BG})`,
+  }}
+>
         {/* === LANGUAGE SELECTOR TOP RIGHT === */}
         <div className="absolute top-4 right-6 z-50">
           <button
@@ -101,10 +103,10 @@ const Landing = () => {
             className="p-2 pl-3 pr-3 rounded-full bg-white/90 shadow hover:scale-105 transition flex items-center gap-2"
           >
             {/* ICON */}
-            <img src={langv} alt="language" className="w-6" />
+            <Languages className="text-red-600 inline" size={18}></Languages>
 
             {/* LANG TEXT */}
-            <span className="text-sm uppercase text-red-600 hidden sm:inline">
+            <span className="text-sm uppercase text-red-600 inline sm:inline">
               {lang}
             </span>
 
@@ -157,11 +159,11 @@ const Landing = () => {
         </div>
 
         {/* Mobile Image (top center) */}
-        <div className="block md:hidden mb-6 ">
+        <div className="block md:hidden mb-6">
           <img
             src={Henry_mob}
             alt={t("title")}
-            className="w-[115px] mx-auto rounded-lg shadow-md object-cover"
+            className="w-[115px] mx-auto shadow-md object-cover"
           />
         </div>
 
@@ -170,12 +172,12 @@ const Landing = () => {
           <h2 className="text-4xl font-light mb-4 leading-snug">
             {t("title")}
           </h2>
-          <p className="text-gray-300 text-base text-justify sm:text-lg leading-relaxed mb-8">
-            {t("description")}
-          </p>
+         <p className="text-gray-300 text-sm sm:text-base md:text-lg text-justify leading-relaxed mb-8">
+  {t("description")}
+</p>
 
           {/* Buttons */}
-          <div className="flex gap-4 justify-center md:justify-start">
+          <div className="flex gap-4 justify-center justify-start mb-4">
             <button
               onClick={() => openModal("login")}
               className="bg-white text-black px-6 py-3 rounded-full hover:bg-white/90 transition"
@@ -185,7 +187,7 @@ const Landing = () => {
 
             <button
               onClick={() => openModal("register")}
-              className="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition"
+              className="bg-orange-600 text-white px-6 py-3 rounded-full hover:bg-orange-700 transition"
             >
               {t("register_now")}
             </button>

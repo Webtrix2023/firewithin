@@ -77,8 +77,8 @@ export const Player = () => {
         soundRef.current.once("load", () => {
           if (!isMounted || !soundRef.current) return; // ✅ safe check
 
-          const duration = soundRef.current.duration();
-          setDuration(duration);
+          // const duration = soundRef.current.duration();
+          // setDuration(duration);
 
           soundRef.current.seek(savedTime);
           setCurrentTime(savedTime);
@@ -140,7 +140,7 @@ export const Player = () => {
       preload: true,
       onload: () => {
         const dur = sound.duration();
-        if (dur > 0) {
+        if (isFinite(dur) && !isNaN(dur)) {
           setDuration(dur);
         }
 
@@ -158,7 +158,7 @@ export const Player = () => {
         clearInterval(intervalRef.current);
       },
     });
-
+    
     soundRef.current = sound;
 
     // Play-pause trick to force metadata load
@@ -170,6 +170,20 @@ export const Player = () => {
       }
     }, 10);
 
+        soundRef.current.on('load', () => {
+  const d = soundRef.current.duration();
+  if (isFinite(d) && !isNaN(d)) {
+    setDuration(d);
+  }
+});
+soundRef.current.once('play', () => {
+  const d = soundRef.current.duration();
+  if (isFinite(d) && !isNaN(d)) {
+    setDuration(d);
+  }
+});
+
+
     return () => {
       if (soundRef.current) {
         soundRef.current.unload();
@@ -177,6 +191,51 @@ export const Player = () => {
       }
     };
   }, [audioSrc]);
+//   useEffect(() => {
+//   if (!audioSrc) return;
+
+//   // cleanup previous
+//   if (soundRef.current) {
+//     soundRef.current.unload();
+//     soundRef.current = null;
+//   }
+
+//   setIsPlaying(false);
+
+//   const sound = new Howl({
+//     src: [audioSrc],
+//     html5: true,  // ✅ required for iPhone
+//   });
+
+//   soundRef.current = sound;
+
+//   sound.once('load', () => {
+//     const d = sound.duration();
+
+//     if (isFinite(d) && d > 0) {
+//       setDuration(d);
+//     }
+
+//     if (resumeTime > 0 && resumeTime < d) {
+//       sound.seek(resumeTime);
+//       setCurrentTime(resumeTime);
+//     } else {
+//       setCurrentTime(0);
+//     }
+//   });
+
+//   sound.once('end', () => {
+//     setIsPlaying(false);
+//     clearInterval(intervalRef.current);
+//   });
+
+//   return () => {
+//     if (soundRef.current) {
+//       soundRef.current.unload();
+//       soundRef.current = null;
+//     }
+//   };
+// }, [audioSrc]);
 
   const updateAutoPage = async (page) => {
     try {
@@ -199,11 +258,13 @@ export const Player = () => {
       });
       const { flag, data } = res.data;
       if (flag === "S" && data) {
-        console.log("API Response:", data);
+        console.log("API Response:", data?.firstAudiofile?.[0]?.duration);
+
+        setDuration(data?.firstAudiofile?.[0]?.duration ?? 0);
 
         if (data.currentChapterDetails) {
           const chapter = data.currentChapterDetails;
-          console.log("Current Chapter:", chapter);
+          
 
           // Fix for chapter name - check all possible fields
           const chapterNameText =
@@ -402,7 +463,7 @@ export const Player = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-black overflow-hidden relative ">
+    <div className="h-screen flex flex-col bg-black relative ">
       {/* Navbar */}
       <Navbar2 chapterName={chapterName} chapterNumber={currentSection} />
 
@@ -501,12 +562,23 @@ export const Player = () => {
               {formatTime(currentTime)}
             </span>
             <input
-              type="range"
-              min="0"
-              max="100"
-              value={duration ? (currentTime / duration) * 100 : 0}
-              onChange={handleSeek}
-              className="flex-1 mx-2 md:mx-4 h-1 md:h-2 rounded-full appearance-none bg-gray-600 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 md:[&::-webkit-slider-thumb]:h-4 md:[&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white cursor-pointer"
+  type="range"
+  min="0"
+  max="100"
+  value={duration ? (currentTime / duration) * 100 : 0}
+  onInput={handleSeek}
+  className="
+    flex-1 mx-2 md:mx-4
+    h-1 md:h-2 rounded-full
+    appearance-none cursor-pointer
+    touch-none              /* ✅ KEY for iOS */
+    bg-gray-600
+    [&::-webkit-slider-thumb]:appearance-none
+    [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3
+    md:[&::-webkit-slider-thumb]:h-4 md:[&::-webkit-slider-thumb]:w-4
+    [&::-webkit-slider-thumb]:rounded-full
+    [&::-webkit-slider-thumb]:bg-white
+  "
               style={{
                 background: `linear-gradient(to right, #FF2C00 ${
                   (currentTime / duration) * 100
@@ -521,7 +593,7 @@ export const Player = () => {
           {/* Player Controls */}
           <div className="flex items-center justify-between gap-2 md:gap-4">
             {/* Song Info */}
-            <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
+            <div className="flex items-center gap-2 md:gap-4 flex-1">
               <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                 <img
                   src={Listen}
