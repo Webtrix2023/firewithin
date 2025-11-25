@@ -94,7 +94,7 @@ const Login = ({ openRegister, openForgot }) => {
 
         {/* Password */}
         <div>
-          <label className="block text-xs pl-3 font-medium text-slate-600 mb-1">
+          <label className="block text-gray-900 text-xs pl-3 font-medium text-slate-600 mb-1">
             {t("password")} <span className="text-red-500">*</span>
           </label>
           <div className="flex items-center gap-2 relative">

@@ -70,3 +70,38 @@
     transform: rotate(360deg);
   }
 }
+&::-webkit-slider-thumb {
+  margin-left: -6px;
+}
+.page-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100%; /* or fixed height if known */
+  perspective: 1200px;
+  overflow: hidden;
+}
+
+.page-content {
+  position: absolute; /* ✅ KEY FIX */
+  top: 0;
+  left: 0;
+  width: 100%;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+.page-flip {
+  animation: fadeTurn 0.25s ease;
+}
+
+@keyframes fadeTurn {
+  0% { opacity: 1; transform: translateX(0); }
+  50% { opacity: 0; transform: translateX(-12px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  touch-action: pan-y !important;
+}
+.touch-action-none {
+  touch-action: none;
+}

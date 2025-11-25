@@ -39,7 +39,7 @@ export const PodCast = () => {
     );
   };
 
-  const { t, lang, changeLanguage } = useLanguage();
+  const { t, lang, changeLanguage,tc } = useLanguage();
   const [audioSrc, setAudioSrc] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -75,8 +75,8 @@ export const PodCast = () => {
         soundRef.current.once("load", () => {
           if (!isMounted || !soundRef.current) return; // ✅ safe check
 
-          const duration = soundRef.current.duration();
-          setDuration(duration);
+          // const duration = soundRef.current.duration();
+          // setDuration(duration);
 
           soundRef.current.seek(savedTime);
           setCurrentTime(savedTime);
@@ -132,9 +132,10 @@ export const PodCast = () => {
       autoplay: false,
       onload: () => {
         const dur = sound.duration();
-        if (dur > 0) {
+        if (isFinite(dur) && !isNaN(dur)) {
           setDuration(dur);
         }
+
 
         if (resumeTime > 0 && resumeTime < dur) {
           if (soundRef.current) {
@@ -161,6 +162,19 @@ export const PodCast = () => {
         soundRef.current.seek(resumeTime > 0 ? resumeTime : 0);
       }
     }, 10);
+
+     soundRef.current.on('load', () => {
+  const d = soundRef.current.duration();
+  if (isFinite(d) && !isNaN(d)) {
+    setDuration(d);
+  }
+});
+soundRef.current.once('play', () => {
+  const d = soundRef.current.duration();
+  if (isFinite(d) && !isNaN(d)) {
+    setDuration(d);
+  }
+});
 
     return () => {
       if (soundRef.current) {
@@ -199,7 +213,7 @@ export const PodCast = () => {
       const { flag, data } = res.data;
       if (flag === "S" && data) {
         console.log("API Response:", data);
-
+        setDuration(data?.firstAudiofile?.[0]?.duration ?? 0);
         if (data.currentChapterDetails) {
           const chapter = data.currentChapterDetails;
           console.log("Current Chapter:", chapter);
@@ -465,20 +479,13 @@ export const PodCast = () => {
 
                       <div className="flex-1 min-w-0">
                         <p className="text-xs md:text-sm opacity-75">
-                          Chapter {index + 1}
+                           {t("chapter")} {index + 1}
                         </p>
                         <p className="font-medium text-sm md:text-lg truncate">
                           {label}
                         </p>
                         <p className="text-xs md:text-sm opacity-75 mt-1 line-clamp-2">
-                          Lorem Ipsum is simply dummy text of the printing and
-                          typesetting industry. Lorem Ipsum has been the
-                          industry's standard dummy text ever since the 1500s,
-                          when an unknown printer took a galley of type and
-                          scrambled it to make a type specimen book. It has
-                          survived not only five centuries, but also the leap
-                          into electronic typesetting, remaining essentially
-                          unchanged.
+                           {tc(index)}
                         </p>
                       </div>
                     </div>
@@ -501,13 +508,37 @@ export const PodCast = () => {
             <span className="text-gray-400 text-xs md:text-sm min-w-[35px] md:min-w-[45px]">
               {formatTime(currentTime)}
             </span>
-            <input
+            {/* <input
               type="range"
               min="0"
               max="100"
-              value={duration ? (currentTime / duration) * 100 : 0}
+              value={duration ? ((currentTime / duration) * 100 -0.5) : 0}
               onChange={handleSeek}
               className="flex-1 mx-2 md:mx-4 h-1 md:h-2 rounded-full appearance-none bg-gray-600 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 md:[&::-webkit-slider-thumb]:h-4 md:[&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #FF2C00 ${
+                  (currentTime / duration) * 100
+                }%, #404040 ${(currentTime / duration) * 100}%)`,
+              }}
+            /> */}
+            <input
+  type="range"
+  min="0"
+  max="100"
+  value={duration ? (currentTime / duration) * 100 : 0}
+  onInput={handleSeek}
+  className="
+    flex-1 mx-2 md:mx-4
+    h-1 md:h-2 rounded-full
+    appearance-none cursor-pointer
+    touch-none              /* ✅ KEY for iOS */
+    bg-gray-600
+    [&::-webkit-slider-thumb]:appearance-none
+    [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3
+    md:[&::-webkit-slider-thumb]:h-4 md:[&::-webkit-slider-thumb]:w-4
+    [&::-webkit-slider-thumb]:rounded-full
+    [&::-webkit-slider-thumb]:bg-white
+  "
               style={{
                 background: `linear-gradient(to right, #FF2C00 ${
                   (currentTime / duration) * 100
@@ -522,7 +553,7 @@ export const PodCast = () => {
           {/* Player Controls */}
           <div className="flex items-center justify-between gap-2 md:gap-4">
             {/* Song Info */}
-            <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
+            <div className="flex items-center gap-2 md:gap-4 flex-1">
               <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                 <img
                   src={podcast_img}
