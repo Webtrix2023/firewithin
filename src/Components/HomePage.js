@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar2 from "./Navbar2";
 import { useNavigate } from "react-router-dom";
 import Henry from "../assets/Henry.jpg";
-import Henry_mob from "../assets/Henry Rowan BGMobile.png";
+import Henry_mob from "../assets/Henry_Rowan_BGMobile.png";
 import listen_img from "../assets/listen.png";
 import read_img from "../assets/read.png";
 import podcast_img from "../assets/podcast.svg";

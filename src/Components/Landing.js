@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLanguage } from "../LanguageContext";
 import { useNavigate } from "react-router-dom";
 import Henry from "../assets/Henry.jpg";
-import Henry_mob from "../assets/Henry Rowan BGMobile.png";
+import Henry_mob from "../assets/Henry_Rowan_BGMobile.png";
 import BG from "../assets/BG.jpg";
 import Login from "./Login";
 import Register from "./Register";
@@ -186,7 +186,8 @@ const Landing = () => {
   relative text-center md:text-left text-white md:w-[45%] lg:w-[40%]
   flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards]
   mt-[-100px] sm:mt-[-120px] md:mt-0   /* shifts content UP only on mobile */
-">
+"
+        >
           <h2 className="text-4xl font-light mb-4 leading-snug">
             {t("title")}
           </h2>
