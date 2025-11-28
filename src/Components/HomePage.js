@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar2 from "./Navbar2";
 import { useNavigate } from "react-router-dom";
 import Henry from "../assets/Henry.jpg";
-import Henry_mob from "../assets/Henry Rowan BG-01.png";
+import Henry_mob from "../assets/Henry Rowan BGMobile.png";
 import listen_img from "../assets/listen.png";
 import read_img from "../assets/read.png";
 import podcast_img from "../assets/podcast.svg";
@@ -37,17 +37,34 @@ const HomePage = () => {
           backgroundImage: isDesktop ? `url(${Henry})` : `url(${BG})`,
         }}
       >
-        {/* Mobile Image (top center) */}
-        <div className="block md:hidden mb-6">
+        {/* Mobile Image (top center) - Made larger */}
+        <div className="relative block md:hidden w-full h-[55vh] sm:h-[60vh] overflow-hidden">
           <img
             src={Henry_mob}
             alt={t("title")}
-            className="w-[115px] mx-auto rounded-lg shadow-md object-cover"
+            className=" w-full h-full object-contain
+      object-top
+      md:object-cover
+    "
           />
         </div>
+        <div
+          className="absolute inset-0 md:hidden opacity-20 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${Henry_mob})`,
+            height: "50vh",
+          }} /* visible only top 50% */
+        ></div>
 
         {/* Right side content */}
-        <div className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10  opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]">
+        <div
+          //className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10  opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]"
+          className="
+  relative text-center md:text-left text-white md:w-[45%] lg:w-[40%]
+  flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]
+  mt-[-100px] sm:mt-[-120px] md:mt-0   /* shifts content UP only on mobile */
+"
+        >
           <h2 className="text-4xl font-light mb-4 leading-snug">
             {t("title")}
           </h2>

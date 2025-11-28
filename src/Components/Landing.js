@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLanguage } from "../LanguageContext";
 import { useNavigate } from "react-router-dom";
 import Henry from "../assets/Henry.jpg";
-import Henry_mob from "../assets/Henry Rowan BG-01.png";
+import Henry_mob from "../assets/Henry Rowan BGMobile.png";
 import BG from "../assets/BG.jpg";
 import Login from "./Login";
 import Register from "./Register";
@@ -77,11 +77,13 @@ const Landing = () => {
   };
   //overflow-hidden in line 301
   return (
-    <div className={`flex flex-col ${
-  isDesktop ? "overflow-hidden h-screen" : "overflow-auto"
-}`}>
+    <div
+      className={`flex flex-col ${
+        isDesktop ? "overflow-hidden h-screen" : "overflow-auto"
+      }`}
+    >
       <div
-  className="
+        className="
     relative flex flex-col md:flex-row 
     items-center justify-center md:justify-end
     w-full
@@ -91,10 +93,10 @@ const Landing = () => {
     min-h-screen
     overflow-y-scroll
   "
-  style={{
-    backgroundImage: isDesktop ? `url(${Henry})` : `url(${BG})`,
-  }}
->
+        style={{
+          backgroundImage: isDesktop ? `url(${Henry})` : `url(${BG})`,
+        }}
+      >
         {/* === LANGUAGE SELECTOR TOP RIGHT === */}
         <div className="absolute top-4 right-6 z-50">
           <button
@@ -158,23 +160,39 @@ const Landing = () => {
           )}
         </div>
 
-        {/* Mobile Image (top center) */}
-        <div className="block md:hidden mb-6">
+        {/* Mobile Image (top center) - Made larger */}
+        <div className="relative block md:hidden w-full h-[55vh] sm:h-[60vh] overflow-hidden">
           <img
             src={Henry_mob}
             alt={t("title")}
-            className="w-[115px] mx-auto shadow-md object-cover"
+            className=" w-full h-full object-contain
+      object-top
+      md:object-cover
+    "
           />
         </div>
+        <div
+          className="absolute inset-0 md:hidden opacity-20 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${Henry_mob})`,
+            height: "50vh",
+          }} /* visible only top 50% */
+        ></div>
 
         {/* Right side content */}
-        <div className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards]">
+        <div
+          //className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards]"
+          className="
+  relative text-center md:text-left text-white md:w-[45%] lg:w-[40%]
+  flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards]
+  mt-[-100px] sm:mt-[-120px] md:mt-0   /* shifts content UP only on mobile */
+">
           <h2 className="text-4xl font-light mb-4 leading-snug">
             {t("title")}
           </h2>
-         <p className="text-gray-300 text-sm sm:text-base md:text-lg text-justify leading-relaxed mb-8">
-  {t("description")}
-</p>
+          <p className="text-gray-300 text-sm sm:text-base md:text-lg text-justify leading-relaxed mb-8">
+            {t("description")}
+          </p>
 
           {/* Buttons */}
           <div className="flex gap-4 justify-center justify-start mb-4">
