@@ -271,6 +271,15 @@ const Navbar2 = (params) => {
                       Korean (한국인)
                     </button>
                   </li>
+
+                   <li>
+                    <button
+                      onClick={() => handleLanguageChange("tw")}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Taiwan (대만)
+                    </button>
+                  </li>
                 </ul>
               </div>
             )}
