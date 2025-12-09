@@ -71,6 +71,7 @@ export const Text2 = () => {
             body.append("ttpe", "listen");
             {/*Endpoint changed from pageDetails to getpageDetails */ }
             const { data } = await api.post(`${API_URL}/getpageDetails`, body, {
+            const { data } = await api.post(`${API_URL}/getpageDetails`, body, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
                     Accept: "*/*",
@@ -105,6 +106,7 @@ export const Text2 = () => {
     const updateAutoPage = async (page) => {
         try {
             await axios.get(`${API_URL}autopageSet/${page}`);
+            await axios.get(`${API_URL}autopageSet/${page}`);
         } catch (err) {
             console.error(err);
         }
@@ -122,6 +124,7 @@ export const Text2 = () => {
         };
         {/*Endpoint changed from pageDetails to getpageDetails */ }
         try {
+            const res = await axios.post(`${API_URL}getpageDetails`, payload, {
             const res = await axios.post(`${API_URL}getpageDetails`, payload, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
@@ -197,6 +200,7 @@ export const Text2 = () => {
       formData.append("course_id", 1);
 
             const res = await axios.post(
+                `${API_URL}get_lession_by_pageNo`,
                 `${API_URL}get_lession_by_pageNo`,
                 formData,
                 {
@@ -304,6 +308,7 @@ export const Text2 = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                await axios.get(`${API_URL}automodeSet/read`);
                 await axios.get(`${API_URL}automodeSet/read`);
                 getCurrentPageDetails();
             } catch (error) {

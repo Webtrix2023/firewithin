@@ -587,6 +587,7 @@ const handleNext = async () => {
         {/* Scrollable content */}
         <div
           className="relative h-full w-full overflow-y-auto pt-[50px] px-3 sm:px-4 md:px-6 pb-20 sm:pb-24 scroll-smooth"
+          className="relative h-full w-full overflow-y-auto pt-[50px] px-3 sm:px-4 md:px-6 pb-20 sm:pb-24 scroll-smooth"
           onClick={handleReadingAreaTap}
         >
           <div className="page-wrapper mx-auto max-w-[100ch]">
