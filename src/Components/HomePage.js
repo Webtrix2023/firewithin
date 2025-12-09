@@ -8,12 +8,12 @@ import read_img from "../assets/read.png";
 import podcast_img from "../assets/podcast.svg";
 import { useLanguage } from "../LanguageContext";
 import BG from "../assets/BG.jpg";
-
+ 
 const HomePage = () => {
   const { t, lang, changeLanguage } = useLanguage();
   const navigate = useNavigate();
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
-
+ 
   // 🔄 Update on window resize
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 768);
@@ -26,7 +26,7 @@ const HomePage = () => {
       <Navbar2 />
       <div
         className="
-    relative flex flex-col md:flex-row 
+    relative flex flex-col md:flex-row
     items-center justify-center md:justify-end
     min-h-screen w-full
     px-6 md:px-16 py-12
@@ -38,7 +38,7 @@ const HomePage = () => {
         }}
       >
         {/* Mobile Image (top center) - Made larger */}
-        <div className="relative block md:hidden w-full h-[55vh] sm:h-[60vh] overflow-hidden">
+        <div className="relative block md:hidden w-full h-[55vh] sm:h-[60vh]">
           <img
             src={Henry_mob}
             alt={t("title")}
@@ -48,21 +48,14 @@ const HomePage = () => {
     "
           />
         </div>
-        <div
-          className="absolute inset-0 md:hidden opacity-20 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${Henry_mob})`,
-            height: "50vh",
-          }} /* visible only top 50% */
-        ></div>
-
+ 
         {/* Right side content */}
         <div
           //className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10  opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]"
           className="
   relative text-center md:text-left text-white md:w-[45%] lg:w-[40%]
-  flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.6s_ease-out_forwards]
-  mt-[-100px] sm:mt-[-120px] md:mt-0   /* shifts content UP only on mobile */
+  flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards]
+  mt-[-70px] sm:mt-[-80px] md:mt-0   /* shifts content UP only on mobile */
 "
         >
           <h2 className="text-4xl font-light mb-4 leading-snug">
@@ -87,7 +80,7 @@ const HomePage = () => {
                 {t("listen")}
               </p>
             </div>
-
+ 
             {/* READ */}
             <div
               className="flex flex-col items-center hover:cursor-pointer transition-transform hover:scale-105 w-20 sm:w-24 md:w-28"
@@ -102,7 +95,7 @@ const HomePage = () => {
                 {t("read")}
               </p>
             </div>
-
+ 
             {/* PODCAST */}
             <div
               className="flex flex-col items-center hover:cursor-pointer transition-transform hover:scale-105 w-20 sm:w-24 md:w-28"
@@ -118,11 +111,12 @@ const HomePage = () => {
               </p>
             </div>
           </div>
+          <div className="h-10 mb-8 block"></div>
         </div>
       </div>
       {/* Main Div */}
     </div>
   );
 };
-
+ 
 export default HomePage;
