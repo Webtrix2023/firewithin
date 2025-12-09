@@ -399,7 +399,7 @@ const translations = {
     new_password_is_required: "A nova senha é obrigatória",
 
     // Description content
-    title: "THE FIRE WITHIN",
+    title: "O FOGO INTERIOR",
     description: `O Fogo Interior' é uma autobiografia do industrial Henry M. Rowan, narrando sua notável
      jornada de jovem engenheiro a fundador da Inductotherm Industries, Inc. O livro traça sua vida desde
       uma pequena cidade americana, passando pela escola de aviação na Segunda Guerra Mundial, até seus

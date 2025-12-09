@@ -27,9 +27,9 @@ export const Text = () => {
   const [sections, setSections] = useState([]);
   const [lessonIndex, setLessonIndex] = useState(0); // number, not string
   const [currentSection, setCurrentSection] = useState(0);
-const [pageInput, setPageInput] = useState("");
-const [editing, setEditing] = useState(false);
-const debounceRef = useRef(null);
+  const [pageInput, setPageInput] = useState("");
+  const [editing, setEditing] = useState(false);
+  const debounceRef = useRef(null);
   // UI state (layout/placements unchanged)
   const [controlsVisible, setControlsVisible] = useState(true);
   const [navbarVisible, setNavbarVisible] = useState(true);
@@ -38,7 +38,7 @@ const debounceRef = useRef(null);
   const [theme, setTheme] = useState("light");
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [customerDetails, setCustomerDetails] = useState([]);
-const [flip, setFlip] = useState(false);
+  const [flip, setFlip] = useState(false);
   const activeChapterRef = useRef(null);
   const sectionListRef = useRef(null);
 
@@ -71,6 +71,7 @@ const [flip, setFlip] = useState(false);
       body.append("course_id", "1");
       body.append("lesson_index", String(index));
       body.append("ttpe", "listen");
+      body.append("page_number", String(pageNumberDisplay));
       const { data } = await api.post("/pageDetails", body, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
@@ -78,7 +79,7 @@ const [flip, setFlip] = useState(false);
         },
         withCredentials: true,
       });
-      console.log("item.pageNumber");
+
       if (data.flag === "S" && data.data?.[0]) {
         const item = data.data[0];
 
@@ -93,9 +94,13 @@ const [flip, setFlip] = useState(false);
               : item.section_name
           );
 
-        console.log("item.pageNumber");
-        console.log(item.pageNumber);
-        if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
+        // console.log(item.pageNumber);
+        if (item.page_number) {
+          console.log("item pageNumber", item.page_number);
+          setPageNumber(item.page_number);
+          setPageNumbeDisplay(item.page_number);
+        }
+
         if (item.section_id != null) setCurrentSection(Number(item.section_id));
         if (item.lesson_index != null)
           setLessonIndex(Number(item.lesson_index));
@@ -123,6 +128,10 @@ const [flip, setFlip] = useState(false);
     }
   };
 
+  // useEffect(() => {
+  //   updateAutoPage(); // or any default page
+  // }, []);
+
   // ✅ Variant that takes opts object (kept intact, but aligned)
   const getPageDetails = async (opts = {}) => {
     const payload = {
@@ -131,6 +140,7 @@ const [flip, setFlip] = useState(false);
       course_id: 1,
       lesson_index: String(lessonIndex),
       ttpe: "listen",
+
       ...opts,
     };
     try {
@@ -151,16 +161,15 @@ const [flip, setFlip] = useState(false);
           const { chapterName, pageContent } = splitContent(item.introduction);
           setPageContent(pageContent || "");
         }
-        if (data?.chapterName != null)
-          setChapterName(data?.chapterName);
-        
-          console.log("item.pageNumber",item.pageNumber);
-          
+        if (data?.chapterName != null) setChapterName(data?.chapterName);
+
+        console.log("item.pageNumber", item.pageNumber);
+
         if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
         if (item.section_id != null) setCurrentSection(Number(item.section_id));
         if (item.lesson_index != null)
           setLessonIndex(Number(item.lesson_index));
-          setPageNumbeDisplay(Number(item.page_number));
+        setPageNumbeDisplay(Number(item.page_number));
 
         // ✅ safe: only when explicitly called for navigation
         if (item.page_number) updateAutoPage(Number(item.page_number));
@@ -174,6 +183,7 @@ const [flip, setFlip] = useState(false);
   };
 
   // ✅ For refresh — does not save progress
+
   const getCurrentPageDetails = async () => {
     try {
       const res = await api.post("/currentPageDetails", { ttpe: "listen" });
@@ -181,9 +191,9 @@ const [flip, setFlip] = useState(false);
 
       if (res.data.flag === "S" && data?.bookpage?.[0]) {
         const item = data.bookpage[0];
-        if(data?.currentChapterDetails?.section_name){
+        if (data?.currentChapterDetails?.section_name) {
           console.log(lang);
-           setChapterName(
+          setChapterName(
             lang !== "en"
               ? data?.currentChapterDetails?.[`section_name_${lang}`]?.trim()
               : data?.currentChapterDetails?.section_name
@@ -250,10 +260,10 @@ const [flip, setFlip] = useState(false);
         if (item.lesson_index != null)
           setLessonIndex(Number(item.lesson_index));
         if (item.section_id != null) setCurrentSection(Number(item.section_id));
-//currentSection
+        //currentSection
         // ✅ safe: only when explicitly called for navigation
-        if(item.lesson_id) updateAutoPage(item.page_number);
-        if(item.page_number) setPageNumbeDisplay(item.page_number);
+        if (item.lesson_id) updateAutoPage(item.page_number);
+        if (item.page_number) setPageNumbeDisplay(item.page_number);
       }
     } catch (e) {
       console.error(e);
@@ -442,37 +452,37 @@ const [flip, setFlip] = useState(false);
     }
   };
   const handlePrev = async () => {
-  setFlip(true);
+    setFlip(true);
 
-  // Start fetching immediately
-  const data = await getPageDetails({
-    type: "prev",
-    section_id: currentSection,
-    course_id: 1,
-    lessonIndex: pageNumber - 1,
-    page_number:pageNumberDisplay,
-  });
-  // Finish flip
-  setTimeout(() => {
-    setFlip(false);
-  }, 500);
-};
-const handleNext = async () => {
-  setFlip(true);
+    // Start fetching immediately
+    const data = await getPageDetails({
+      type: "prev",
+      section_id: currentSection,
+      course_id: 1,
+      lessonIndex: pageNumber - 1,
+      page_number: pageNumberDisplay,
+    });
+    // Finish flip
+    setTimeout(() => {
+      setFlip(false);
+    }, 500);
+  };
+  const handleNext = async () => {
+    setFlip(true);
 
-  // Start fetching immediately
-  const data = await getPageDetails({
-    type: "next",
-    section_id: currentSection,
-    course_id: 1,
-    lessonIndex: pageNumber +1,
-    page_number:pageNumberDisplay,
-  });
-  // Finish flip
-  setTimeout(() => {
-    setFlip(false);
-  }, 500);
-};
+    // Start fetching immediately
+    const data = await getPageDetails({
+      type: "next",
+      section_id: currentSection,
+      course_id: 1,
+      lessonIndex: pageNumber + 1,
+      page_number: pageNumberDisplay,
+    });
+    // Finish flip
+    setTimeout(() => {
+      setFlip(false);
+    }, 500);
+  };
   /** ------------------- UI ------------------- **/
   return (
     <div
@@ -587,7 +597,7 @@ const handleNext = async () => {
         {/* Scrollable content */}
         <div
           className="relative h-full w-full overflow-y-auto pt-[50px] px-3 sm:px-4 md:px-6 pb-20 sm:pb-24 scroll-smooth"
-          className="relative h-full w-full overflow-y-auto pt-[50px] px-3 sm:px-4 md:px-6 pb-20 sm:pb-24 scroll-smooth"
+          // className="relative h-full w-full overflow-y-auto pt-[50px] px-3 sm:px-4 md:px-6 pb-20 sm:pb-24 scroll-smooth"
           onClick={handleReadingAreaTap}
         >
           <div className="page-wrapper mx-auto max-w-[100ch]">
@@ -602,14 +612,14 @@ const handleNext = async () => {
 
             {/* Content */}
             <div
-             className={`reader-html page-content leading-[1.85] mt-4 text-justify ${
-    flip ? "page-flip" : ""
-  }`}
-  style={{
-    fontSize: `${fontSize}rem`,
-    WebkitHyphens: "auto",
-    hyphens: "auto",
-  }}
+              className={`reader-html page-content leading-[1.85] mt-4 text-justify ${
+                flip ? "page-flip" : ""
+              }`}
+              style={{
+                fontSize: `${fontSize}rem`,
+                WebkitHyphens: "auto",
+                hyphens: "auto",
+              }}
               dangerouslySetInnerHTML={{ __html: safeHtml }}
             />
           </div>
@@ -693,48 +703,48 @@ const handleNext = async () => {
                   }`}
               /> */}
               <div className="flex items-center gap-2">
-  {!editing ? (
-    // ✅ SPAN DISPLAY MODE
-    <span
-      onClick={() => setEditing(true)}
-      className="cursor-pointer px-3 py-1 bg-gray-200 rounded-full text-sm"
-    >
-      {pageNumberDisplay}
-    </span>
-  ) : (
-    // ✅ INPUT EDIT MODE
-    <input
-      autoFocus
-      type="text"
-      onChange={(e) => {
-        const val = e.target.value;
+                {!editing ? (
+                  // ✅ SPAN DISPLAY MODE
+                  <span
+                    onClick={() => setEditing(true)}
+                    className="cursor-pointer px-3 py-1 bg-gray-200 rounded-full text-sm"
+                  >
+                    {pageNumberDisplay}
+                  </span>
+                ) : (
+                  // ✅ INPUT EDIT MODE
+                  <input
+                    autoFocus
+                    type="text"
+                    onChange={(e) => {
+                      const val = e.target.value;
 
-        // allow only numbers
-        if (/^\d*$/.test(val)) {
-          setPageInput(val);
+                      // allow only numbers
+                      if (/^\d*$/.test(val)) {
+                        setPageInput(val);
 
-          clearTimeout(debounceRef.current);
+                        clearTimeout(debounceRef.current);
 
-          debounceRef.current = setTimeout(() => {
-            if (!val) return;
+                        debounceRef.current = setTimeout(() => {
+                          if (!val) return;
 
-            const num = Number(val);
+                          const num = Number(val);
 
-            if (num > 0 && num <= 388) {
-              getLessonByPageNumber(num);
-            } else if (num > 388) {
-              alert("Page limit exceeded");
-            }
-            // ✅ switch back after done
-            setEditing(false);
-          }, 1000);
-        }
-      }}
-      onBlur={() => setEditing(false)} // ✅ exit on blur
-      className="w-12 text-center border border-gray-300 rounded-full py-1 focus:outline-none"
-    />
-  )}
-</div>
+                          if (num > 0 && num <= 388) {
+                            getLessonByPageNumber(num);
+                          } else if (num > 388) {
+                            alert("Page limit exceeded");
+                          }
+                          // ✅ switch back after done
+                          setEditing(false);
+                        }, 1000);
+                      }
+                    }}
+                    onBlur={() => setEditing(false)} // ✅ exit on blur
+                    className="w-12 text-center border border-gray-300 rounded-full py-1 focus:outline-none"
+                  />
+                )}
+              </div>
               <span>of</span>
               <span>389</span>
             </div>
