@@ -272,12 +272,28 @@ const Navbar2 = (params) => {
                     </button>
                   </li>
 
-                   <li>
+                  <li>
                     <button
                       onClick={() => handleLanguageChange("tw")}
                       className="w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
                       Taiwan (대만)
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleLanguageChange("jpn")}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Japanese (日本語)
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleLanguageChange("br")}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Brazilian Portuguese (Português do Brasil)
                     </button>
                   </li>
                 </ul>

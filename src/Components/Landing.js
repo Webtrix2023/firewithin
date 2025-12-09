@@ -7,7 +7,6 @@ import BG from "../assets/BG.jpg";
 import Login from "./Login";
 import Register from "./Register";
 import ForgotPassword from "./ForgotPassword";
-
 import {
   useFloating,
   offset,
@@ -19,16 +18,15 @@ import {
 import langv from "../assets/lang.png";
 import ThankYouPage from "./ThankYouPage";
 import { Languages } from "lucide-react";
-
 const Landing = () => {
   const { t, lang, changeLanguage } = useLanguage();
   const navigate = useNavigate();
-
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(null);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
 
   // 🔄 Update on window resize
+
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 768);
     window.addEventListener("resize", handleResize);
@@ -45,10 +43,8 @@ const Landing = () => {
     setShowModal(false);
     setModalType(null);
   };
-
   // Language floating menu — same as navbar
   const [showLangMenu, setShowLangMenu] = useState(false);
-
   const { refs, floatingStyles } = useFloating({
     placement: "bottom-end",
     middleware: [offset(8), flip(), shift()],
@@ -67,15 +63,20 @@ const Landing = () => {
     };
 
     document.addEventListener("click", handleClick);
+
     return () => document.removeEventListener("click", handleClick);
   }, [showLangMenu, refs]);
 
   const handleLanguageChange = (newLang) => {
     changeLanguage(newLang);
+
     localStorage.setItem("preferredLang", newLang);
+
     setShowLangMenu(false);
   };
+
   //overflow-hidden in line 301
+
   return (
     <div
       className={`flex flex-col ${
@@ -83,21 +84,14 @@ const Landing = () => {
       }`}
     >
       <div
-        className="
-    relative flex flex-col md:flex-row 
-    items-center justify-center md:justify-end
-    w-full
-    px-6 md:px-16 py-12
-    bg-[#1e2c33] bg-cover bg-center
-    transition-all duration-500
-    min-h-screen
-    overflow-y-scroll
-  "
+        className=" relative flex flex-col md:flex-row items-center md:items-center justify-normal md:justify-end    
+     w-full px-6 md:px-16 py-12 bg-[#1e2c33] bg-cover bg-center transition-all duration-500 min-h-screen overflow-y-scroll "
         style={{
           backgroundImage: isDesktop ? `url(${Henry})` : `url(${BG})`,
         }}
       >
         {/* === LANGUAGE SELECTOR TOP RIGHT === */}
+
         <div className="absolute top-4 right-6 z-50">
           <button
             ref={refs.setReference}
@@ -105,14 +99,17 @@ const Landing = () => {
             className="p-2 pl-3 pr-3 rounded-full bg-white/90 shadow hover:scale-105 transition flex items-center gap-2"
           >
             {/* ICON */}
+
             <Languages className="text-red-600 inline" size={18}></Languages>
 
             {/* LANG TEXT */}
+
             <span className="text-sm uppercase text-red-600 inline sm:inline">
               {lang}
             </span>
 
             {/* ARROW AT RIGHT */}
+
             <svg
               className={`w-3 h-3 ml-auto transition-transform text-red-600 ${
                 showLangMenu ? "rotate-180" : "rotate-0"
@@ -154,12 +151,28 @@ const Landing = () => {
                       Korean (한국인)
                     </button>
                   </li>
-                     <li>
+                  <li>
                     <button
                       onClick={() => handleLanguageChange("tw")}
                       className="w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
                       Taiwan (대만)
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleLanguageChange("jpn")}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Japanese (日本語)
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleLanguageChange("br")}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Brazilian Portuguese (Português do Brasil)
                     </button>
                   </li>
                 </ul>
@@ -169,32 +182,26 @@ const Landing = () => {
         </div>
 
         {/* Mobile Image (top center) - Made larger */}
-        <div className="relative block md:hidden w-full h-[55vh] sm:h-[60vh] overflow-hidden">
+        <div className="relative block md:hidden w-full h-[55vh] sm:h-[60vh]">
           <img
             src={Henry_mob}
             alt={t("title")}
-            className=" w-full h-full object-contain
-      object-top
-      md:object-cover
-    "
+            className=" w-full h-full object-contain object-top md:object-cover"
           />
         </div>
-        <div
+        {/* <div
           className="absolute inset-0 md:hidden opacity-20 bg-cover bg-center"
           style={{
             backgroundImage: `url(${Henry_mob})`,
             height: "50vh",
-          }} /* visible only top 50% */
-        ></div>
+          }}
+        ></div> */}
 
         {/* Right side content */}
         <div
           //className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards]"
-          className="
-  relative text-center md:text-left text-white md:w-[45%] lg:w-[40%]
-  flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards]
-  mt-[-100px] sm:mt-[-120px] md:mt-0   /* shifts content UP only on mobile */
-"
+
+          className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards] mt-[-70px] sm:mt-[-80px] md:mt-0   /* shifts content UP only on mobile */"
         >
           <h2 className="text-4xl font-light mb-4 leading-snug">
             {t("title")}
@@ -204,7 +211,8 @@ const Landing = () => {
           </p>
 
           {/* Buttons */}
-          <div className="flex gap-4 justify-center justify-start mb-4">
+
+          <div className="flex gap-4 justify-center justify-start ">
             <button
               onClick={() => openModal("login")}
               className="bg-white text-black px-6 py-3 rounded-full hover:bg-white/90 transition"
@@ -219,13 +227,17 @@ const Landing = () => {
               {t("register_now")}
             </button>
           </div>
+
+          <div className="h-10 mb-8 block"></div>
         </div>
       </div>
 
       {/* === Modal Popup === */}
+
       {showModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+
           // onClick={closeModal}
         >
           <div
@@ -256,11 +268,13 @@ const Landing = () => {
             {modalType === "forgot" && (
               <ForgotPassword isModal openLogin={() => openModal("login")} />
             )}
+
             {modalType === "thank-you" && (
               <ThankYouPage
                 isModal
                 openLogin={() => {
                   closeModal(); // Close the thank you modal
+
                   openModal("login"); // Open login modal
                 }}
               />
