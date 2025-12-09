@@ -78,7 +78,7 @@
   width: 100%;
   min-height: 100%; /* or fixed height if known */
   perspective: 1200px;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .page-content {
