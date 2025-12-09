@@ -101,7 +101,7 @@ const [flip, setFlip] = useState(false);
           setLessonIndex(Number(item.lesson_index));
 
         // ✅ only update autopage on navigation
-        if (saveProgress && item.lesson_id) updateAutoPage(item.lesson_id);
+        if (saveProgress && item.page_number) updateAutoPage(item.page_number);
       }
       if (data.flag === "F") {
         console.log("Errot occured");
@@ -115,8 +115,8 @@ const [flip, setFlip] = useState(false);
   const updateAutoPage = async (page) => {
     try {
       //setPageNumber(page);
-      const pagenp = page - 1;
-      setPageNumbeDisplay(pagenp === 0 ? 1 : pagenp);
+      //const pagenp = page - 1;
+      //setPageNumbeDisplay(pagenp === 0 ? 1 : pagenp);
       await axios.get(`${API_URL}autopageSet/${page}`);
     } catch (err) {
       console.error(err);
@@ -160,9 +160,10 @@ const [flip, setFlip] = useState(false);
         if (item.section_id != null) setCurrentSection(Number(item.section_id));
         if (item.lesson_index != null)
           setLessonIndex(Number(item.lesson_index));
+          setPageNumbeDisplay(Number(item.page_number));
 
         // ✅ safe: only when explicitly called for navigation
-        if (item.lesson_id) updateAutoPage(item.lesson_id);
+        if (item.page_number) updateAutoPage(Number(item.page_number));
       }
       if (data.flag === "F") {
         toast.error(data.msg);
@@ -194,7 +195,7 @@ const [flip, setFlip] = useState(false);
           setPageContent(pageContent || "");
         }
 
-        if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
+        //if (typeof item.pageNumber === "number") setPageNumber(item.pageNumber);
         if (item.section_id != null) setCurrentSection(Number(item.section_id));
         if (item.lesson_index != null)
           setLessonIndex(Number(item.lesson_index));
@@ -208,7 +209,7 @@ const [flip, setFlip] = useState(false);
         //setFontSize(data?.customer_details?.[0]?.selected_font || 1.05);
         setFontSize(Number(data?.customer_details?.[0]?.selected_font) || 1.05);
         setPageNumber(Number(item.lesson_id));
-        setPageNumbeDisplay(Number(item.lesson_id) === 0 ? 1 : ((Number(item.lesson_id) - 1) === 0 ? 1 : (Number(item.lesson_id) - 1)));
+        setPageNumbeDisplay(Number(item.page_number));
       }
     } catch (err) {
       console.error(err);
@@ -251,7 +252,8 @@ const [flip, setFlip] = useState(false);
         if (item.section_id != null) setCurrentSection(Number(item.section_id));
 //currentSection
         // ✅ safe: only when explicitly called for navigation
-        if (item.lesson_id) updateAutoPage(item.lesson_id);
+        if(item.lesson_id) updateAutoPage(item.page_number);
+        if(item.page_number) setPageNumbeDisplay(item.page_number);
       }
     } catch (e) {
       console.error(e);
@@ -448,6 +450,7 @@ const [flip, setFlip] = useState(false);
     section_id: currentSection,
     course_id: 1,
     lessonIndex: pageNumber - 1,
+    page_number:pageNumberDisplay,
   });
   // Finish flip
   setTimeout(() => {
@@ -463,6 +466,7 @@ const handleNext = async () => {
     section_id: currentSection,
     course_id: 1,
     lessonIndex: pageNumber +1,
+    page_number:pageNumberDisplay,
   });
   // Finish flip
   setTimeout(() => {
@@ -582,6 +586,7 @@ const handleNext = async () => {
 
         {/* Scrollable content */}
         <div
+          className="relative h-full w-full overflow-y-auto pt-[50px] px-3 sm:px-4 md:px-6 pb-20 sm:pb-24 scroll-smooth"
           className="relative h-full w-full overflow-y-auto pt-[50px] px-3 sm:px-4 md:px-6 pb-20 sm:pb-24 scroll-smooth"
           onClick={handleReadingAreaTap}
         >
@@ -731,7 +736,7 @@ const handleNext = async () => {
   )}
 </div>
               <span>of</span>
-              <span>325</span>
+              <span>389</span>
             </div>
           </div>
         </div>

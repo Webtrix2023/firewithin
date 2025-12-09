@@ -143,13 +143,13 @@ const Register = ({ openLogin, openForgot }) => {
           </button>
 
           {/* Forgot Password */}
-          <button
+          {/* <button
             type="button"
             onClick={openForgot}
             className="text-xs text-gray-500 hover:underline mt-1"
           >
             {t("forgot_password")}
-          </button>
+          </button> */}
 
           {/* Switch to Login */}
           <p className="text-[11px] text-gray-500 text-center mt-1">
