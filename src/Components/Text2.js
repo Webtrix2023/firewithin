@@ -71,7 +71,6 @@ export const Text2 = () => {
             body.append("ttpe", "listen");
             {/*Endpoint changed from pageDetails to getpageDetails */ }
             const { data } = await api.post(`${API_URL}/getpageDetails`, body, {
-            const { data } = await api.post(`${API_URL}/getpageDetails`, body, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
                     Accept: "*/*",
@@ -124,7 +123,6 @@ export const Text2 = () => {
         };
         {/*Endpoint changed from pageDetails to getpageDetails */ }
         try {
-            const res = await axios.post(`${API_URL}getpageDetails`, payload, {
             const res = await axios.post(`${API_URL}getpageDetails`, payload, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
