@@ -18,17 +18,17 @@ import {
 import langv from "../assets/lang.png";
 import ThankYouPage from "./ThankYouPage";
 import { Languages } from "lucide-react";
+
 const Landing = () => {
   const { t, lang, changeLanguage } = useLanguage();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(null);
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
 
   // 🔄 Update on window resize
-
   useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 768);
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -43,7 +43,8 @@ const Landing = () => {
     setShowModal(false);
     setModalType(null);
   };
-  // Language floating menu — same as navbar
+
+  // Language floating menu
   const [showLangMenu, setShowLangMenu] = useState(false);
   const { refs, floatingStyles } = useFloating({
     placement: "bottom-end",
@@ -63,53 +64,35 @@ const Landing = () => {
     };
 
     document.addEventListener("click", handleClick);
-
     return () => document.removeEventListener("click", handleClick);
   }, [showLangMenu, refs]);
 
   const handleLanguageChange = (newLang) => {
     changeLanguage(newLang);
-
     localStorage.setItem("preferredLang", newLang);
-
     setShowLangMenu(false);
   };
 
-  //overflow-hidden in line 301
-
   return (
-    <div
-      className={`flex flex-col ${
-        isDesktop ? "overflow-hidden h-screen" : "overflow-auto"
-      }`}
-    >
+    <div className="flex flex-col overflow-auto lg:overflow-hidden lg:h-screen">
       <div
-        className=" relative flex flex-col md:flex-row items-center md:items-center justify-normal md:justify-end    
-     w-full px-6 md:px-16 py-12 bg-[#1e2c33] bg-cover bg-center transition-all duration-500 min-h-screen overflow-y-scroll "
+        className="relative flex flex-col lg:flex-row items-center justify-normal lg:justify-end    
+     w-full px-6 md:px-10 lg:px-16 py-8 md:py-10 lg:py-12 bg-[#1e2c33] bg-cover bg-center transition-all duration-500 min-h-screen overflow-y-auto"
         style={{
           backgroundImage: isDesktop ? `url(${Henry})` : `url(${BG})`,
         }}
       >
         {/* === LANGUAGE SELECTOR TOP RIGHT === */}
-
         <div className="absolute top-4 right-6 z-50">
           <button
             ref={refs.setReference}
             onClick={() => setShowLangMenu((prev) => !prev)}
             className="p-2 pl-3 pr-3 rounded-full bg-white/90 shadow hover:scale-105 transition flex items-center gap-2"
           >
-            {/* ICON */}
-
-            <Languages className="text-red-600 inline" size={18}></Languages>
-
-            {/* LANG TEXT */}
-
-            <span className="text-sm uppercase text-red-600 inline sm:inline">
+            <Languages className="text-red-600 inline" size={18} />
+            <span className="text-sm uppercase text-red-600 inline">
               {lang}
             </span>
-
-            {/* ARROW AT RIGHT */}
-
             <svg
               className={`w-3 h-3 ml-auto transition-transform text-red-600 ${
                 showLangMenu ? "rotate-180" : "rotate-0"
@@ -181,72 +164,55 @@ const Landing = () => {
           )}
         </div>
 
-        {/* Mobile Image (top center) - Made larger */}
-        <div className="relative block md:hidden w-full h-[55vh] sm:h-[60vh]">
+        {/* Mobile/Tablet Image (top center) */}
+        <div className="relative block lg:hidden w-full h-[50vh] md:h-[55vh]">
           <img
             src={Henry_mob}
             alt={t("title")}
-            className=" w-full h-full object-contain object-top md:object-cover"
+            className="w-full h-full object-contain object-top"
           />
         </div>
-        {/* <div
-          className="absolute inset-0 md:hidden opacity-20 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${Henry_mob})`,
-            height: "50vh",
-          }}
-        ></div> */}
 
         {/* Right side content */}
-        <div
-          //className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards]"
-
-          className="relative text-center md:text-left text-white md:w-[45%] lg:w-[40%] flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards] mt-[-70px] sm:mt-[-80px] md:mt-0   /* shifts content UP only on mobile */"
-        >
-          <h2 className="text-4xl font-light mb-4 leading-snug">
+        <div className="relative text-center lg:text-left text-white lg:w-[45%] xl:w-[40%] flex flex-col justify-center z-10 opacity-0 animate-[fadeUp_0.8s_ease-out_forwards] mt-[-60px] md:mt-[-40px] lg:mt-0">
+          <h2 className="text-3xl md:text-4xl lg:text-4xl font-light mb-4 leading-snug">
             {t("title")}
           </h2>
-          <p className="text-gray-300 text-sm sm:text-base md:text-lg text-justify leading-relaxed mb-8">
+          <p className="text-gray-300 text-sm md:text-base lg:text-lg text-justify leading-relaxed mb-6 md:mb-8">
             {t("description")}
           </p>
 
           {/* Buttons */}
-
-          <div className="flex gap-4 justify-center justify-start ">
+          <div className="flex gap-4 justify-center lg:justify-start">
             <button
               onClick={() => openModal("login")}
-              className="bg-white text-black px-6 py-3 rounded-full hover:bg-white/90 transition"
+              className="bg-white text-black px-6 py-3 rounded-full hover:bg-white/90 transition text-sm md:text-base"
             >
               {t("login")}
             </button>
 
             <button
               onClick={() => openModal("register")}
-              className="bg-orange-600 text-white px-6 py-3 rounded-full hover:bg-orange-700 transition"
+              className="bg-orange-600 text-white px-6 py-3 rounded-full hover:bg-orange-700 transition text-sm md:text-base"
             >
               {t("register_now")}
             </button>
           </div>
 
-          <div className="h-10 mb-8 block"></div>
+          <div className="h-8 md:h-10 mb-6 md:mb-8 block"></div>
         </div>
       </div>
 
       {/* === Modal Popup === */}
-
       {showModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-
-          // onClick={closeModal}
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div
             className="bg-white rounded-xl w-11/12 max-w-md p-6 relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={closeModal}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 font-bold"
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 font-bold text-2xl"
             >
               &times;
             </button>
@@ -273,9 +239,8 @@ const Landing = () => {
               <ThankYouPage
                 isModal
                 openLogin={() => {
-                  closeModal(); // Close the thank you modal
-
-                  openModal("login"); // Open login modal
+                  closeModal();
+                  openModal("login");
                 }}
               />
             )}
